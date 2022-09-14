@@ -93,9 +93,17 @@ mat-toolbar {
   display: flex;
   position: fixed;
   justify-content: space-between;
-  z-index: 9999;
+  z-index: 10;
 }
 
 .RouterOutlet {
   padding-top: 4rem;
+}
+.search-input {
+  width: 535px;
+  height: 23px;
+  border: 1px solid #bbb;
+  font-size: 20px;
+  padding: 10px;
+  outline: none;
 }

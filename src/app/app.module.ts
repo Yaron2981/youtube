@@ -8,6 +8,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,6 +23,10 @@ import { MatListModule } from '@angular/material/list';
     MatIconModule,
     MatSidenavModule,
     MatListModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

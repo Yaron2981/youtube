@@ -62,6 +62,25 @@
       </g>
     </g>
   </svg>
+
+  <span class="example-spacer"></span>
+  <form class="example-form">
+    <input
+      type="text"
+      placeholder="Search for a street"
+      [formControl]="control"
+      [matAutocomplete]="auto"
+      class="-search-input"
+    />
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option
+        *ngFor="let street of filteredStreets | async"
+        [value]="street"
+      >
+        {{ street }}
+      </mat-option>
+    </mat-autocomplete>
+  </form>
   <span class="example-spacer"></span>
 
   <button
@@ -89,4 +108,5 @@
       <mat-divider></mat-divider>
     </mat-list>
   </mat-drawer>
+  <div style="margin-top: 4rem"></div>
 </mat-drawer-container>
