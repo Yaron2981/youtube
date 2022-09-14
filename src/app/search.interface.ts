@@ -9,3 +9,4 @@ export interface Video {
   description: string;
   thumbnail: string;
 }
+//https://blog.logrocket.com/build-a-youtube-video-search-app-with-angular-and-rxjs/
