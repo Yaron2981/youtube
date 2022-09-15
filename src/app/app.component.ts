@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
+import { Video } from './search.interface';
+import { SearchService } from './search.service';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +11,9 @@ import { startWith, map } from 'rxjs/operators';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  constructor(private searchService: SearchService) {
+    this.videos$ = this.searchService.getVideos();
+  }
   showFiller: boolean = true;
   drawer: boolean = true;
   title = 'youtube';
@@ -20,7 +25,7 @@ export class AppComponent implements OnInit {
     'Fifth Avenue',
   ];
   filteredStreets: Observable<string[]> | null = null;
-
+  videos$: Observable<Video[]> = new Observable();
   ngOnInit() {
     this.filteredStreets = this.control.valueChanges.pipe(
       startWith(''),
