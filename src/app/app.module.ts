@@ -15,9 +15,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { HttpClientModule } from '@angular/common/http';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { SafePipe } from './safe.pipe';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, SafePipe],
   imports: [
     BrowserModule,
     AppRoutingModule,

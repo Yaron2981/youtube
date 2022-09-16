@@ -12,7 +12,6 @@ import { SearchService } from './search.service';
 })
 export class AppComponent implements OnInit {
   constructor(private searchService: SearchService) {}
-  showPop$: Observable<any>;
   showFiller: boolean = true;
   drawer: boolean = true;
   title = 'youtube';
@@ -43,14 +42,14 @@ export class AppComponent implements OnInit {
   private _normalizeValue(value: string): string {
     return value.toLowerCase().replace(/\s/g, '');
   }
-  onMouseEnter(videoId: any) {
+  onMouseEnter(video: Video) {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
-      this.videos$ = this.searchService.updateShowPop(videoId, true);
-    }, 2000);
+      video.showPop = true;
+    }, 1500);
   }
-  onMouseLeave(videoId: any) {
-    this.videos$ = this.searchService.updateShowPop(videoId, false);
+  onMouseLeave(video: Video) {
+    video.showPop = false;
     clearTimeout(this.timeout);
   }
 }

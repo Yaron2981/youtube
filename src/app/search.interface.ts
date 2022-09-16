@@ -10,5 +10,6 @@ export interface Video {
   thumbnail: string;
   channelThumbnail?: string;
   showPop?: boolean;
+  youtubeUrl: string;
 }
 //https://blog.logrocket.com/build-a-youtube-video-search-app-with-angular-and-rxjs/

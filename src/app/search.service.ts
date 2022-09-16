@@ -5,6 +5,7 @@ import { map, shareReplay, tap } from 'rxjs/operators';
 import { Observable, mergeMap, of, combineLatest } from 'rxjs';
 import { Video } from './search.interface';
 import { LocalStore } from './local-store';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -17,7 +18,7 @@ export class SearchService {
   constructor(private http: HttpClient) {}
   videoId$: Observable<boolean> = of(false);
 
-  videos$: Observable<Video[]> = this.ls.isValid(this.API_URL)
+  source$: Observable<Video[]> = this.ls.isValid(this.API_URL)
     ? of(this.ls.getData(this.API_URL))
     : this.getVideos().pipe(
         mergeMap((res) =>
@@ -39,12 +40,7 @@ export class SearchService {
             .pipe(tap((data) => this.ls.setData(this.API_URL, data)))
         )
       );
-      source$:Observable<Video[]> = combineLatest([this.showpop$, this.videoId$]).pipe
-      map(([videoId, videos]) => {
-        videos.forEach((v:Video) => v.videoId == videoId && true);
-          return ships;
-      }),
-      share();
+
   getVideos(query: string = ''): Observable<any> {
     const url = `${this.API_URL}?q=${query}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=16`;
     console.log(url);
@@ -62,6 +58,7 @@ export class SearchService {
             description: item.snippet.description,
             thumbnail: item.snippet.thumbnails.medium.url,
             showPop: false,
+            youtubeUrl: `https://www.youtube.com/embed/${item.id.videoId}`,
           };
         })
       ),

@@ -123,8 +123,8 @@
         fxLayoutGap.xs="0"
       >
         <mat-card
-          (mouseenter)="onMouseEnter(video.videoId)"
-          (mouseleave)="onMouseLeave(video.videoId)"
+          (mouseenter)="onMouseEnter(video)"
+          (mouseleave)="onMouseLeave(video)"
           [fxFlex]="!showFiller ? '18.5' : '22.5'"
           class="card"
           *ngFor="let video of videos; let i = index"
@@ -141,17 +141,20 @@
                   [alt]="video.title"
                 />
               </div>
-              <span fxFlex="85">{{ video.title }} {{ video.showPop }}</span>
+              <span fxFlex="85">{{ video.title }}</span>
             </h2>
           </mat-card-content>
           <ng-template [ngIf]="video.showPop">
             <mat-card class="inner-card">
-              <img
-                style="max-height: 300px"
-                mat-card-image
-                src="https://material.angular.io/assets/img/examples/shiba2.jpg"
-                alt="Photo of a Shiba Inu"
-              />
+              <iframe
+                *ngIf="video.youtubeUrl != null"
+                [src]="'https://www.youtube.com/embed/' + video.videoId + ''"
+                style="width: 100%; padding: 0px; margin: 0px"
+                height="200"
+                frameborder="0"
+                allowfullscreen
+                autoplay="1"
+              ></iframe>
               <mat-card-content>
                 <h2 fxLayout="row">
                   <div fxFlex="15" mat-card-avatar fxLayoutAlign="center">
