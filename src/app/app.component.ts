@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { UntypedFormControl } from '@angular/forms';
+import { Observable, pipe } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { Video } from './search.interface';
 import { SearchService } from './search.service';
@@ -11,13 +11,13 @@ import { SearchService } from './search.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  constructor(private searchService: SearchService) {
-    this.videos$ = this.searchService.getVideos();
-  }
+  constructor(private searchService: SearchService) {}
+  showPop$: Observable<any>;
   showFiller: boolean = true;
   drawer: boolean = true;
   title = 'youtube';
-  control = new FormControl('');
+  control = new UntypedFormControl('');
+  timeout: any = null;
   streets: string[] = [
     'Champs-Élysées',
     'Lombard Street',
@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
     'Fifth Avenue',
   ];
   filteredStreets: Observable<string[]> | null = null;
-  videos$: Observable<Video[]> = new Observable();
+  videos$: Observable<Video[]> = this.searchService.source$;
   ngOnInit() {
     this.filteredStreets = this.control.valueChanges.pipe(
       startWith(''),
@@ -42,5 +42,15 @@ export class AppComponent implements OnInit {
 
   private _normalizeValue(value: string): string {
     return value.toLowerCase().replace(/\s/g, '');
+  }
+  onMouseEnter(videoId: any) {
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      this.videos$ = this.searchService.updateShowPop(videoId, true);
+    }, 2000);
+  }
+  onMouseLeave(videoId: any) {
+    this.videos$ = this.searchService.updateShowPop(videoId, false);
+    clearTimeout(this.timeout);
   }
 }

@@ -8,5 +8,7 @@ export interface Video {
   publishedAt: Date;
   description: string;
   thumbnail: string;
+  channelThumbnail?: string;
+  showPop?: boolean;
 }
 //https://blog.logrocket.com/build-a-youtube-video-search-app-with-angular-and-rxjs/
