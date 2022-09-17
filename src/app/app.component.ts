@@ -30,6 +30,9 @@ export class AppComponent implements OnInit {
       startWith(''),
       map((value) => this._filter(value || ''))
     );
+    console.log(
+      `https://www.googleapis.com/youtube/v3/search?q=&key=AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE&part=snippet&type=video&type=channel&maxResults=16`
+    );
   }
 
   private _filter(value: string): string[] {

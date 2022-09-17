@@ -129,35 +129,68 @@
           class="card"
           *ngFor="let video of videos; let i = index"
           class="mat-elevation-z0"
+          style="padding-top: 0px"
         >
-          <img mat-card-image [src]="video.thumbnail" [alt]="video.title" />
+          <img
+            mat-card-image
+            style="max-height: 202px"
+            [src]="video.thumbnail"
+            [alt]="video.title"
+          />
           <mat-card-content>
-            <h2 fxLayout="row">
-              <div fxFlex="15" mat-card-avatar fxLayoutAlign="center">
+            <div fxLayout="row">
+              <div fxFlex="18" mat-card-avatar fxLayoutAlign="center">
                 <img
                   class="card-avatar"
                   mat-card-image
                   [src]="video.channelThumbnail"
-                  [alt]="video.title"
+                  alt="Keep overing to play"
                 />
               </div>
-              <span fxFlex="85">{{ video.title }}</span>
-            </h2>
+              <div fxFlex="82">
+                <a
+                  [routerLink]="video.videoUrl"
+                  class="title"
+                  [innerHtml]="video.title | safe: 'html'"
+                ></a>
+                <div fxLayout="row">
+                  <mat-card-subtitle fxFlex="100"></mat-card-subtitle>
+                </div>
+                <div fxLayout="row">
+                  <mat-card-subtitle xFlex="100">
+                    <a [routerLink]="video.channelUrl">{{
+                      video.channelTitle
+                    }}</a
+                    ><br />
+                    {{ video.viewCount! | shortNumber }} <span>&bull;</span>
+                    {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
+                  >
+                </div>
+              </div>
+            </div>
           </mat-card-content>
           <ng-template [ngIf]="video.showPop">
-            <mat-card class="inner-card">
+            <mat-card
+              class="inner-card mat-elevation-z0"
+              style="padding: 0px; padding-bottom: 25px"
+            >
               <iframe
-                *ngIf="video.youtubeUrl != null"
-                [src]="'https://www.youtube.com/embed/' + video.videoId + ''"
+                mat-card-image
+                [src]="
+                  'https://www.youtube.com/embed/' +
+                    video.videoId +
+                    '?autoplay=1&controls=0&enablejsapi=1&mute=1&autohide=1&showInfo=0'
+                    | safe: 'resourceUrl'
+                "
                 style="width: 100%; padding: 0px; margin: 0px"
-                height="200"
+                height="252"
                 frameborder="0"
                 allowfullscreen
                 autoplay="1"
               ></iframe>
-              <mat-card-content>
-                <h2 fxLayout="row">
-                  <div fxFlex="15" mat-card-avatar fxLayoutAlign="center">
+              <mat-card-content style="margin-top: 16px">
+                <div fxLayout="row">
+                  <div fxFlex="18" mat-card-avatar fxLayoutAlign="center">
                     <img
                       class="card-avatar"
                       mat-card-image
@@ -165,12 +198,44 @@
                       [alt]="video.title"
                     />
                   </div>
-                  <span fxFlex="85">{{ video.title }}</span>
-                </h2>
+                  <div fxFlex="82">
+                    <a
+                      [routerLink]="video.videoUrl"
+                      class="title"
+                      [innerHtml]="video.title | safe: 'html'"
+                    ></a>
+                    <div fxLayout="row">
+                      <mat-card-subtitle fxFlex="100"></mat-card-subtitle>
+                    </div>
+                    <div fxLayout="row">
+                      <mat-card-subtitle xFlex="100">
+                        <a [routerLink]="video.channelUrl">{{
+                          video.channelTitle
+                        }}</a
+                        ><br />
+                        {{ video.viewCount! | shortNumber }}
+                        <span>&bull;</span>
+                        {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
+                      >
+                    </div>
+                  </div>
+                </div>
               </mat-card-content>
-              <mat-card-actions>
-                <button mat-button>LIKE</button>
-                <button mat-button>SHARE</button>
+              <mat-card-actions class="btn-center" style="text-align: center">
+                <a
+                  mat-stroked-button
+                  href="https://www.google.com/"
+                  target="_blank"
+                  style="width: 40%"
+                  >Watch later</a
+                >
+                <a
+                  style="width: 40%"
+                  mat-stroked-button
+                  href="https://www.google.com/"
+                  target="_blank"
+                  >Add to queue</a
+                >
               </mat-card-actions>
             </mat-card>
           </ng-template>
