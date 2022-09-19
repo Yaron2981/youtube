@@ -1,36 +1,44 @@
 <mat-toolbar>
-  <button mat-icon-button class="menu-icon" (click)="showFiller = !showFiller">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <img src="assets/img/premium.svg" />
+  <div style="flex: 1 1 0">
+    <button
+      mat-icon-button
+      class="menu-icon"
+      (click)="showFiller = !showFiller"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="logo"></span>
+  </div>
+  <div style="flex: 2 1 0">
+    <form>
+      <div class="search-con">
+        <input
+          type="text"
+          placeholder="Search..."
+          [formControl]="control"
+          [matAutocomplete]="auto"
+        />
+      </div>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option
+          *ngFor="let street of filteredStreets | async"
+          [value]="street"
+        >
+          {{ street }}
+        </mat-option>
+      </mat-autocomplete>
+    </form>
+  </div>
 
-  <span class="spacer"></span>
-  <form class="form">
-    <input
-      type="text"
-      placeholder="Search for a street"
-      [formControl]="control"
-      [matAutocomplete]="auto"
-      class="-search-input"
-    />
-    <mat-autocomplete #auto="matAutocomplete">
-      <mat-option
-        *ngFor="let street of filteredStreets | async"
-        [value]="street"
-      >
-        {{ street }}
-      </mat-option>
-    </mat-autocomplete>
-  </form>
-  <span class="spacer"></span>
-
-  <button
-    mat-icon-button
-    class="icon circle-letter"
-    aria-label="Example icon-button with share icon"
-  >
-    <span class="circle-letter">R</span>
-  </button>
+  <div style="flex: 1 1 0; text-align: right">
+    <button
+      mat-icon-button
+      class="icon circle-letter"
+      aria-label="Example icon-button with share icon"
+    >
+      <span class="circle-letter" style="margin-left: auto">R</span>
+    </button>
+  </div>
 </mat-toolbar>
 <mat-drawer-container class="drawer" autosize>
   <mat-drawer
@@ -63,133 +71,12 @@
         fxLayoutGap="16px"
         fxLayoutGap.xs="0"
       >
-        <mat-card
-          (mouseenter)="onMouseEnter(video)"
-          (mouseleave)="onMouseLeave(video)"
-          [fxFlex]="!showFiller ? '18.5' : '22.5'"
-          class="card"
-          *ngFor="let video of videos; let i = index"
-          class="mat-elevation-z0"
-          style="padding-top: 0px"
-        >
-          <a target="_blank" [href]="video.videoUrl">
-            <img
-              mat-card-image
-              style="max-height: 202px"
-              [src]="video.thumbnail"
-              [alt]="video.title"
-          /></a>
-
-          <mat-card-content style="margin-top: 16px; background-color: #f9f9f9">
-            <div fxLayout="row">
-              <div fxFlex="18" mat-card-avatar fxLayoutAlign="start">
-                <img
-                  class="card-avatar"
-                  [src]="video.channelThumbnail"
-                  alt="Keep overing to play"
-                />
-              </div>
-              <div fxFlex="82">
-                <a
-                  target="_blank"
-                  [href]="video.videoUrl"
-                  class="title"
-                  [innerHtml]="video.title | safe: 'html'"
-                ></a>
-                <div fxLayout="row">
-                  <mat-card-subtitle fxFlex="100"></mat-card-subtitle>
-                </div>
-                <div fxLayout="row">
-                  <mat-card-subtitle xFlex="100">
-                    <a target="_blank" [href]="video.channelUrl">{{
-                      video.channelTitle
-                    }}</a
-                    ><br />
-                    {{ video.viewCount! | shortNumber }} <span>&bull;</span>
-                    {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
-                  >
-                </div>
-              </div>
-            </div>
-          </mat-card-content>
-          <ng-template [ngIf]="video.showPop">
-            <mat-card class="inner-card mat-elevation-z0" style="padding: 0px">
-              <a target="_blank" [href]="video.videoUrl">
-                <iframe
-                  mat-card-image
-                  [src]="
-                    'https://www.youtube.com/embed/' +
-                      video.videoId +
-                      '?autoplay=1&controls=0&enablejsapi=1&mute=1&autohide=1&showInfo=0'
-                      | safe: 'resourceUrl'
-                  "
-                  style="
-                    width: 100%;
-                    padding: 0px;
-                    margin: 0px;
-                    pointer-events: none;
-                  "
-                  height="252"
-                  frameborder="0"
-                  allowfullscreen
-                  autoplay="1"
-                ></iframe
-              ></a>
-              <mat-card-content style="margin-top: 16px">
-                <div fxLayout="row">
-                  <div fxFlex="18" fxLayoutAlign="center">
-                    <img
-                      class="card-avatar"
-                      [src]="video.channelThumbnail"
-                      [alt]="video.title"
-                    />
-                  </div>
-                  <div fxFlex="82">
-                    <a
-                      target="_blank"
-                      [href]="video.videoUrl"
-                      class="title"
-                      [innerHtml]="video.title | safe: 'html'"
-                    ></a>
-                    <div fxLayout="row">
-                      <mat-card-subtitle fxFlex="100"></mat-card-subtitle>
-                    </div>
-                    <div fxLayout="row">
-                      <mat-card-subtitle xFlex="100">
-                        <a target="_blank" [href]="video.channelUrl">{{
-                          video.channelTitle
-                        }}</a
-                        ><br />
-                        {{ video.viewCount! | shortNumber }}
-                        <span>&bull;</span>
-                        {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
-                      >
-                    </div>
-                  </div>
-                </div>
-              </mat-card-content>
-              <mat-card-actions
-                class="btn-center"
-                style="text-align: center; padding-bottom: 32px"
-              >
-                <a
-                  mat-stroked-button
-                  href="https://www.google.com/"
-                  target="_blank"
-                  style="width: 40%"
-                  >Watch later</a
-                >
-                <a
-                  style="width: 40%"
-                  mat-stroked-button
-                  href="https://www.google.com/"
-                  target="_blank"
-                  >Add to queue</a
-                >
-              </mat-card-actions>
-            </mat-card>
-          </ng-template>
-        </mat-card>
+        <ng-container *ngFor="let video of videos; let i = index">
+          <app-video
+            [fxFlex]="!showFiller ? '18.5' : '22.5'"
+            [video]="video"
+          ></app-video>
+        </ng-container>
       </div>
     </ng-container>
   </div>

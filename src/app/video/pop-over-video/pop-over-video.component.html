@@ -1,0 +1,47 @@
+<ng-template [ngIf]="video && video.showPop">
+  <mat-card class="inner-card mat-elevation-z0" style="padding: 0px">
+    <a target="_blank" [href]="video.videoUrl">
+      <app-player
+        [duration]="video.duration"
+        [videoId]="video.videoId"
+      ></app-player>
+    </a>
+    <mat-card-content style="margin-top: 16px">
+      <div fxLayout="row">
+        <div fxFlex="18" fxLayoutAlign="center">
+          <img
+            class="card-avatar"
+            [src]="video.channelThumbnail"
+            [alt]="video.title"
+          />
+        </div>
+        <div fxFlex="82">
+          <a
+            target="_blank"
+            [href]="video.videoUrl"
+            class="title"
+            [innerHtml]="video.title | safe: 'html'"
+          ></a>
+          <div fxLayout="row">
+            <mat-card-subtitle fxFlex="100"></mat-card-subtitle>
+          </div>
+          <div fxLayout="row">
+            <mat-card-subtitle xFlex="100">
+              <a target="_blank" [href]="video.channelUrl">{{
+                video.channelTitle
+              }}</a
+              ><br />
+              {{ video.viewCount! | shortNumber }}
+              <span>&bull;</span>
+              {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
+            >
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions class="btn-center">
+      <a mat-stroked-button href="3" style="width: 40%">Watch later</a>
+      <a style="width: 40%" mat-stroked-button href="#">Add to queue</a>
+    </mat-card-actions>
+  </mat-card>
+</ng-template>

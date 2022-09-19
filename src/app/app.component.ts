@@ -12,6 +12,7 @@ import { SearchService } from './search.service';
 })
 export class AppComponent implements OnInit {
   constructor(private searchService: SearchService) {}
+  PBCounter: number = 0;
   showFiller: boolean = true;
   drawer: boolean = true;
   title = 'youtube';
@@ -33,6 +34,9 @@ export class AppComponent implements OnInit {
     console.log(
       `https://www.googleapis.com/youtube/v3/search?q=&key=AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE&part=snippet&type=video&type=channel&maxResults=16`
     );
+    setInterval(() => {
+      this.PBCounter += 1;
+    }, 1000);
   }
 
   private _filter(value: string): string[] {

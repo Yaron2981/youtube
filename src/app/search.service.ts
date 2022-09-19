@@ -27,16 +27,19 @@ export class SearchService {
   constructor(private http: HttpClient) {}
   videoId$: Observable<boolean> = of(false);
 
-  source$: Observable<Video[]> = this.ls.isValid(this.API_URL)
+  source$: Observable<Video[]> = this.ls.isValid(this.SEARCH_PREFIX)
     ? of(this.ls.getData(this.SEARCH_PREFIX))
     : this.getVideos().pipe(
         mergeMap((res: any) =>
           forkJoin([this.getChannels(res), this.getVideoStatistics(res)]).pipe(
             map((r: any) => {
               return res.map((re: any) => {
+                console.log(r);
+
                 return {
                   ...re,
-                  viewCount: r[1][re.videoId],
+                  viewCount: r[1][re.videoId].viewCount,
+                  duration: r[1][re.videoId].duration,
                   channelThumbnail: r[0][re.channelId],
                 };
               });
@@ -88,28 +91,33 @@ export class SearchService {
   }
   getVideoStatistics(res: any): Observable<any> {
     const videoIds = [...new Set(res.map((r: any) => r.videoId))].join(',');
-    const url = `${this.API_STATISTIC_URL}?id=${videoIds}&key=${this.API_TOKEN}&part=statistics`;
+    const url = `${this.API_STATISTIC_URL}?id=${videoIds}&key=${this.API_TOKEN}&part=statistics,contentDetails`;
+    console.log(url);
     return this.http.get(url).pipe(
       map((response: any) => {
         const statistics: any = {};
         res.forEach((r: any) => {
-          statistics[r.videoId] = response.items.find(
+          const videoById = response.items.find(
             (re: any) => r.videoId === re.id
-          ).statistics.viewCount;
+          );
+          //convert youtube duration to seconds
+          const duration = videoById.contentDetails.duration
+            .match(/PT(?:(\d*)H)?(?:(\d*)M)?(?:(\d*)S)?/)
+            .slice(1)
+            .map((v: []) => (!v ? 0 : v))
+            .reverse()
+            .reduce(
+              (acc: number, v: number, k: number) => (acc += v * 60 ** k),
+              0
+            );
+          statistics[r.videoId] = {
+            viewCount: videoById.statistics.viewCount,
+            duration: duration,
+          };
         });
         return statistics;
       }),
       shareReplay(1)
-    );
-  }
-
-  updateShowPop(videoId: string, status: boolean) {
-    console.log('update:' + videoId);
-    return this.source$.pipe(
-      map((video: any) => {
-        video.showPop = video.videoId === videoId ? status : false;
-        return video;
-      })
     );
   }
 }

@@ -19,9 +19,25 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { SafePipe } from './safe.pipe';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { ShortNumberPipe } from './pipes/short-number.pipe';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { VideoComponent } from './video/video.component';
+import { PlayerComponent } from './video/pop-over-video/player/player.component';
+import { PopOverVideoComponent } from './video/pop-over-video/pop-over-video.component';
+import { TemplateComponent } from './template/template.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
-  declarations: [AppComponent, SafePipe, DateAgoPipe, ShortNumberPipe],
+  declarations: [
+    AppComponent,
+    SafePipe,
+    DateAgoPipe,
+    ShortNumberPipe,
+    VideoComponent,
+    PlayerComponent,
+    PopOverVideoComponent,
+    TemplateComponent,
+    HomeComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -38,6 +54,7 @@ import { ShortNumberPipe } from './pipes/short-number.pipe';
     MatCardModule,
     FlexLayoutModule,
     MatButtonModule,
+    MatProgressBarModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

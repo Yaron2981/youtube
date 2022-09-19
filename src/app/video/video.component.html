@@ -1,0 +1,50 @@
+<mat-card
+  *ngIf="video"
+  (mouseenter)="onMouseEnter(video)"
+  (mouseleave)="onMouseLeave(video)"
+  class="card"
+  class="mat-elevation-z0"
+  style="padding-top: 0px"
+>
+  <a target="_blank" [href]="video.videoUrl">
+    <img
+      mat-card-image
+      style="max-height: 202px"
+      [src]="video.thumbnail"
+      [alt]="video.title"
+  /></a>
+
+  <mat-card-content style="margin-top: 16px; background-color: #f9f9f9">
+    <div fxLayout="row">
+      <div fxFlex="18" mat-card-avatar fxLayoutAlign="start">
+        <img
+          class="card-avatar"
+          [src]="video.channelThumbnail"
+          alt="Keep overing to play"
+        />
+      </div>
+      <div fxFlex="82">
+        <a
+          target="_blank"
+          [href]="video.videoUrl"
+          class="title"
+          [innerHtml]="video.title | safe: 'html'"
+        ></a>
+        <div fxLayout="row">
+          <mat-card-subtitle fxFlex="100"></mat-card-subtitle>
+        </div>
+        <div fxLayout="row">
+          <mat-card-subtitle xFlex="100">
+            <a target="_blank" [href]="video.channelUrl">{{
+              video.channelTitle
+            }}</a
+            ><br />
+            {{ video.viewCount! | shortNumber }} <span>&bull;</span>
+            {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
+          >
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+  <app-pop-over-video [video]="video"></app-pop-over-video>
+</mat-card>

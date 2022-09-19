@@ -8,9 +8,10 @@ export interface Video {
   publishedAt: Date;
   description: string;
   thumbnail: string;
-  channelThumbnail?: string;
-  showPop?: boolean;
-  channelName?: string;
-  viewCount?: number;
+  channelThumbnail: string;
+  showPop: boolean;
+  channelName: string;
+  viewCount: number;
+  duration: number;
 }
 //https://blog.logrocket.com/build-a-youtube-video-search-app-with-angular-and-rxjs/
