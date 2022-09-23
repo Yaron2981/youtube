@@ -1,14 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { map, shareReplay, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  last,
+  map,
+  shareReplay,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators';
 import {
   Observable,
   mergeMap,
   of,
-  combineLatest,
   forkJoin,
-  ConnectableObservable,
+  BehaviorSubject,
+  Subject,
 } from 'rxjs';
 import { Video } from './search.interface';
 import { LocalStore } from './local-store';
@@ -26,32 +34,54 @@ export class SearchService {
   private SEARCH_PREFIX = 'q:';
   constructor(private http: HttpClient) {}
   videoId$: Observable<boolean> = of(false);
+  qcid = new BehaviorSubject<{
+    q: string;
+    cid: number;
+  }>({
+    q: '',
+    cid: 0,
+  });
+  qcid$ = this.qcid.asObservable();
+  // source$: Observable<Video[]> =
+  categoryIdChanged(categoryId: number) {
+    console.log({ q: '', cid: categoryId });
+    this.qcid.next({ q: '', cid: categoryId });
+  }
+  getSource() {
+    return this.qcid$.pipe(
+      // distinctUntilChanged(),
+      switchMap((qcid) =>
+        this.ls.isValid(qcid.q + qcid.cid)
+          ? of(this.ls.getData(qcid.q + qcid.cid))
+          : this.getVideos(qcid.q, qcid.cid).pipe(
+              mergeMap((res: any) =>
+                forkJoin([
+                  this.getChannels(res),
+                  this.getVideoStatistics(res),
+                ]).pipe(
+                  map((r: any) => {
+                    return res.map((re: any) => {
+                      console.log(r);
 
-  source$: Observable<Video[]> = this.ls.isValid(this.SEARCH_PREFIX)
-    ? of(this.ls.getData(this.SEARCH_PREFIX))
-    : this.getVideos().pipe(
-        mergeMap((res: any) =>
-          forkJoin([this.getChannels(res), this.getVideoStatistics(res)]).pipe(
-            map((r: any) => {
-              return res.map((re: any) => {
-                console.log(r);
-
-                return {
-                  ...re,
-                  viewCount: r[1][re.videoId].viewCount,
-                  duration: r[1][re.videoId].duration,
-                  channelThumbnail: r[0][re.channelId],
-                };
-              });
-            }),
-            tap((data: any) => this.ls.setData(this.SEARCH_PREFIX, data))
-          )
-        )
-      );
-
-  getVideos(query: string = ''): Observable<any> {
-    const url = `${this.API_URL}?q=${query}&key=${this.API_TOKEN}&part=snippet&type=video&type=channel&maxResults=16`;
-    console.log(url);
+                      return {
+                        ...re,
+                        viewCount: r[1][re.videoId].viewCount,
+                        duration: r[1][re.videoId].duration,
+                        channelThumbnail: r[0][re.channelId],
+                      };
+                    });
+                  }),
+                  tap((data: any) => this.ls.setData(qcid.q + qcid.cid, data))
+                )
+              )
+            )
+      )
+    );
+  }
+  getVideos(query: string, categoryId: number): Observable<any> {
+    const affix =
+      categoryId > 0 ? `videoCategoryId=${categoryId}` : `q=${query}`;
+    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&type=video&maxResults=16`;
     return this.http.get(url).pipe(
       map((response: any) =>
         response.items.map((item: any) => {

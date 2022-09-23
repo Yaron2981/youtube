@@ -1,0 +1,21 @@
+:host::ng-deep .mat-chip-list-wrapper {
+  flex-wrap: inherit;
+}
+:host::ng-deep .mat-standard-chip {
+  margin: 12px !important;
+  padding: 1rem !important;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.categories {
+  position: fixed;
+  top: 4rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: white;
+  overflow: hidden;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}

@@ -1,10 +1,10 @@
 <mat-card
   *ngIf="video"
-  (mouseenter)="onMouseEnter(video)"
-  (mouseleave)="onMouseLeave(video)"
   class="card"
   class="mat-elevation-z0"
   style="padding-top: 0px"
+  (mouseenter)="onMouseEnter(video)"
+  (mouseleave)="onMouseLeave(video)"
 >
   <a target="_blank" [href]="video.videoUrl">
     <img
@@ -35,9 +35,11 @@
         </div>
         <div fxLayout="row">
           <mat-card-subtitle xFlex="100">
-            <a target="_blank" [href]="video.channelUrl">{{
-              video.channelTitle
-            }}</a
+            <a
+              target="_blank"
+              class="channel-title"
+              [href]="video.channelUrl"
+              >{{ video.channelTitle }}</a
             ><br />
             {{ video.viewCount! | shortNumber }} <span>&bull;</span>
             {{ video.publishedAt! | dateAgo }}</mat-card-subtitle

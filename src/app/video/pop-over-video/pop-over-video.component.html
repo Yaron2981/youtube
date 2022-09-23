@@ -22,14 +22,14 @@
             class="title"
             [innerHtml]="video.title | safe: 'html'"
           ></a>
-          <div fxLayout="row">
-            <mat-card-subtitle fxFlex="100"></mat-card-subtitle>
-          </div>
+
           <div fxLayout="row">
             <mat-card-subtitle xFlex="100">
-              <a target="_blank" [href]="video.channelUrl">{{
-                video.channelTitle
-              }}</a
+              <a
+                target="_blank"
+                class="channel-title"
+                [href]="video.channelUrl"
+                >{{ video.channelTitle }}</a
               ><br />
               {{ video.viewCount! | shortNumber }}
               <span>&bull;</span>

@@ -20,11 +20,14 @@ import { SafePipe } from './safe.pipe';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { ShortNumberPipe } from './pipes/short-number.pipe';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatChipsModule } from '@angular/material/chips';
 import { VideoComponent } from './video/video.component';
 import { PlayerComponent } from './video/pop-over-video/player/player.component';
 import { PopOverVideoComponent } from './video/pop-over-video/pop-over-video.component';
 import { TemplateComponent } from './template/template.component';
 import { HomeComponent } from './home/home.component';
+import { CategoriesComponent } from './categories/categories.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -37,6 +40,7 @@ import { HomeComponent } from './home/home.component';
     PopOverVideoComponent,
     TemplateComponent,
     HomeComponent,
+    CategoriesComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +59,8 @@ import { HomeComponent } from './home/home.component';
     FlexLayoutModule,
     MatButtonModule,
     MatProgressBarModule,
+    MatChipsModule,
+    MatDividerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

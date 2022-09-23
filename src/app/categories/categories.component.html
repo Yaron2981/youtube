@@ -1,0 +1,18 @@
+<div class="categories" *ngIf="$categories | async as categories">
+  <mat-chip-list
+    class="example-chip"
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+  >
+    <mat-chip
+      class="example-box"
+      style="white-space: nowrap"
+      cdkDrag
+      (click)="categoryClicked(category.id); videoCategoryId = category.id"
+      [selected]="videoCategoryId == category.id"
+      *ngFor="let category of categories"
+    >
+      {{ category.title }}
+    </mat-chip>
+  </mat-chip-list>
+</div>

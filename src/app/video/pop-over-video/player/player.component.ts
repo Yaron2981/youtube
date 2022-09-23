@@ -11,14 +11,17 @@ export class PlayerComponent implements OnDestroy {
 
   PBCounter: number = 0;
   interval: ReturnType<typeof setInterval> | undefined;
+  curSec: number = 0;
 
   ngOnDestroy() {
     this.PBCounter = 0;
     clearInterval(this.interval);
   }
   uploadDone() {
+    if (this.interval) clearInterval(this.interval);
     this.interval = setInterval(() => {
       this.PBCounter += 100 / this.duration;
+      if (this.PBCounter >= this.duration) clearInterval(this.interval);
     }, 1000);
   }
 }

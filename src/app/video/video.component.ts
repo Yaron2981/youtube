@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { Video } from '../search.interface';
 
 @Component({
@@ -6,7 +6,7 @@ import { Video } from '../search.interface';
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.scss'],
 })
-export class VideoComponent {
+export class VideoComponent implements OnDestroy {
   @Input('video') video: Video | null = null;
 
   timeout: ReturnType<typeof setTimeout> | undefined;
@@ -19,6 +19,9 @@ export class VideoComponent {
   }
   onMouseLeave(video: Video) {
     video.showPop = false;
+    clearTimeout(this.timeout);
+  }
+  ngOnDestroy() {
     clearTimeout(this.timeout);
   }
 }

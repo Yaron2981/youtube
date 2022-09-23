@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
     'Fifth Avenue',
   ];
   filteredStreets: Observable<string[]> | null = null;
-  videos$: Observable<Video[]> = this.searchService.source$;
+  videos$: Observable<Video[]> = this.searchService.getSource();
   ngOnInit() {
     this.filteredStreets = this.control.valueChanges.pipe(
       startWith(''),
