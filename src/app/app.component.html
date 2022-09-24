@@ -9,22 +9,21 @@
     </button>
     <span class="logo"></span>
   </div>
-  <div style="flex: 2 1 0">
+  <div style="flex: 1 0">
     <form>
-      <div class="search-con">
+      <div class="search-con" style="padding: 2px">
         <input
           type="text"
           placeholder="Search..."
           [formControl]="control"
           [matAutocomplete]="auto"
+          (focus)="fetchTitles()"
         />
       </div>
       <mat-autocomplete #auto="matAutocomplete">
-        <mat-option
-          *ngFor="let street of filteredStreets | async"
-          [value]="street"
-        >
-          {{ street }}
+        <mat-option *ngFor="let title of titles$ | async" [value]="title">
+          <mat-icon fontSet="material-icons-outlined">search</mat-icon
+          >{{ title }}
         </mat-option>
       </mat-autocomplete>
     </form>

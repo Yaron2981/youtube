@@ -78,10 +78,27 @@ export class SearchService {
       )
     );
   }
+  getVideosTitles(q: string): Observable<any> {
+    const url = `${this.API_URL}?q=${q}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=14&regionCode=il`;
+    return this.http.get(url).pipe(
+      map((response: any) =>
+        response.items.map((item: any) =>
+          item.snippet.title
+            .toLowerCase()
+            .replace(/[\W_]+/gu, ' ')
+            .split(' ')
+            .slice(0, 3)
+            .join(' ')
+        )
+      ),
+      tap((res) => this.ls.setData('search', res)),
+      shareReplay(1)
+    );
+  }
   getVideos(query: string, categoryId: number): Observable<any> {
     const affix =
       categoryId > 0 ? `videoCategoryId=${categoryId}` : `q=${query}`;
-    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&type=video&maxResults=16`;
+    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=16`;
     return this.http.get(url).pipe(
       map((response: any) =>
         response.items.map((item: any) => {
