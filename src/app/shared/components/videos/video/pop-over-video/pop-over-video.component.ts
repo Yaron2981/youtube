@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Video } from 'src/app/search.interface';
 
 @Component({
@@ -6,10 +6,6 @@ import { Video } from 'src/app/search.interface';
   templateUrl: './pop-over-video.component.html',
   styleUrls: ['./pop-over-video.component.scss'],
 })
-export class PopOverVideoComponent implements OnInit {
+export class PopOverVideoComponent {
   @Input('video') video: Video | null = null;
-
-  constructor() {}
-
-  ngOnInit(): void {}
 }

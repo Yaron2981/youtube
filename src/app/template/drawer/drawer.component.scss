@@ -1,0 +1,21 @@
+.drawer {
+  width: 100%;
+  height: 100vh;
+}
+
+.sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidenav {
+  padding: 20px;
+  padding-top: 4rem;
+  min-width: 252px;
+  border-right: none;
+}
+.mat-drawer {
+  padding-left: 0px;
+}

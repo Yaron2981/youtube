@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CategoriesService } from './categories.service';
 import { SearchService } from '../shared/services/search.service';
 
@@ -6,6 +6,7 @@ import { SearchService } from '../shared/services/search.service';
   selector: 'app-categories',
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoriesComponent {
   videoCategoryId: number = 0;
@@ -15,8 +16,6 @@ export class CategoriesComponent {
   ) {}
   $categories = this.categoriesService.categories$;
   categoryClicked(categoryId: number) {
-    // this.searchService.qcid.next({ q: '', cid: categoryId });
-    console.log('categoryId', categoryId);
     this.searchService.categoryIdChanged(categoryId);
   }
 }

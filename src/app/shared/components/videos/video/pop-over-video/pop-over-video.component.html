@@ -1,12 +1,12 @@
 <ng-template class="pop-over-video" [ngIf]="video && video.showPop">
-  <mat-card class="inner-card mat-elevation-z0" style="padding: 0px">
+  <mat-card class="inner-card mat-elevation-z0">
     <a target="_blank" [href]="video.videoUrl">
       <app-player
         [duration]="video.duration"
         [videoId]="video.videoId"
       ></app-player>
     </a>
-    <mat-card-content style="margin-top: 16px">
+    <mat-card-content>
       <div fxLayout="row">
         <div fxFlex="18" fxLayoutAlign="center">
           <img
@@ -23,7 +23,7 @@
             [innerHtml]="video.title | safe: 'html'"
           ></a>
 
-          <div fxLayout="row">
+          <div fxLayout="row" class="mt-1rem">
             <mat-card-subtitle xFlex="100">
               <a
                 target="_blank"
@@ -40,14 +40,19 @@
       </div>
     </mat-card-content>
     <div
-      class="btn-center"
+      class="popover-buttons"
       fxFlexAlign="baseline"
       fxLayout="row"
-      style="margin: 10px"
       fxLayoutGap="16"
     >
-      <a fxFlex="50" mat-stroked-button href="3">Watch later</a>
-      <a fxFlex="50" mat-stroked-button href="#">Add to queue</a>
+      <a fxFlex="50" mat-stroked-button href="#"
+        ><mat-icon fontSet="material-icons-outlined">watch_later</mat-icon>
+        &nbsp; Watch later</a
+      >
+      <a fxFlex="50" mat-stroked-button href="#"
+        ><mat-icon fontSet="material-icons-outlined">add_to_queue</mat-icon>
+        &nbsp; Add to queue</a
+      >
     </div>
   </mat-card>
 </ng-template>

@@ -2,10 +2,36 @@
   position: relative;
   top: -2px;
 }
-.mat-card-actions {
-  text-align: center;
-  padding-bottom: 32px;
-}
+
 a.channel-title:hover {
   color: #030303;
+}
+.card-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50%;
+}
+.mat-card-image:first-child {
+  margin-top: 0px !important;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 16px;
+}
+.mt-1rem {
+  margin-top: 1rem;
+}
+.mat-card-subtitle {
+  font-weight: 400;
+}
+.mat-elevation-z0 {
+  cursor: pointer;
+}
+.mat-card-image {
+  width: 100% !important;
+  margin: 0px !important;
+}
+.mat-card {
+  padding: 0px !important;
 }

@@ -4,3 +4,39 @@ a.channel-title:hover {
 .pop-over-video {
   z-index: 10;
 }
+.mat-card {
+  padding: 0px;
+  border-radius: 0px;
+}
+.popover-buttons {
+  margin: 16px !important;
+}
+.mat-card-content {
+  margin-top: 1rem;
+}
+.inner-card {
+  position: absolute !important;
+  top: 0;
+  width: 130%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  margin: 0px;
+}
+.card-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50%;
+}
+.title {
+  font-weight: 500;
+  font-size: 16px;
+}
+.mt-1rem {
+  margin-top: 1rem;
+}
+.popover-buttons a {
+  background-color: rgba(0, 0, 0, 0.05);
+  text-transform: uppercase;
+}
