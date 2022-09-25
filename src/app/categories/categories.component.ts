@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { CategoriesService } from '../categories.service';
-import { SearchService } from '../search.service';
+import { Component } from '@angular/core';
+import { CategoriesService } from './categories.service';
+import { SearchService } from '../shared/services/search.service';
 
 @Component({
   selector: 'app-categories',

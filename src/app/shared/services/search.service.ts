@@ -1,25 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import {
-  distinctUntilChanged,
-  last,
-  map,
-  shareReplay,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators';
-import {
-  Observable,
-  mergeMap,
-  of,
-  forkJoin,
-  BehaviorSubject,
-  Subject,
-} from 'rxjs';
-import { Video } from './search.interface';
-import { LocalStore } from './local-store';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { Observable, mergeMap, of, forkJoin, BehaviorSubject } from 'rxjs';
+import { LocalService } from './local.service';
 
 @Injectable({
   providedIn: 'root',
@@ -30,9 +14,7 @@ export class SearchService {
     'https://youtube.googleapis.com/youtube/v3/channels';
   private API_STATISTIC_URL = 'https://www.googleapis.com/youtube/v3/videos';
   private API_TOKEN = 'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE';
-  private ls = new LocalStore();
-  private SEARCH_PREFIX = 'q:';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private ls: LocalService) {}
   videoId$: Observable<boolean> = of(false);
   qcid = new BehaviorSubject<{
     q: string;
@@ -51,7 +33,7 @@ export class SearchService {
     return this.qcid$.pipe(
       // distinctUntilChanged(),
       switchMap((qcid) =>
-        this.ls.isValid(qcid.q + qcid.cid)
+        this.ls.isExsist(qcid.q + qcid.cid)
           ? of(this.ls.getData(qcid.q + qcid.cid))
           : this.getVideos(qcid.q, qcid.cid).pipe(
               mergeMap((res: any) =>

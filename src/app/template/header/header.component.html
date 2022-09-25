@@ -1,0 +1,41 @@
+<mat-toolbar>
+  <div style="flex: 1 1 0">
+    <button
+      mat-icon-button
+      class="menu-icon"
+      (click)="this.miniSideTriggerEvent.emit((miniSidebar = !miniSidebar))"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="logo"></span>
+  </div>
+  <div style="flex: 1 0">
+    <form>
+      <div class="search-con" style="padding: 2px">
+        <input
+          type="text"
+          placeholder="Search..."
+          [formControl]="control"
+          [matAutocomplete]="auto"
+          (focus)="this.fetchtitles$.next()"
+        />
+      </div>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let title of titles$ | async" [value]="title">
+          <mat-icon fontSet="material-icons-outlined">search</mat-icon
+          >{{ title }}
+        </mat-option>
+      </mat-autocomplete>
+    </form>
+  </div>
+
+  <div style="flex: 1 1 0; text-align: right">
+    <button
+      mat-icon-button
+      class="icon circle-letter"
+      aria-label="Example icon-button with share icon"
+    >
+      <span class="circle-letter" style="margin-left: auto">R</span>
+    </button>
+  </div>
+</mat-toolbar>

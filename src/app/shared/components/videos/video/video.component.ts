@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy } from '@angular/core';
-import { Video } from '../search.interface';
+import { Video } from '../../../../search.interface';
 
 @Component({
   selector: 'app-video',

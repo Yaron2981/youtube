@@ -3,13 +3,11 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-template',
   templateUrl: './template.component.html',
-  styleUrls: ['./template.component.scss']
+  styleUrls: ['./template.component.scss'],
 })
-export class TemplateComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
+export class TemplateComponent {
+  miniSidebar: boolean = true;
+  miniSideTriggerEvent(trigger: boolean) {
+    this.miniSidebar = !trigger;
   }
-
 }

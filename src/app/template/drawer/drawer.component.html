@@ -1,0 +1,25 @@
+<mat-drawer-container class="drawer" autosize>
+  <mat-drawer
+    #drawer
+    class="sidenav"
+    mode="side"
+    opened
+    [ngClass]="{ 'mini-drawer': !miniSidebar }"
+  >
+    <mat-list>
+      <mat-list-item>
+        <mat-icon mat-list-icon>home</mat-icon>
+        <div mat-line *ngIf="miniSidebar">Home</div>
+      </mat-list-item>
+      <mat-list-item>
+        <mat-icon mat-list-icon fontSet="material-icons-outlined"
+          >explore</mat-icon
+        >
+        <div mat-line *ngIf="miniSidebar">Explore</div>
+      </mat-list-item>
+
+      <mat-divider></mat-divider>
+    </mat-list>
+  </mat-drawer>
+  <router-outlet></router-outlet>
+</mat-drawer-container>

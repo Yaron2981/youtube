@@ -16,18 +16,22 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { SafePipe } from './safe.pipe';
+import { SafePipe } from './shared/pipes/safe.pipe';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { ShortNumberPipe } from './pipes/short-number.pipe';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
-import { VideoComponent } from './video/video.component';
-import { PlayerComponent } from './video/pop-over-video/player/player.component';
-import { PopOverVideoComponent } from './video/pop-over-video/pop-over-video.component';
+import { VideoComponent } from './shared/components/videos/video/video.component';
+import { PlayerComponent } from './shared/components/videos/video/pop-over-video/player/player.component';
+import { PopOverVideoComponent } from './shared/components/videos/video/pop-over-video/pop-over-video.component';
 import { TemplateComponent } from './template/template.component';
 import { HomeComponent } from './home/home.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { VideosComponent } from './shared/components/videos/videos.component';
+import { HeaderComponent } from './template/header/header.component';
+import { FotterComponent } from './template/fotter/fotter.component';
+import { DrawerComponent } from './template/drawer/drawer.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +45,10 @@ import { MatDividerModule } from '@angular/material/divider';
     TemplateComponent,
     HomeComponent,
     CategoriesComponent,
+    VideosComponent,
+    HeaderComponent,
+    FotterComponent,
+    DrawerComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { ComponentFactoryResolver, Injectable } from '@angular/core';
-import { filter, map, Observable, of, shareReplay, tap } from 'rxjs';
-import { LocalStore } from './local-store';
+import { Injectable } from '@angular/core';
+import { map, Observable, of, shareReplay, tap } from 'rxjs';
+import { LocalService } from '../shared/services/local.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,9 +9,8 @@ import { LocalStore } from './local-store';
 export class CategoriesService {
   url =
     'https://www.googleapis.com/youtube/v3/videoCategories?key=AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE&regionCode=il';
-  private ls = new LocalStore();
   ignoredCategories = [18, 21, 28, 30, 31, 33, 38, 39, 40, 41];
-  categories$ = this.ls.isValid('categories')
+  categories$ = this.ls.isExsist('categories')
     ? of(this.ls.getData('categories'))
     : this.getCategories();
 
@@ -29,5 +28,5 @@ export class CategoriesService {
       tap((res: any) => this.ls.setData('categories', res))
     );
   }
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private ls: LocalService) {}
 }
