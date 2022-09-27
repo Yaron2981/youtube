@@ -20,7 +20,10 @@
           (focus)="this.fetchtitles$.next()"
         />
       </div>
-      <mat-autocomplete #auto="matAutocomplete">
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="navToLink($event)"
+      >
         <mat-option *ngFor="let title of titles$ | async" [value]="title">
           <mat-icon fontSet="material-icons-outlined">search</mat-icon
           >{{ title }}

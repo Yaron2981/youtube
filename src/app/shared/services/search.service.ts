@@ -26,8 +26,10 @@ export class SearchService {
   qcid$ = this.qcid.asObservable();
   // source$: Observable<Video[]> =
   categoryIdChanged(categoryId: number) {
-    console.log({ q: '', cid: categoryId });
     this.qcid.next({ q: '', cid: categoryId });
+  }
+  getVideosByQuery(q: string) {
+    this.qcid.next({ q: q, cid: 0 });
   }
   getSource() {
     return this.qcid$.pipe(
@@ -43,8 +45,6 @@ export class SearchService {
                 ]).pipe(
                   map((r: any) => {
                     return res.map((re: any) => {
-                      console.log(r);
-
                       return {
                         ...re,
                         viewCount: r[1][re.videoId].viewCount,

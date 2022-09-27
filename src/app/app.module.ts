@@ -32,6 +32,7 @@ import { VideosComponent } from './shared/components/videos/videos.component';
 import { HeaderComponent } from './template/header/header.component';
 import { FotterComponent } from './template/fotter/fotter.component';
 import { DrawerComponent } from './template/drawer/drawer.component';
+import { ResultsComponent } from './results/results.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { DrawerComponent } from './template/drawer/drawer.component';
     HeaderComponent,
     FotterComponent,
     DrawerComponent,
+    ResultsComponent,
   ],
   imports: [
     BrowserModule,
