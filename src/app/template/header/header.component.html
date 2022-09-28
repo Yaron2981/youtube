@@ -11,7 +11,9 @@
   </div>
   <div style="flex: 1 0">
     <form>
-      <div class="search-con" style="padding: 2px">
+      <div class="search-con" style="padding: 2px; position: relative">
+        <mat-icon fontSet="material-icons-outlined">search</mat-icon>
+
         <input
           type="text"
           placeholder="Search..."
@@ -20,6 +22,9 @@
           (focus)="this.fetchtitles$.next()"
         />
       </div>
+      <button mat-button matSuffix mat-stroked-button aria-label="search">
+        <mat-icon>search</mat-icon>
+      </button>
       <mat-autocomplete
         #auto="matAutocomplete"
         (optionSelected)="navToLink($event)"

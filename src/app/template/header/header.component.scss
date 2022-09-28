@@ -6,6 +6,17 @@
   padding: 10px;
   outline: none;
 }
+.mat-option {
+  height: 30px;
+  padding: 0 10px;
+}
+
+.mat-option .mat-icon {
+  margin-right: 10px;
+}
+::ng-deep .cdk-overlay-pane {
+  margin-top: 5px !important;
+}
 .mini-drawer {
   min-width: auto;
 }
