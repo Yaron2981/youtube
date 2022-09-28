@@ -33,6 +33,8 @@ import { HeaderComponent } from './template/header/header.component';
 import { FotterComponent } from './template/fotter/fotter.component';
 import { DrawerComponent } from './template/drawer/drawer.component';
 import { ResultsComponent } from './results/results.component';
+import { WatchComponent } from './watch/watch.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,7 @@ import { ResultsComponent } from './results/results.component';
     FotterComponent,
     DrawerComponent,
     ResultsComponent,
+    WatchComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,6 +74,7 @@ import { ResultsComponent } from './results/results.component';
     MatProgressBarModule,
     MatChipsModule,
     MatDividerModule,
+    CommonModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

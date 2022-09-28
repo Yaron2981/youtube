@@ -9,12 +9,16 @@
         | safe: 'resourceUrl'
     "
     style="width: 100%; padding: 0px; margin: 0px; pointer-events: none"
-    height="248"
+    [height]="posType == 'vertical' ? 240 : 202"
     frameborder="0"
     allowfullscreen
     autoplay="1"
   ></iframe>
   <div class="pb-counter-con">
-    <mat-progress-bar [value]="PBCounter" color="warn"></mat-progress-bar>
+    <mat-progress-bar
+      class="progress-bar"
+      [value]="PBCounter"
+      color="warn"
+    ></mat-progress-bar>
   </div>
 </ng-container>

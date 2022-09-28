@@ -16,6 +16,7 @@ export class PlayerComponent implements OnDestroy {
   constructor(private ref: ChangeDetectorRef) {}
   @Input('videoId') videoId: string | null = null;
   @Input('duration') duration: number = 1;
+  @Input('posType') posType = 'vertical';
 
   PBCounter: number = 0;
   interval: ReturnType<typeof setInterval> | undefined;

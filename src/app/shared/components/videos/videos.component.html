@@ -1,5 +1,6 @@
 <ng-container *ngIf="videos$ | async as videos">
   <div
+    class="items"
     fxLayout="row wrap"
     fxLayoutAlign="center"
     fxLayoutGap="16px"
@@ -8,7 +9,8 @@
   >
     <ng-container *ngFor="let video of videos; let i = index">
       <app-video
-        [fxFlex]="miniSidebar ? '18.5' : '22.5'"
+        [posType]="posType"
+        [fxFlex]="videoFlexSize"
         [video]="video"
       ></app-video>
     </ng-container>

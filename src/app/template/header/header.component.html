@@ -10,7 +10,7 @@
     <span class="logo"></span>
   </div>
   <div style="flex: 1 0">
-    <form>
+    <form onSubmit="return false;">
       <div class="search-con" style="padding: 2px; position: relative">
         <mat-icon fontSet="material-icons-outlined">search</mat-icon>
 
@@ -21,17 +21,41 @@
           [matAutocomplete]="auto"
           (focus)="this.fetchtitles$.next()"
         />
+        <mat-icon
+          style="position: absolute; right: 10px"
+          (click)="this.control.setValue('')"
+          *ngIf="this.control.value.length > 0"
+          fontSet="material-icons-outlined"
+          >close</mat-icon
+        >
       </div>
-      <button mat-button matSuffix mat-stroked-button aria-label="search">
+      <button
+        (click)="buttonToLink($event)"
+        mat-button
+        MatPrefix
+        mat-stroked-button
+        aria-label="search"
+      >
         <mat-icon>search</mat-icon>
       </button>
       <mat-autocomplete
+        style="margin-left: -26px"
         #auto="matAutocomplete"
-        (optionSelected)="navToLink($event)"
+        (optionSelected)="eventToLink($event)"
       >
         <mat-option *ngFor="let title of titles$ | async" [value]="title">
           <mat-icon fontSet="material-icons-outlined">search</mat-icon
           >{{ title }}
+        </mat-option>
+        <mat-option
+          style="
+            font-style: italic;
+            margin-top: 10px;
+            text-align: right;
+            pointer-events: none;
+          "
+        >
+          <mat-card-subtitle> Report search predictions</mat-card-subtitle>
         </mat-option>
       </mat-autocomplete>
     </form>
@@ -43,7 +67,7 @@
       class="icon circle-letter"
       aria-label="Example icon-button with share icon"
     >
-      <span class="circle-letter" style="margin-left: auto">R</span>
+      <span class="circle-letter"><div>R</div></span>
     </button>
   </div>
 </mat-toolbar>

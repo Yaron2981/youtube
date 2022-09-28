@@ -1,0 +1,8 @@
+::ng-deep .mat-drawer-content {
+  overflow: scroll;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+::ng-deep .mat-drawer-content::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}

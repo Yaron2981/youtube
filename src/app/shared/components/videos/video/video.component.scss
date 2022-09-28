@@ -5,11 +5,17 @@
 
 a.channel-title:hover {
   color: #030303;
+  text-align: left;
 }
 .card-avatar {
   width: 40px !important;
   height: 40px !important;
   border-radius: 50%;
+}
+.card-avatar-mini {
+  border-radius: 50%;
+  width: 26px !important;
+  height: 26px !important;
 }
 .mat-card-image:first-child {
   margin-top: 0px !important;

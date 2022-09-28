@@ -1,6 +1,9 @@
 :host::ng-deep .mat-chip-list-wrapper {
   flex-wrap: inherit;
 }
+.mat-chip {
+  cursor: pointer;
+}
 :host::ng-deep .mat-standard-chip {
   margin: 12px !important;
   padding: 1rem !important;

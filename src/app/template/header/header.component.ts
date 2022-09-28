@@ -50,10 +50,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  navToLink(event: MatAutocompleteSelectedEvent) {
+  eventToLink(event: MatAutocompleteSelectedEvent) {
     this.router.navigate(['/results'], {
       queryParams: { search_query: event.option.value },
     });
+  }
+  buttonToLink(event: Event) {
+    event.stopPropagation();
+    if (this.control.value && this.control.value.length > 0) {
+      this.router.navigate(['/results'], {
+        queryParams: { search_query: this.control.value },
+      });
+    }
   }
   ngOnDestroy(): void {
     this.routerEventSubscription.unsubscribe();

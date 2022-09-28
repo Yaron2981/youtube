@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import {
+  distinct,
+  filter,
+  map,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 import { Observable, mergeMap, of, forkJoin, BehaviorSubject } from 'rxjs';
 import { LocalService } from './local.service';
 
@@ -13,7 +20,8 @@ export class SearchService {
   private API_CHANNEL_URL =
     'https://youtube.googleapis.com/youtube/v3/channels';
   private API_STATISTIC_URL = 'https://www.googleapis.com/youtube/v3/videos';
-  private API_TOKEN = 'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE';
+  // private API_TOKEN = 'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE';
+  private API_TOKEN = 'AIzaSyDzgvf6dJM0EHAjkfdjLIKyvgcMnAXP8uM';
   constructor(private http: HttpClient, private ls: LocalService) {}
   videoId$: Observable<boolean> = of(false);
   qcid = new BehaviorSubject<{
@@ -61,18 +69,20 @@ export class SearchService {
     );
   }
   getVideosTitles(q: string): Observable<any> {
-    const url = `${this.API_URL}?q=${q}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=14&regionCode=il`;
+    const url = `${this.API_URL}?q=${q}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=14&regionCode=il&relevanceLanguage=he`;
     return this.http.get(url).pipe(
       map((response: any) =>
         response.items.map((item: any) =>
           item.snippet.title
             .toLowerCase()
-            .replace(/[\W_]+/gu, ' ')
-            .split(' ')
+            .match(/[\p{L}]+/gu)
             .slice(0, 3)
             .join(' ')
+            .trim()
         )
       ),
+      distinct(),
+      filter((t: string) => t != ''),
       tap((res) => this.ls.setData('search', res)),
       shareReplay(1)
     );
@@ -80,7 +90,7 @@ export class SearchService {
   getVideos(query: string, categoryId: number): Observable<any> {
     const affix =
       categoryId > 0 ? `videoCategoryId=${categoryId}` : `q=${query}`;
-    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=16`;
+    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=16&regionCode=il`;
     return this.http.get(url).pipe(
       map((response: any) =>
         response.items.map((item: any) => {
@@ -95,6 +105,7 @@ export class SearchService {
             description: item.snippet.description,
             thumbnail: item.snippet.thumbnails.medium.url,
             showPop: false,
+            showPlayer: false,
           };
         })
       ),

@@ -1,0 +1,10 @@
+.items {
+  max-height: 100vh;
+  //   overflow-x: hidden;
+  width: 100%;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+.items::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}

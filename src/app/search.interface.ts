@@ -10,6 +10,7 @@ export interface Video {
   thumbnail: string;
   channelThumbnail: string;
   showPop: boolean;
+  showPlayer: boolean;
   channelName: string;
   viewCount: number;
   duration: number;

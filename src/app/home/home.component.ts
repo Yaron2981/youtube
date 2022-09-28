@@ -5,6 +5,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Video } from '../search.interface';
 import { SearchService } from '../shared/services/search.service';
@@ -17,11 +18,18 @@ import { SearchService } from '../shared/services/search.service';
 export class HomeComponent implements OnInit {
   constructor(
     private searchService: SearchService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private router: Router
   ) {}
   @Input('miniSidebar') miniSidebar = false;
   videos$: Observable<Video[]> = of([]);
+
   ngOnInit() {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
+
+    console.log('home');
+    this.searchService.qcid.next({ q: '', cid: 0 });
     this.videos$ = this.searchService.getSource();
     this.ref.detectChanges();
   }

@@ -1,50 +1,150 @@
-<mat-card
-  *ngIf="video"
-  class="card"
-  class="mat-elevation-z0"
-  style="padding-top: 0px"
-  (mouseenter)="onMouseEnter(video)"
-  (mouseleave)="onMouseLeave(video)"
->
-  <a target="_blank" [href]="video.videoUrl">
-    <img
-      mat-card-image
-      style="max-height: 202px"
-      [src]="video.thumbnail"
-      [alt]="video.title"
-  /></a>
-
-  <mat-card-content style="margin-top: 16px; background-color: #f9f9f9">
-    <div fxLayout="row">
-      <div fxFlex="18" mat-card-avatar fxLayoutAlign="start">
-        <img
-          class="card-avatar"
-          [src]="video.channelThumbnail"
-          alt="Keep overing to play"
-        />
-      </div>
-      <div fxFlex="82">
-        <a
-          target="_blank"
-          [href]="video.videoUrl"
-          class="title"
-          [innerHtml]="video.title | safe: 'html'"
-        ></a>
-
-        <div fxLayout="row" class="mt-1rem">
-          <mat-card-subtitle xFlex="100">
-            <a
-              target="_blank"
-              class="channel-title"
-              [href]="video.channelUrl"
-              >{{ video.channelTitle }}</a
-            ><br />
-            {{ video.viewCount! | shortNumber }} <span>&bull;</span>
-            {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
-          >
+<div [ngSwitch]="posType">
+  <ng-template ngSwitchCase="horizontal">
+    <mat-card
+      fxLayout="row"
+      *ngIf="video"
+      class="card"
+      class="mat-elevation-z0"
+      style="padding-top: 0px; background-color: #fafafa"
+      (mouseenter)="onMouseEnter(video)"
+      (mouseleave)="onMouseLeave(video)"
+    >
+      <div fxFlex="30">
+        <div
+          style="
+            background-color: #fafafa;
+            position: relative;
+            margin-right: 16px;
+            max-width: 360px;
+            min-width: 240px;
+            margin-bottom: 0.75rem;
+          "
+        >
+          <a target="_blank" [href]="video.videoUrl">
+            <img
+              mat-card-image
+              style="max-height: 202px"
+              [src]="video.thumbnail"
+              [alt]="video.title"
+            />
+            <ng-container *ngIf="video.showPlayer">
+              <a
+                [@fade]="video.showPop"
+                target="_blank"
+                [href]="video.videoUrl"
+                style="
+                  min-width: 360px;
+                  max-height: 202px;
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  z-index: 99;
+                "
+              >
+                <app-player
+                  [posType]="posType"
+                  [duration]="video.duration"
+                  [videoId]="video.videoId"
+                ></app-player>
+              </a>
+            </ng-container>
+          </a>
         </div>
       </div>
-    </div>
-  </mat-card-content>
-  <app-pop-over-video [video]="video"></app-pop-over-video>
-</mat-card>
+      <div fxFlex="70">
+        <mat-card-content style="margin-top: 16px; background-color: #f9f9f9">
+          <div fxLayout="row">
+            <a
+              fxFlex="100"
+              target="_blank"
+              [href]="video.videoUrl"
+              class="title"
+              [innerHtml]="video.title | safe: 'html'"
+            ></a>
+          </div>
+          <div fxLayout="row">
+            <mat-card-subtitle fxFlex="100">
+              {{ video.viewCount! | shortNumber }} <span>&bull;</span>
+              {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
+            >
+          </div>
+          <div fxLayout="row">
+            <div fxFlex="100" mat-card-avatar fxLayoutAlign="start">
+              <img
+                class="card-avatar-mini"
+                [src]="video.channelThumbnail"
+                alt="Keep overing to play"
+              />
+              <a
+                style="margin-left: 0.75rem"
+                target="_blank"
+                class="channel-title"
+                [href]="video.channelUrl"
+                >{{ video.channelTitle }}</a
+              >
+            </div>
+          </div>
+          <div fxLayout="row">
+            <mat-card-subtitle
+              fxFlex="100"
+              target="_blank"
+              class="title"
+              [innerHtml]="video.description | safe: 'html'"
+            ></mat-card-subtitle>
+          </div>
+        </mat-card-content>
+      </div>
+    </mat-card>
+  </ng-template>
+  <ng-template ngSwitchCase="vertical">
+    <mat-card
+      *ngIf="video"
+      class="card"
+      class="mat-elevation-z0"
+      style="padding-top: 0px"
+      (mouseenter)="onMouseEnter(video)"
+      (mouseleave)="onMouseLeave(video)"
+    >
+      <a target="_blank" [href]="video.videoUrl">
+        <img
+          mat-card-image
+          style="max-height: 202px"
+          [src]="video.thumbnail"
+          [alt]="video.title"
+      /></a>
+
+      <mat-card-content style="margin-top: 16px; background-color: #f9f9f9">
+        <div fxLayout="row">
+          <div fxFlex="18" mat-card-avatar fxLayoutAlign="start">
+            <img
+              class="card-avatar"
+              [src]="video.channelThumbnail"
+              alt="Keep overing to play"
+            />
+          </div>
+          <div fxFlex="82">
+            <a
+              target="_blank"
+              [href]="video.videoUrl"
+              class="title"
+              [innerHtml]="video.title | safe: 'html'"
+            ></a>
+
+            <div fxLayout="row" class="mt-1rem">
+              <mat-card-subtitle xFlex="100">
+                <a
+                  target="_blank"
+                  class="channel-title"
+                  [href]="video.channelUrl"
+                  >{{ video.channelTitle }}</a
+                ><br />
+                {{ video.viewCount! | shortNumber }} <span>&bull;</span>
+                {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
+              >
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <app-pop-over-video [video]="video"></app-pop-over-video> </mat-card
+  ></ng-template>
+</div>

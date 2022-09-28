@@ -1,58 +1,65 @@
-<ng-template class="pop-over-video" [ngIf]="video && video.showPop">
+<div class="pop-over-video" [@fade]="video && video.showPop">
   <mat-card class="inner-card mat-elevation-z0">
-    <a target="_blank" [href]="video.videoUrl">
-      <app-player
-        [duration]="video.duration"
-        [videoId]="video.videoId"
-      ></app-player>
-    </a>
-    <mat-card-content>
-      <div fxLayout="row">
-        <div fxFlex="18" fxLayoutAlign="center">
-          <img
-            class="card-avatar"
-            [src]="video.channelThumbnail"
-            [alt]="video.title"
-          />
-        </div>
-        <div fxFlex="82">
-          <a
-            target="_blank"
-            [href]="video.videoUrl"
-            class="title"
-            [innerHtml]="video.title | safe: 'html'"
-          ></a>
+    <div>
+      <ng-template [ngIf]="video && video.showPlayer">
+        <a target="_blank" [href]="video.videoUrl">
+          <app-player
+            [duration]="video.duration"
+            [videoId]="video.videoId"
+          ></app-player>
+        </a>
+      </ng-template>
+    </div>
 
-          <div fxLayout="row" class="mt-1rem">
-            <mat-card-subtitle xFlex="100">
-              <a
-                target="_blank"
-                class="channel-title"
-                [href]="video.channelUrl"
-                >{{ video.channelTitle }}</a
-              ><br />
-              {{ video.viewCount! | shortNumber }}
-              <span>&bull;</span>
-              {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
-            >
+    <ng-template [ngIf]="video && video.showPop">
+      <mat-card-content>
+        <div fxLayout="row">
+          <div fxFlex="18" fxLayoutAlign="center">
+            <img
+              class="card-avatar"
+              [src]="video.channelThumbnail"
+              [alt]="video.title"
+            />
+          </div>
+          <div fxFlex="82">
+            <a
+              target="_blank"
+              [href]="video.videoUrl"
+              class="title"
+              [innerHtml]="video.title | safe: 'html'"
+            ></a>
+
+            <div fxLayout="row" class="mt-1rem">
+              <mat-card-subtitle xFlex="100">
+                <a
+                  target="_blank"
+                  class="channel-title"
+                  [href]="video.channelUrl"
+                  >{{ video.channelTitle }}</a
+                ><br />
+                {{ video.viewCount! | shortNumber }}
+                <span>&bull;</span>
+                {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
+              >
+            </div>
           </div>
         </div>
+      </mat-card-content>
+      <div
+        class="popover-buttons"
+        fxFlexAlign="baseline"
+        fxLayout="row"
+        fxLayoutGap="16"
+      >
+        <a fxFlex="50" mat-stroked-button href="#"
+          ><mat-icon fontSet="material-icons-outlined">watch_later</mat-icon>
+          &nbsp; Watch later</a
+        >
+        <a fxFlex="50" mat-stroked-button href="#"
+          ><mat-icon fontSet="material-icons-outlined">add_to_queue</mat-icon>
+          &nbsp; Add to queue</a
+        >
       </div>
-    </mat-card-content>
-    <div
-      class="popover-buttons"
-      fxFlexAlign="baseline"
-      fxLayout="row"
-      fxLayoutGap="16"
-    >
-      <a fxFlex="50" mat-stroked-button href="#"
-        ><mat-icon fontSet="material-icons-outlined">watch_later</mat-icon>
-        &nbsp; Watch later</a
-      >
-      <a fxFlex="50" mat-stroked-button href="#"
-        ><mat-icon fontSet="material-icons-outlined">add_to_queue</mat-icon>
-        &nbsp; Add to queue</a
-      >
-    </div>
+    </ng-template>
   </mat-card>
-</ng-template>
+</div>
