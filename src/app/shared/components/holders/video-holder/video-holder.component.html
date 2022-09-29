@@ -1,72 +1,13 @@
-<div [ngSwitch]="posType">
-  <ng-template ngSwitchCase="horizontal">
-    <mat-card
-      fxLayout="row"
-      class="card"
-      class="mat-elevation-z0"
-      style="padding-top: 0px; background-color: #fafafa"
-    >
-      <div fxFlex="30">
-        <div
-          style="
-            background-color: #fafafa;
-            position: relative;
-            margin-right: 16px;
-            max-width: 360px;
-            min-width: 240px;
-            margin-bottom: 0.75rem;
-          "
-        ></div>
-      </div>
-      <div fxFlex="70">
-        <mat-card-content style="margin-top: 16px; background-color: #f9f9f9">
-          <div fxLayout="row">
-            <div fxFlex="100" target="_blank" class="title">hgh</div>
-          </div>
-          <div fxLayout="row">
-            <mat-card-subtitle fxFlex="100">
-              dhdfhdfh <span>&bull;</span> dfhfhdfh</mat-card-subtitle
-            >
-          </div>
-          <div fxLayout="row">
-            <div fxFlex="100" mat-card-avatar fxLayoutAlign="start">
-              <div class="card-avatar-mini" alt="Keep overing to play"></div>
-              <div
-                style="margin-left: 0.75rem"
-                target="_blank"
-                class="channel-title"
-              >
-                sdghdshs
-              </div>
-            </div>
-          </div>
-          <div fxLayout="row">
-            <mat-card-subtitle fxFlex="100" target="_blank" class="title"
-              >sdhsdh</mat-card-subtitle
-            >
-          </div>
-        </mat-card-content>
-      </div>
-    </mat-card>
-  </ng-template>
-  <ng-template ngSwitchCase="vertical">
-    <mat-card class="card" class="mat-elevation-z0" style="padding-top: 0px">
-      <mat-card-content style="margin-top: 16px; background-color: #f9f9f9">
-        <div fxLayout="row">
-          <div fxFlex="18" mat-card-avatar fxLayoutAlign="start"></div>
-          <div fxFlex="82">
-            <div target="_blank" class="title">cjnfjdfj</div>
-
-            <div fxLayout="row" class="mt-1rem">
-              <mat-card-subtitle xFlex="100">
-                <div target="_blank" class="channel-title">sgsdh</div>
-                <br />
-                sdhsdhsd <span>&bull;</span> sdhsdh</mat-card-subtitle
-              >
-            </div>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </ng-template>
-</div>
+<content-loader
+  [gradientRatio]="5"
+  [animate]="false"
+  [backgroundColor]="'grey'"
+  [foregroundColor]="'grey'"
+>
+  <svg:rect x="0" y="0" rx="0" ry="0" width="250" height="10" />
+  <svg:rect x="20" y="20" rx="0" ry="0" width="220" height="10" />
+  <svg:rect x="20" y="40" rx="3" ry="3" width="170" height="10" />
+  <svg:rect x="0" y="60" rx="3" ry="3" width="250" height="10" />
+  <svg:rect x="20" y="80" rx="3" ry="3" width="200" height="10" />
+  <svg:rect x="20" y="100" rx="3" ry="3" width="80" height="10" />
+</content-loader>
