@@ -21,7 +21,10 @@ export class SearchService {
     'https://youtube.googleapis.com/youtube/v3/channels';
   private API_STATISTIC_URL = 'https://www.googleapis.com/youtube/v3/videos';
   // private API_TOKEN = 'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE';
-  private API_TOKEN = 'AIzaSyDzgvf6dJM0EHAjkfdjLIKyvgcMnAXP8uM';
+  private API_TOKEN = [
+    'AIzaSyDzgvf6dJM0EHAjkfdjLIKyvgcMnAXP8uM',
+    'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE',
+  ][Math.floor(Math.random() * 2)];
   constructor(private http: HttpClient, private ls: LocalService) {}
   videoId$: Observable<boolean> = of(false);
   qcid = new BehaviorSubject<{

@@ -1,19 +1,38 @@
-<div class="categories" *ngIf="$categories | async as categories">
-  <mat-chip-list
-    class="example-chip"
-    cdkDropList
-    cdkDropListOrientation="horizontal"
-  >
-    <mat-chip
-      class="example-box"
-      style="white-space: nowrap"
-      cdkDrag
-      (click)="categoryClicked(category.id); videoCategoryId = category.id"
-      [selected]="videoCategoryId == category.id"
-      *ngFor="let category of categories"
+<div class="categories-con">
+  <div class="categories" *ngIf="$categories | async as categories">
+    <div [hidden]="!scrollLeftBtn" class="chip-bar-renderer left">
+      <button
+        (click)="scrollLeft()"
+        style="background-color: white"
+        mat-icon-button
+      >
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+    </div>
+    <mat-chip-list
+      class="example-chip"
+      cdkDropList
+      cdkDropListOrientation="horizontal"
+      #widgetsContent
     >
-      {{ category.title }}
-    </mat-chip>
-  </mat-chip-list>
-  <mat-divider></mat-divider>
+      <mat-chip
+        class="example-box"
+        (click)="categoryClicked(category.id); videoCategoryId = category.id"
+        [selected]="videoCategoryId == category.id"
+        *ngFor="let category of categories"
+      >
+        {{ category.title }}
+      </mat-chip>
+    </mat-chip-list>
+    <div [hidden]="!scrollRightBtn" class="chip-bar-renderer right">
+      <button
+        (click)="scrollRight()"
+        style="background-color: white"
+        mat-icon-button
+      >
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
 </div>
