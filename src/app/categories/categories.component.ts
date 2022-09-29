@@ -3,9 +3,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  Input,
   ViewChild,
 } from '@angular/core';
-import { CategoriesService } from './categories.service';
+import { Observable } from 'rxjs';
 import { SearchService } from '../shared/services/search.service';
 
 @Component({
@@ -15,16 +16,13 @@ import { SearchService } from '../shared/services/search.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoriesComponent implements AfterViewInit {
+  @Input('categories') $categories!: Observable<any>;
   @ViewChild('widgetsContent', { read: ElementRef })
   widgetsContent!: ElementRef<any>;
   scrollLeftBtn: boolean = false;
   scrollRightBtn: boolean = true;
   videoCategoryId: number = 0;
-  constructor(
-    private categoriesService: CategoriesService,
-    private searchService: SearchService
-  ) {}
-  $categories = this.categoriesService.categories$;
+  constructor(private searchService: SearchService) {}
   categoryClicked(categoryId: number) {
     this.searchService.categoryIdChanged(categoryId);
   }
