@@ -1,13 +1,62 @@
-<content-loader
-  [gradientRatio]="5"
-  [animate]="false"
-  [backgroundColor]="'grey'"
-  [foregroundColor]="'grey'"
->
-  <svg:rect x="0" y="0" rx="0" ry="0" width="250" height="10" />
-  <svg:rect x="20" y="20" rx="0" ry="0" width="220" height="10" />
-  <svg:rect x="20" y="40" rx="3" ry="3" width="170" height="10" />
-  <svg:rect x="0" y="60" rx="3" ry="3" width="250" height="10" />
-  <svg:rect x="20" y="80" rx="3" ry="3" width="200" height="10" />
-  <svg:rect x="20" y="100" rx="3" ry="3" width="80" height="10" />
-</content-loader>
+<div style="opacity: 1">
+  <div style="width: 100%; height: 202px; background-color: #d6d6d6"></div>
+  <div fxLayout="row" style="margin-top: 1rem">
+    <div
+      fxFlex="18"
+      fxLayoutAlign="start"
+      style="
+        place-content: stretch flex-start;
+        align-items: stretch;
+        flex-direction: row;
+        box-sizing: border-box;
+        display: flex;
+        flex: 1 1 100%;
+        max-width: 18%;
+      "
+    >
+      <div
+        style="
+          width: 40px;
+          height: 40px;
+          background-color: #d6d6d6;
+          border-radius: 50%;
+        "
+      ></div>
+    </div>
+    <div fxFlex="82">
+      <div
+        style="
+          margin-bottom: 5px;
+          margin-top: 2px;
+          width: 100%;
+          background-color: #d6d6d6;
+          height: 15px;
+        "
+      ></div>
+      <div
+        style="
+          margin-bottom: 1.25rem;
+          width: 100%;
+          background-color: #d6d6d6;
+          height: 15px;
+        "
+      ></div>
+      <div
+        style="
+          margin-bottom: 8px;
+          width: 68%;
+          background-color: #d6d6d6;
+          height: 15px;
+        "
+      ></div>
+      <div
+        style="
+          margin-bottom: 35px;
+          width: 55%;
+          background-color: #d6d6d6;
+          height: 13px;
+        "
+      ></div>
+    </div>
+  </div>
+</div>

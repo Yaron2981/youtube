@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit {
   @Input('miniSidebar') miniSidebar = false;
   categories$ = this.categoriesService.categories$;
   videos$: Observable<Video[]> = of([]);
-
+  loading$ = this.searchService.loading$;
   ngOnInit() {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = 'reload';

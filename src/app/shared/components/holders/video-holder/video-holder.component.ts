@@ -7,7 +7,6 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class VideoHolderComponent implements OnInit {
   @Input('posType') posType = 'vertical';
-
   constructor() {}
 
   ngOnInit(): void {}

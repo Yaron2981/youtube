@@ -124,10 +124,11 @@
           </div>
           <div fxFlex="82">
             <a
+              style="display: block; height: 40px"
               target="_blank"
               [href]="video.videoUrl"
               class="title"
-              [innerHtml]="video.title | safe: 'html'"
+              [innerHtml]="video.title | truncate: [75, '...'] | safe: 'html'"
             ></a>
 
             <div fxLayout="row" class="mt-1rem">

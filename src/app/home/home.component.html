@@ -1,4 +1,8 @@
 <div class="home">
   <app-categories [categories]="categories$"></app-categories>
-  <app-videos [miniSidebar]="miniSidebar" [videos]="videos$"></app-videos>
+  <app-videos
+    [miniSidebar]="miniSidebar"
+    [loading]="loading$"
+    [videos]="videos$"
+  ></app-videos>
 </div>

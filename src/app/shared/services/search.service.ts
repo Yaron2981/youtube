@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import {
+  delay,
   distinct,
   filter,
   map,
   shareReplay,
+  startWith,
   switchMap,
   tap,
 } from 'rxjs/operators';
@@ -35,6 +37,8 @@ export class SearchService {
     cid: 0,
   });
   qcid$ = this.qcid.asObservable();
+  loading$ = new BehaviorSubject<boolean>(false);
+
   // source$: Observable<Video[]> =
   categoryIdChanged(categoryId: number) {
     this.qcid.next({ q: '', cid: categoryId });
@@ -45,6 +49,7 @@ export class SearchService {
   getSource() {
     return this.qcid$.pipe(
       // distinctUntilChanged(),
+      tap(() => this.loading$.next(true)),
       switchMap((qcid) =>
         this.ls.isExsist(qcid.q + qcid.cid)
           ? of(this.ls.getData(qcid.q + qcid.cid))
@@ -68,7 +73,8 @@ export class SearchService {
                 )
               )
             )
-      )
+      ),
+      tap(() => this.loading$.next(false))
     );
   }
   getVideosTitles(q: string): Observable<any> {

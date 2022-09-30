@@ -36,7 +36,7 @@ import { ResultsComponent } from './results/results.component';
 import { WatchComponent } from './watch/watch.component';
 import { CommonModule } from '@angular/common';
 import { VideoHolderComponent } from './shared/components/holders/video-holder/video-holder.component';
-import { ContentLoaderModule } from '@ngneat/content-loader';
+import { TruncatePipe } from './shared/pipes/truncate.pipe';
 
 @NgModule({
   declarations: [
@@ -57,6 +57,7 @@ import { ContentLoaderModule } from '@ngneat/content-loader';
     ResultsComponent,
     WatchComponent,
     VideoHolderComponent,
+    TruncatePipe,
   ],
   imports: [
     BrowserModule,
@@ -78,7 +79,6 @@ import { ContentLoaderModule } from '@ngneat/content-loader';
     MatChipsModule,
     MatDividerModule,
     CommonModule,
-    ContentLoaderModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
