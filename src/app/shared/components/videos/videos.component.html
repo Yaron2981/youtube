@@ -1,19 +1,12 @@
-<ng-template [ngIf]="loading$ | async"
-  ><div
-    style="margin-top: 5rem; position: absolute; width: 100%; z-index: 999"
-    fxLayout="row wrap"
-    fxLayoutAlign="center"
-    fxLayoutGap="16px"
-    fxLayoutGap.xs="0"
-  >
-    <app-video-holder
-      *ngFor="let e of [].constructor(16)"
-      [fxFlex]="videoFlexSize"
-    ></app-video-holder></div
-></ng-template>
-<ng-container *ngIf="videos$ | async as videos">
+<div>
+  <app-videos-holder
+    [loading]="loading$"
+    [videoFlexSize]="videoFlexSize"
+    [posType]="posType"
+  ></app-videos-holder>
   <div
     class="items"
+    *ngIf="videos$ | async as videos"
     fxLayout="row wrap"
     fxLayoutAlign="center"
     fxLayoutGap="16px"
@@ -21,13 +14,12 @@
     style="margin-top: 5rem"
     [ngStyle]="{ opacity: (loading$ | async) == false ? '1' : '0' }"
   >
-    <ng-container *ngFor="let video of videos; let i = index">
-      <app-video
-        @fade
-        [posType]="posType"
-        [fxFlex]="videoFlexSize"
-        [video]="video"
-      ></app-video>
-    </ng-container>
+    <app-video
+      *ngFor="let video of videos; let i = index"
+      @fade
+      [posType]="posType"
+      [fxFlex]="videoFlexSize"
+      [video]="video"
+    ></app-video>
   </div>
-</ng-container>
+</div>

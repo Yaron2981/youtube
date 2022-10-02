@@ -21,7 +21,7 @@ import { Video } from 'src/app/search.interface';
       ]),
     ]),
   ],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideosComponent implements OnInit, AfterViewInit {
   @Input('videos') videos$: Observable<Video[]> = new BehaviorSubject<Video[]>(
@@ -29,22 +29,21 @@ export class VideosComponent implements OnInit, AfterViewInit {
   );
 
   @Input('miniSidebar') miniSidebar = false;
-  @Input('posType') posType = 'vertical';
-  @Input('loading') loading$ = of(true);
-  videoFlexSize: number | undefined;
+  @Input('posType') posType: string = 'vertical';
+  @Input('loading') loading$: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
+
+  videoFlexSize: number | null =
+    this.posType == 'horizontal' ? 80 : this.miniSidebar ? 18.5 : 22.5;
 
   ngOnInit() {
     this.videoFlexSize =
       this.posType == 'horizontal' ? 80 : this.miniSidebar ? 18.5 : 22.5;
   }
   ngAfterViewInit() {
-    const content: HTMLElement | null = document.querySelector('.items');
-    let scroll$ = fromEvent(content!, 'scroll')
-      .pipe(
-        map(() => {
-          return content!.scrollTop;
-        })
-      )
-      .subscribe((x) => console.log('ddd', x));
+    let scroll$ = fromEvent(
+      document.querySelector('.items')!,
+      'scroll'
+    ).subscribe((x) => console.log('ddd', x));
   }
 }

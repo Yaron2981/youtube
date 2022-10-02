@@ -1,0 +1,30 @@
+<ng-template [ngIf]="loading$ | async">
+  <div class="videos-holder">
+    <div
+      class="vertical"
+      fxLayout="row wrap"
+      fxLayoutAlign="center"
+      fxLayoutGap="16px"
+      fxLayoutGap.xs="0"
+    >
+      <div
+        style="opacity: 1"
+        *ngFor="let e of [].constructor(16)"
+        [fxFlex]="videoFlexSize"
+      >
+        <div class="image"></div>
+        <div fxLayout="row" class="row">
+          <div fxFlex="18" fxLayoutAlign="start" class="avatar-con">
+            <div class="avatar"></div>
+          </div>
+          <div fxFlex="82">
+            <div class="title"></div>
+            <div class="title2"></div>
+            <div class="channel"></div>
+            <div class="views"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

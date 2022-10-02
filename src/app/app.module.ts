@@ -35,7 +35,7 @@ import { DrawerComponent } from './template/drawer/drawer.component';
 import { ResultsComponent } from './results/results.component';
 import { WatchComponent } from './watch/watch.component';
 import { CommonModule } from '@angular/common';
-import { VideoHolderComponent } from './shared/components/holders/video-holder/video-holder.component';
+import { VideosHolderComponent } from './shared/components/holders/videos-holder/videos-holder.component';
 import { TruncatePipe } from './shared/pipes/truncate.pipe';
 
 @NgModule({
@@ -56,7 +56,7 @@ import { TruncatePipe } from './shared/pipes/truncate.pipe';
     DrawerComponent,
     ResultsComponent,
     WatchComponent,
-    VideoHolderComponent,
+    VideosHolderComponent,
     TruncatePipe,
   ],
   imports: [

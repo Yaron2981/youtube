@@ -19,6 +19,8 @@ export class ResultsComponent implements OnInit {
   ) {}
   paramsSubscription: Subscription | undefined;
   videos$: Observable<Video[]> = of([]);
+  loading$ = this.searchService.loading$;
+
   ngOnInit() {
     this.activatedRoute.queryParamMap.subscribe(() => {
       this.searchService.getVideosByQuery(
