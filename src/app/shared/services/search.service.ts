@@ -99,7 +99,7 @@ export class SearchService {
   getVideos(query: string, categoryId: number): Observable<any> {
     const affix =
       categoryId > 0 ? `videoCategoryId=${categoryId}` : `q=${query}`;
-    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=16&regionCode=il`;
+    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=64&regionCode=il`;
     return this.http.get(url).pipe(
       map((response: any) =>
         response.items.map((item: any) => {

@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  HostListener,
   Input,
   OnInit,
 } from '@angular/core';
@@ -23,10 +24,13 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private categoriesService: CategoriesService
   ) {}
+  items = Array.from({ length: 100 }).map((_, i) => `Item #${i}`);
+
   @Input('miniSidebar') miniSidebar = false;
   categories$ = this.categoriesService.categories$;
   videos$: Observable<Video[]> = of([]);
   loading$ = this.searchService.loading$;
+
   ngOnInit() {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = 'reload';

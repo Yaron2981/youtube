@@ -1,10 +1,15 @@
 import { animate, style, transition, trigger } from '@angular/animations';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  ElementRef,
+  HostListener,
   Input,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { BehaviorSubject, fromEvent, map, Observable, of } from 'rxjs';
 import { Video } from 'src/app/search.interface';
@@ -21,9 +26,10 @@ import { Video } from 'src/app/search.interface';
       ]),
     ]),
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideosComponent implements OnInit, AfterViewInit {
+  constructor(private ref: ChangeDetectorRef) {}
   @Input('videos') videos$: Observable<Video[]> = new BehaviorSubject<Video[]>(
     []
   );
@@ -39,11 +45,10 @@ export class VideosComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.videoFlexSize =
       this.posType == 'horizontal' ? 80 : this.miniSidebar ? 18.5 : 22.5;
+    this.ref.detectChanges();
   }
-  ngAfterViewInit() {
-    let scroll$ = fromEvent(
-      document.querySelector('.items')!,
-      'scroll'
-    ).subscribe((x) => console.log('ddd', x));
+  onScroll() {
+    console.log('scrolled!!');
   }
+  ngAfterViewInit() {}
 }
