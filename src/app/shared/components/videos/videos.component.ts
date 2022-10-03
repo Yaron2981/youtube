@@ -9,23 +9,25 @@ import {
   HostListener,
   Input,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { BehaviorSubject, fromEvent, map, Observable, of } from 'rxjs';
 import { Video } from 'src/app/search.interface';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-videos',
   templateUrl: './videos.component.html',
   styleUrls: ['./videos.component.scss'],
-  animations: [
-    trigger('fade', [
-      transition('void => *', [
-        style({ opacity: 0 }),
-        animate(500, style({ opacity: 1 })),
-      ]),
-    ]),
-  ],
+  // animations: [
+  //   trigger('fade', [
+  //     transition('void => *', [
+  //       style({ opacity: 0 }),
+  //       animate(500, style({ opacity: 1 })),
+  //     ]),
+  //   ]),
+  // ],
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideosComponent implements OnInit, AfterViewInit {
@@ -34,21 +36,23 @@ export class VideosComponent implements OnInit, AfterViewInit {
     []
   );
 
-  @Input('miniSidebar') miniSidebar = false;
-  @Input('posType') posType: string = 'vertical';
+  @Input() miniSidebar = false;
+  @Input() posType: string = 'vertical';
   @Input('loading') loading$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false);
-
+  @Output('nextPage') nextPage = new EventEmitter<boolean>();
   videoFlexSize: number | null =
     this.posType == 'horizontal' ? 80 : this.miniSidebar ? 18.5 : 22.5;
-
+  onScroll(e: any) {
+    if (e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight) {
+      this.nextPage.emit(true);
+    }
+  }
   ngOnInit() {
     this.videoFlexSize =
       this.posType == 'horizontal' ? 80 : this.miniSidebar ? 18.5 : 22.5;
     this.ref.detectChanges();
   }
-  onScroll() {
-    console.log('scrolled!!');
-  }
+
   ngAfterViewInit() {}
 }

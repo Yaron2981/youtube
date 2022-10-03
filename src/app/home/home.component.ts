@@ -35,7 +35,11 @@ export class HomeComponent implements OnInit {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = 'reload';
     this.searchService.qcid.next({ q: '', cid: 0 });
-    this.videos$ = this.searchService.getSource();
+    this.videos$ = this.searchService.videos$;
+    this.ref.detectChanges();
+  }
+  nextPage(trigger: boolean) {
+    this.searchService.getNextPage();
     this.ref.detectChanges();
   }
 }

@@ -2,7 +2,12 @@
   <mat-card class="inner-card mat-elevation-z0">
     <div>
       <ng-template [ngIf]="video && video.showPlayer">
-        <a target="_blank" [href]="video.videoUrl">
+        <a
+          target="_blank"
+          [href]="
+            'https://www.youtube.com/watch?v=' + video.videoId | safe: 'url'
+          "
+        >
           <app-player
             [duration]="video.duration"
             [videoId]="video.videoId"
@@ -24,7 +29,9 @@
           <div fxFlex="82">
             <a
               target="_blank"
-              [href]="video.videoUrl"
+              [href]="
+                'https://www.youtube.com/watch?v=' + video.videoId | safe: 'url'
+              "
               class="title"
               [innerHtml]="video.title | safe: 'html'"
             ></a>
@@ -34,7 +41,10 @@
                 <a
                   target="_blank"
                   class="channel-title"
-                  [href]="video.channelUrl"
+                  [href]="
+                    'https://www.youtube.com/watch?v=' + video.channelId
+                      | safe: 'url'
+                  "
                   >{{ video.channelTitle }}</a
                 ><br />
                 {{ video.viewCount! | shortNumber }}

@@ -37,11 +37,6 @@ import { WatchComponent } from './watch/watch.component';
 import { CommonModule } from '@angular/common';
 import { VideosHolderComponent } from './shared/components/holders/videos-holder/videos-holder.component';
 import { TruncatePipe } from './shared/pipes/truncate.pipe';
-import {
-  CdkVirtualScrollViewport,
-  ScrollingModule,
-} from '@angular/cdk/scrolling';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [
@@ -84,8 +79,6 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     MatChipsModule,
     MatDividerModule,
     CommonModule,
-    InfiniteScrollModule,
-    ScrollingModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

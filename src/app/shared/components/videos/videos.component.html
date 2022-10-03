@@ -1,29 +1,25 @@
-<cdk-virtual-scroll-viewport
-  itemSize="12"
-  [minBufferPx]="12"
-  [maxBufferPx]="12"
+<div
   class="example-viewport"
   style="margin-top: 9rem"
+  (scroll)="onScroll($event)"
 >
-  <app-videos-holder
-    [loading]="loading$"
-    [videoFlexSize]="videoFlexSize"
-    [posType]="posType"
-  ></app-videos-holder>
   <div
     *ngIf="videos$ | async as videos"
     fxLayout="row wrap"
     fxLayoutAlign="center"
     fxLayoutGap="16px"
-    [ngStyle]="{ opacity: (loading$ | async) == false ? '1' : '0' }"
   >
     <app-video
-      *cdkVirtualFor="let video of videos; let i = index"
-      @fade
+      *ngFor="let video of videos; let i = index"
       [posType]="posType"
       [fxFlex]="videoFlexSize"
       [video]="video"
     ></app-video>
   </div>
+  <app-videos-holder
+    [loading]="loading$"
+    [videoFlexSize]="videoFlexSize!"
+    [posType]="posType"
+  ></app-videos-holder>
   <div style="display: block; width: 100%; height: 100px"></div>
-</cdk-virtual-scroll-viewport>
+</div>

@@ -8,7 +8,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class VideosHolderComponent implements OnInit {
   @Input('posType') posType: string = 'vertical';
-  @Input('videoFlexSize') videoFlexSize: number | null = 100;
+  @Input('videoFlexSize') videoFlexSize: number = 80;
   @Input('loading') loading$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false);
   constructor() {}

@@ -9,10 +9,17 @@ import {
   shareReplay,
   startWith,
   switchMap,
+  take,
   tap,
 } from 'rxjs/operators';
 import { Observable, mergeMap, of, forkJoin, BehaviorSubject } from 'rxjs';
 import { LocalService } from './local.service';
+import {
+  Channel,
+  Statistic,
+  Video,
+  VideosResponse,
+} from 'src/app/search.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +34,9 @@ export class SearchService {
     'AIzaSyDzgvf6dJM0EHAjkfdjLIKyvgcMnAXP8uM',
     'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE',
   ][Math.floor(Math.random() * 2)];
-  constructor(private http: HttpClient, private ls: LocalService) {}
+  constructor(private http: HttpClient, private ls: LocalService) {
+    this.getNextPage();
+  }
   videoId$: Observable<boolean> = of(false);
   qcid = new BehaviorSubject<{
     q: string;
@@ -38,7 +47,9 @@ export class SearchService {
   });
   qcid$ = this.qcid.asObservable();
   loading$ = new BehaviorSubject<boolean>(false);
-
+  obsArray: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  videos$: Observable<any> = this.obsArray.asObservable();
+  nextPageToken: string | null = null;
   // source$: Observable<Video[]> =
   categoryIdChanged(categoryId: number) {
     this.qcid.next({ q: '', cid: categoryId });
@@ -46,34 +57,45 @@ export class SearchService {
   getVideosByQuery(q: string) {
     this.qcid.next({ q: q, cid: 0 });
   }
+  getNextPage() {
+    forkJoin([this.videos$.pipe(take(1)), this.getSource()]).subscribe(
+      (data: Array<Array<any>>) => {
+        const newArr = [...data[0], ...data[1]];
+        console.log('ddddddd', newArr);
+        this.obsArray.next(newArr);
+      }
+    );
+  }
+
   getSource() {
     return this.qcid$.pipe(
       // distinctUntilChanged(),
       tap(() => this.loading$.next(true)),
       switchMap((qcid) =>
-        this.ls.isExsist(qcid.q + qcid.cid)
-          ? of(this.ls.getData(qcid.q + qcid.cid))
-          : this.getVideos(qcid.q, qcid.cid).pipe(
-              mergeMap((res: any) =>
-                forkJoin([
-                  this.getChannels(res),
-                  this.getVideoStatistics(res),
-                ]).pipe(
-                  map((r: any) => {
-                    return res.map((re: any) => {
-                      return {
-                        ...re,
-                        viewCount: r[1][re.videoId].viewCount,
-                        duration: r[1][re.videoId].duration,
-                        channelThumbnail: r[0][re.channelId],
-                      };
-                    });
-                  }),
-                  tap((data: any) => this.ls.setData(qcid.q + qcid.cid, data))
-                )
-              )
+        this.getVideos(qcid.q, qcid.cid).pipe(
+          mergeMap((res: VideosResponse) =>
+            forkJoin([
+              this.getChannels(res),
+              this.getVideoStatistics(res.items),
+            ]).pipe(
+              map((r: any) => {
+                return res.items.map((re: Video) => {
+                  return {
+                    ...re,
+                    viewCount: r[1][re.videoId].viewCount,
+                    duration: r[1][re.videoId].duration,
+                    channelThumbnail: r[0][re.channelId],
+                  };
+                });
+              }),
+              tap((data) => this.obsArray.next(data))
+              // tap((data: any) => this.ls.setData(qcid.q + qcid.cid, data))
             )
+          )
+        )
       ),
+      take(1),
+      shareReplay(1),
       tap(() => this.loading$.next(false))
     );
   }
@@ -96,39 +118,46 @@ export class SearchService {
       shareReplay(1)
     );
   }
-  getVideos(query: string, categoryId: number): Observable<any> {
+  getVideos(query: string = '', categoryId: number = 0): Observable<any> {
     const affix =
       categoryId > 0 ? `videoCategoryId=${categoryId}` : `q=${query}`;
-    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=64&regionCode=il`;
-    return this.http.get(url).pipe(
-      map((response: any) =>
-        response.items.map((item: any) => {
-          return {
-            videoId: item.id.videoId,
-            videoUrl: `https://www.youtube.com/watch?v=${item.id.videoId}`,
-            channelId: item.snippet.channelId,
-            channelUrl: `https://www.youtube.com/channel/${item.snippet.channelId}`,
-            channelTitle: item.snippet.channelTitle,
-            title: item.snippet.title,
-            publishedAt: item.snippet.publishedAt,
-            description: item.snippet.description,
-            thumbnail: item.snippet.thumbnails.medium.url,
-            showPop: false,
-            showPlayer: false,
-          };
-        })
-      ),
+    const pageToken = this.nextPageToken
+      ? `&pageToken=${this.nextPageToken}`
+      : '';
+    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=16&regionCode=il${pageToken}`;
+    return this.http.get<VideosResponse>(url).pipe(
+      map((response: VideosResponse) => {
+        return {
+          ...response,
+          items: response.items.map((item: any) => {
+            this.nextPageToken = response.nextPageToken;
+            return {
+              videoId: item.id.videoId,
+              channelId: item.snippet.channelId,
+              channelTitle: item.snippet.channelTitle,
+              title: item.snippet.title,
+              publishedAt: item.snippet.publishedAt,
+              description: item.snippet.description,
+              thumbnail: item.snippet.thumbnails.medium.url,
+              showPop: false,
+              showPlayer: false,
+            };
+          }),
+        };
+      }),
       shareReplay(1)
     );
   }
 
   getChannels(res: any): Observable<any> {
-    const channelIds = [...new Set(res.map((r: any) => r.channelId))].join(',');
+    const channelIds = [
+      ...new Set(res.items.map((r: any) => r.channelId)),
+    ].join(',');
     const url = `${this.API_CHANNEL_URL}?id=${channelIds}&key=${this.API_TOKEN}&part=snippet`;
     return this.http.get(url).pipe(
       map((response: any) => {
         const thumbnails: any = {};
-        res.forEach((r: any) => {
+        res.items.forEach((r: any) => {
           thumbnails[r.channelId] = response.items.find(
             (re: any) => r.channelId === re.id
           ).snippet.thumbnails.default.url;
