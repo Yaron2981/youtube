@@ -16,6 +16,7 @@ import { Observable, mergeMap, of, forkJoin, BehaviorSubject } from 'rxjs';
 import { LocalService } from './local.service';
 import {
   Channel,
+  QCid,
   Statistic,
   Video,
   VideosResponse,
@@ -33,36 +34,45 @@ export class SearchService {
   private API_TOKEN = [
     'AIzaSyDzgvf6dJM0EHAjkfdjLIKyvgcMnAXP8uM',
     'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE',
+    'AIzaSyB7KHp81yAoioCEJInypVjd_adc0ZfAsko',
   ][Math.floor(Math.random() * 2)];
   constructor(private http: HttpClient, private ls: LocalService) {
     this.getNextPage();
   }
   videoId$: Observable<boolean> = of(false);
-  qcid = new BehaviorSubject<{
-    q: string;
-    cid: number;
-  }>({
-    q: '',
-    cid: 0,
-  });
-  qcid$ = this.qcid.asObservable();
+  qcid = new BehaviorSubject<QCid>({ q: '', cid: 0 });
+  qcid$: Observable<any> = this.qcid.asObservable();
   loading$ = new BehaviorSubject<boolean>(false);
   obsArray: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   videos$: Observable<any> = this.obsArray.asObservable();
   nextPageToken: string | null = null;
+  currentCategoryId: number = 0;
+  prevCategoryId: number = 0;
   // source$: Observable<Video[]> =
   categoryIdChanged(categoryId: number) {
+    this.currentCategoryId = categoryId;
     this.qcid.next({ q: '', cid: categoryId });
+    this.getNextPage();
   }
   getVideosByQuery(q: string) {
     this.qcid.next({ q: q, cid: 0 });
   }
   getNextPage() {
+    console.log(this.prevCategoryId, this.currentCategoryId);
     forkJoin([this.videos$.pipe(take(1)), this.getSource()]).subscribe(
       (data: Array<Array<any>>) => {
-        const newArr = [...data[0], ...data[1]];
+        let newArr: Video[] = [];
+        if (this.prevCategoryId != this.currentCategoryId) {
+          newArr = data[1];
+          this.prevCategoryId = this.currentCategoryId;
+        } else newArr = [...data[0], ...data[1]];
         console.log('ddddddd', newArr);
         this.obsArray.next(newArr);
+      },
+      (err) => {
+        console.log('errerrerr', err);
+        if (this.prevCategoryId != this.currentCategoryId)
+          this.prevCategoryId = this.currentCategoryId;
       }
     );
   }
@@ -124,7 +134,7 @@ export class SearchService {
     const pageToken = this.nextPageToken
       ? `&pageToken=${this.nextPageToken}`
       : '';
-    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=16&regionCode=il${pageToken}`;
+    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=24&regionCode=il${pageToken}`;
     return this.http.get<VideosResponse>(url).pipe(
       map((response: VideosResponse) => {
         return {

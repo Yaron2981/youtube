@@ -13,7 +13,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { BehaviorSubject, fromEvent, map, Observable, of } from 'rxjs';
-import { Video } from 'src/app/search.interface';
+import { QCid, Video } from 'src/app/search.interface';
 import { EventEmitter } from '@angular/core';
 
 @Component({
@@ -45,7 +45,7 @@ export class VideosComponent implements OnInit, AfterViewInit {
     this.posType == 'horizontal' ? 80 : this.miniSidebar ? 18.5 : 22.5;
   onScroll(e: any) {
     if (e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight) {
-      this.nextPage.emit(true);
+      this.nextPage.emit(false);
     }
   }
   ngOnInit() {

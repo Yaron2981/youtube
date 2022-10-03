@@ -33,3 +33,7 @@ export interface VideosResponse {
   items: Video[];
 }
 //https://blog.logrocket.com/build-a-youtube-video-search-app-with-angular-and-rxjs/
+export interface QCid {
+  q: string;
+  cid: number;
+}
