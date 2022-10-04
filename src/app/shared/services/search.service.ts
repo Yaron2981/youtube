@@ -57,24 +57,21 @@ export class SearchService {
   getVideosByQuery(q: string) {
     this.qcid.next({ q: q, cid: 0 });
   }
-  getNextPage() {
-    console.log(this.prevCategoryId, this.currentCategoryId);
-    forkJoin([this.videos$.pipe(take(1)), this.getSource()]).subscribe(
-      (data: Array<Array<any>>) => {
+  getNextPage(): void {
+    forkJoin([this.videos$.pipe(take(1)), this.getSource()]).subscribe({
+      next: (data: Array<Array<Video>>) => {
         let newArr: Video[] = [];
         if (this.prevCategoryId != this.currentCategoryId) {
           newArr = data[1];
           this.prevCategoryId = this.currentCategoryId;
         } else newArr = [...data[0], ...data[1]];
-        console.log('ddddddd', newArr);
         this.obsArray.next(newArr);
       },
-      (err) => {
-        console.log('errerrerr', err);
+      error: () => {
         if (this.prevCategoryId != this.currentCategoryId)
           this.prevCategoryId = this.currentCategoryId;
-      }
-    );
+      },
+    });
   }
 
   getSource() {

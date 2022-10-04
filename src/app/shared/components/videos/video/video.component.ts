@@ -8,6 +8,7 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { Video } from '../../../../search.interface';
+import { YOUTUBE_CONST } from '../../../constants/yt';
 
 @Component({
   selector: 'app-video',
@@ -32,6 +33,7 @@ import { Video } from '../../../../search.interface';
   ],
 })
 export class VideoComponent implements OnDestroy {
+  YT = YOUTUBE_CONST;
   constructor(private ref: ChangeDetectorRef) {}
   @Input('video') video: Video | null = null;
   @Input('posType') posType = 'vertical';
