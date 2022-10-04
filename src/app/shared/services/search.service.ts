@@ -35,7 +35,7 @@ export class SearchService {
     'AIzaSyDzgvf6dJM0EHAjkfdjLIKyvgcMnAXP8uM',
     'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE',
     'AIzaSyB7KHp81yAoioCEJInypVjd_adc0ZfAsko',
-  ][Math.floor(Math.random() * 2)];
+  ][Math.floor(Math.random() * 3)];
   constructor(private http: HttpClient, private ls: LocalService) {
     this.getNextPage();
   }

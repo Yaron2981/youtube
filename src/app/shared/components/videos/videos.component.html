@@ -1,18 +1,17 @@
-<div
-  class="example-viewport"
-  style="margin-top: 9rem"
-  (scroll)="onScroll($event)"
->
+<div class="example-viewport" (scroll)="onScroll($event)">
   <div
     *ngIf="videos$ | async as videos"
     fxLayout="row wrap"
     fxLayoutAlign="center"
-    fxLayoutGap="16px"
+    fxLayoutGap="16px grid"
   >
     <app-video
       *ngFor="let video of videos; let i = index"
       [posType]="posType"
       [fxFlex]="videoFlexSize"
+      [fxFlex.md]="25"
+      [fxFlex.sm]="50"
+      [fxFlex.xs]="100"
       [video]="video"
     ></app-video>
   </div>

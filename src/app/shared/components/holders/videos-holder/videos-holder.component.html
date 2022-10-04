@@ -4,15 +4,17 @@
       class="vertical"
       fxLayout="row wrap"
       fxLayoutAlign="center"
-      fxLayoutGap="16px"
-      fxLayoutGap.xs="0"
+      fxLayoutGap="16px grid"
     >
       <div
         style="opacity: 1"
         *ngFor="let e of [].constructor(16)"
         [fxFlex]="videoFlexSize"
+        [fxFlex.md]="25"
+        [fxFlex.sm]="50"
+        [fxFlex.xs]="100"
       >
-        <div class="image"></div>
+        <div class="image-con"><div class="image"></div></div>
         <div fxLayout="row" class="row">
           <div fxFlex="18" fxLayoutAlign="start" class="avatar-con">
             <div class="avatar"></div>

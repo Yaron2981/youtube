@@ -1,0 +1,21 @@
+<ng-template [ngIf]="loading$ | async">
+  <div class="categories-holder">
+    <div class="categories">
+      <mat-chip-list
+        class="example-chip"
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        #widgetsContent
+      >
+        <mat-chip
+          class="example-box"
+          *ngFor="let category of [].constructor(20)"
+        >
+          <span [innerHTML]="randomSpace()"></span>
+        </mat-chip>
+      </mat-chip-list>
+
+      <mat-divider></mat-divider>
+    </div>
+  </div>
+</ng-template>

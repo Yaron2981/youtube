@@ -1,4 +1,5 @@
 <div class="categories-con">
+  <app-categories-holder [loading]="loading$"></app-categories-holder>
   <div class="categories" *ngIf="$categories | async as categories">
     <div [hidden]="!scrollLeftBtn" class="chip-bar-renderer left">
       <button

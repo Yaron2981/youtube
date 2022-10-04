@@ -6,7 +6,7 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { SearchService } from '../shared/services/search.service';
 
 @Component({
@@ -19,6 +19,9 @@ export class CategoriesComponent implements AfterViewInit {
   @Input('categories') $categories!: Observable<any>;
   @ViewChild('widgetsContent', { read: ElementRef })
   widgetsContent!: ElementRef<any>;
+  @Input('loading') loading$: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
+
   scrollLeftBtn: boolean = false;
   scrollRightBtn: boolean = true;
   videoCategoryId: number = 0;

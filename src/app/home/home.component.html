@@ -1,8 +1,11 @@
 <div class="home">
-  <app-categories [categories]="categories$"></app-categories>
+  <app-categories
+    [loading]="categoriesLoading$"
+    [categories]="categories$"
+  ></app-categories>
   <app-videos
     [miniSidebar]="miniSidebar"
-    [loading]="loading$"
+    [loading]="videosLoading$"
     [videos]="videos$"
     (nextPage)="nextPage($event)"
   ></app-videos>

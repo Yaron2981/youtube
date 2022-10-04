@@ -37,6 +37,7 @@ import { WatchComponent } from './watch/watch.component';
 import { CommonModule } from '@angular/common';
 import { VideosHolderComponent } from './shared/components/holders/videos-holder/videos-holder.component';
 import { TruncatePipe } from './shared/pipes/truncate.pipe';
+import { CategoriesHolderComponent } from './shared/components/holders/categories-holder/categories-holder.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { TruncatePipe } from './shared/pipes/truncate.pipe';
     WatchComponent,
     VideosHolderComponent,
     TruncatePipe,
+    CategoriesHolderComponent,
   ],
   imports: [
     BrowserModule,
