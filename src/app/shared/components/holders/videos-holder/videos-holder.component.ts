@@ -14,6 +14,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class VideosHolderComponent {
   @Input('posType') posType: string = 'vertical';
+  @Input('miniSidebar') miniSidebar: boolean = false;
   @Input('videoFlexSize') videoFlexSize: number = 80;
   @Input('loading') loading$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false);

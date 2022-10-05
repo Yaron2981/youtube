@@ -58,20 +58,18 @@ export class SearchService {
     this.qcid.next({ q: q, cid: 0 });
   }
   getNextPage(): void {
-    forkJoin([this.videos$.pipe(take(1)), this.getSource()]).subscribe({
-      next: (data: Array<Array<Video>>) => {
-        let newArr: Video[] = [];
-        if (this.prevCategoryId != this.currentCategoryId) {
-          newArr = data[1];
-          this.prevCategoryId = this.currentCategoryId;
-        } else newArr = [...data[0], ...data[1]];
-        this.obsArray.next(newArr);
-      },
-      error: () => {
-        if (this.prevCategoryId != this.currentCategoryId)
-          this.prevCategoryId = this.currentCategoryId;
-      },
-    });
+    if (this.prevCategoryId != this.currentCategoryId) {
+      this.getSource().subscribe((data) => this.obsArray.next(data));
+      this.prevCategoryId = this.currentCategoryId;
+    } else {
+      forkJoin([this.videos$.pipe(take(1)), this.getSource()]).subscribe({
+        next: (data: Array<Array<Video>>) => {
+          let newArr: Video[] = [];
+          newArr = [...data[0], ...data[1]];
+          this.obsArray.next(newArr);
+        },
+      });
+    }
   }
 
   getSource() {

@@ -15,6 +15,7 @@ import {
 import { BehaviorSubject, fromEvent, map, Observable, of } from 'rxjs';
 import { QCid, Video } from 'src/app/search.interface';
 import { EventEmitter } from '@angular/core';
+import { SharedService } from '../../services/shared.service';
 
 @Component({
   selector: 'app-videos',
@@ -31,12 +32,15 @@ import { EventEmitter } from '@angular/core';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideosComponent implements OnInit, AfterViewInit {
-  constructor(private ref: ChangeDetectorRef) {}
+  constructor(
+    private ref: ChangeDetectorRef,
+    private sharedService: SharedService
+  ) {}
   @Input('videos') videos$: Observable<Video[]> = new BehaviorSubject<Video[]>(
     []
   );
-
-  @Input() miniSidebar = false;
+  sidebarBtn$ = this.sharedService.sidebarTriggerBtn$;
+  @Input() miniSidebar: boolean = false;
   @Input() posType: string = 'vertical';
   @Input('loading') loading$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false);

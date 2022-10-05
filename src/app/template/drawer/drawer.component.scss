@@ -11,10 +11,30 @@
 }
 
 .sidenav {
-  padding: 20px;
   padding-top: 4rem;
   border-right: none;
 }
+
 .mat-drawer {
   padding-left: 0px;
+  padding-right: 16px;
+}
+.min-drawer {
+  span.mini-text {
+    display: block;
+    position: absolute;
+    top: 42px;
+    font-size: 11px;
+  }
+  .mat-line {
+    display: none;
+  }
+  a.mat-list-item {
+    padding: 16px 0 14px;
+  }
+}
+.max-drawer {
+  span.mini-text {
+    display: none;
+  }
 }

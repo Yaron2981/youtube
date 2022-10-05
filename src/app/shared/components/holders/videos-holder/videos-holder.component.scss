@@ -7,6 +7,7 @@
     position: relative;
     margin-left: -6px !important;
     width: 100%;
+    padding: 0 3rem;
     z-index: 1;
     .image-con {
       max-height: 202px;
@@ -68,6 +69,8 @@
   }
   .vertical {
     position: relative;
+    padding: 0 3rem;
+
     width: 100%;
     z-index: 1;
     .image-con {

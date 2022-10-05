@@ -13,6 +13,7 @@ import { LocalService } from 'src/app/shared/services/local.service';
 import { EventEmitter } from '@angular/core';
 import { ActivatedRoute, ActivationEnd, Params, Router } from '@angular/router';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { SharedService } from 'src/app/shared/services/shared.service';
 
 @Component({
   selector: 'app-header',
@@ -24,10 +25,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private ls: LocalService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private sharedService: SharedService
   ) {}
-  @Input('miniSidebar') miniSidebar = false;
-  @Output() miniSideTriggerEvent = new EventEmitter<boolean>();
+  sidebarBtn = this.sharedService.sidebarTriggerBtn;
   control = new UntypedFormControl('');
   fetchtitles$ = new Subject<void>();
   routerEventSubscription!: Subscription;
