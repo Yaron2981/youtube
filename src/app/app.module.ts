@@ -14,7 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SafePipe } from './shared/pipes/safe.pipe';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
@@ -38,6 +38,8 @@ import { CommonModule } from '@angular/common';
 import { VideosHolderComponent } from './shared/components/holders/videos-holder/videos-holder.component';
 import { TruncatePipe } from './shared/pipes/truncate.pipe';
 import { CategoriesHolderComponent } from './shared/components/holders/categories-holder/categories-holder.component';
+import { ErrorCatchingInterceptor } from './interceptors/error-catching.interceptor';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -81,8 +83,15 @@ import { CategoriesHolderComponent } from './shared/components/holders/categorie
     MatChipsModule,
     MatDividerModule,
     CommonModule,
+    MatSnackBarModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorCatchingInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

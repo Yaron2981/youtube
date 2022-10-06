@@ -21,6 +21,9 @@
 }
 .min-drawer {
   padding-right: 0px !important;
+  ::ng-deep .mat-list-text {
+    display: none !important;
+  }
   span.mini-text {
     display: block;
     position: absolute;
@@ -38,4 +41,7 @@
   span.mini-text {
     display: none;
   }
+}
+::ng-deep .mat-list-item-content {
+  padding: 0 1.25rem !important;
 }

@@ -30,12 +30,12 @@ export class SearchService {
   private API_CHANNEL_URL =
     'https://youtube.googleapis.com/youtube/v3/channels';
   private API_STATISTIC_URL = 'https://www.googleapis.com/youtube/v3/videos';
-  // private API_TOKEN = 'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE';
-  private API_TOKEN = [
-    'AIzaSyDzgvf6dJM0EHAjkfdjLIKyvgcMnAXP8uM',
-    'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE',
-    'AIzaSyB7KHp81yAoioCEJInypVjd_adc0ZfAsko',
-  ][Math.floor(Math.random() * 3)];
+  private API_TOKEN = 'AIzaSyB7KHp81yAoioCEJInypVjd_adc0ZfAsko';
+  // private API_TOKEN = [
+  //   'AIzaSyDzgvf6dJM0EHAjkfdjLIKyvgcMnAXP8uM',
+  //   'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE',
+  //   'AIzaSyB7KHp81yAoioCEJInypVjd_adc0ZfAsko',
+  // ][Math.floor(Math.random() * 3)];
   constructor(private http: HttpClient, private ls: LocalService) {
     this.getNextPage();
   }

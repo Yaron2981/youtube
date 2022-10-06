@@ -10,9 +10,11 @@
       <div
         style="opacity: 1"
         *ngFor="let e of [].constructor(16)"
-        [fxFlex]="videoFlexSize"
-        [fxFlex.md]="25"
-        [fxFlex.sm]="50"
+        [fxFlex.gt-md]="
+          posType == 'vertical' ? ((sidebarBtn$ | async) ? 24 : 19) : 100
+        "
+        [fxFlex.md]="posType == 'vertical' ? 24 : 100"
+        [fxFlex.sm]="posType == 'vertical' ? 50 : 100"
         [fxFlex.xs]="100"
       >
         <div class="image-con"><div class="image"></div></div>
@@ -36,11 +38,7 @@
       fxLayoutAlign="center"
       fxLayoutGap="16px grid"
     >
-      <div
-        style="opacity: 1"
-        *ngFor="let e of [].constructor(16)"
-        [fxFlex]="videoFlexSize"
-      >
+      <div style="opacity: 1" *ngFor="let e of [].constructor(16)">
         <div fxLayout="row">
           <div fxFlex="30">
             <div class="image-con"><div class="image"></div></div>

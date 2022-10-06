@@ -5,6 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { SharedService } from 'src/app/shared/services/shared.service';
 
 @Component({
   selector: 'app-videos-holder',
@@ -13,9 +14,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideosHolderComponent {
+  constructor(private sharedService: SharedService) {}
+  sidebarBtn$ = this.sharedService.sidebarTriggerBtn$;
   @Input('posType') posType: string = 'vertical';
   @Input('miniSidebar') miniSidebar: boolean = false;
-  @Input('videoFlexSize') videoFlexSize: number = 80;
   @Input('loading') loading$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false);
 }

@@ -10,6 +10,7 @@
         <mat-chip
           class="example-box"
           *ngFor="let category of [].constructor(20)"
+          [disabled]="true"
         >
           <span [innerHTML]="randomSpace()"></span>
         </mat-chip>
