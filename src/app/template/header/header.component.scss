@@ -33,7 +33,6 @@
   }
 }
 .menu-icon {
-  width: 38px;
   background-color: white;
   border: none;
   cursor: pointer;
@@ -44,10 +43,15 @@
   position: fixed;
   justify-content: space-between;
   z-index: 10;
+  right: 1rem;
+  :first-child {
+    padding-left: 7px;
+  }
 }
 .search-con:focus-within {
   border: 1px solid #1c62b9 !important;
 }
+
 .search-con {
   position: relative;
   align-items: center;
@@ -114,6 +118,7 @@ form {
 }
 
 .logo {
+  margin-left: 1.1rem;
   display: inline-block;
   width: 100px;
   height: 30px;

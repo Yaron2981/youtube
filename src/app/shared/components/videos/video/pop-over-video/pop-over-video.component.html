@@ -1,13 +1,11 @@
 <div class="pop-over-video" [@fade]="video && video.showPop">
-  <mat-card class="inner-card mat-elevation-z0">
+  <mat-card
+    class="inner-card mat-elevation-z0"
+    [ngStyle]="{ transform: 'translate(' + remainder + '%, -45%)' }"
+  >
     <div>
       <ng-template [ngIf]="video && video.showPlayer">
-        <a
-          target="_blank"
-          [href]="
-            'https://www.youtube.com/watch?v=' + video.videoId | safe: 'url'
-          "
-        >
+        <a target="_blank" [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'">
           <app-player
             [duration]="video.duration"
             [videoId]="video.videoId"
@@ -29,9 +27,7 @@
           <div fxFlex="82">
             <a
               target="_blank"
-              [href]="
-                'https://www.youtube.com/watch?v=' + video.videoId | safe: 'url'
-              "
+              [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
               class="title"
               [innerHtml]="video.title | safe: 'html'"
             ></a>
@@ -41,10 +37,7 @@
                 <a
                   target="_blank"
                   class="channel-title"
-                  [href]="
-                    'https://www.youtube.com/watch?v=' + video.channelId
-                      | safe: 'url'
-                  "
+                  [href]="YT.VIDEO_PATH + video.channelId | safe: 'url'"
                   >{{ video.channelTitle }}</a
                 ><br />
                 {{ video.viewCount! | shortNumber }}

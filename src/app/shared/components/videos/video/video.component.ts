@@ -35,7 +35,8 @@ import { YOUTUBE_CONST } from '../../../constants/yt';
 export class VideoComponent implements OnDestroy {
   YT = YOUTUBE_CONST;
   constructor(private ref: ChangeDetectorRef) {}
-  @Input('video') video: Video | null = null;
+  @Input() videoIndex: number = 0;
+  @Input() video: Video | null = null;
   @Input('posType') posType = 'vertical';
   showVertical: TemplateRef<any> | undefined;
   timeout: ReturnType<typeof setTimeout> | undefined;

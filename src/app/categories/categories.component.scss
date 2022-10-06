@@ -16,9 +16,11 @@
   overflow: hidden;
   scroll-behavior: smooth;
   padding-right: 50px;
+  padding-left: 2rem;
 }
 .categories {
   position: absolute;
+  right: 1rem;
   top: 0rem;
   z-index: 1;
   display: flex;

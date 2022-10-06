@@ -153,6 +153,10 @@
           </div>
         </div>
       </mat-card-content>
-      <app-pop-over-video [video]="video"></app-pop-over-video> </mat-card
+      <app-pop-over-video
+        *ngIf="video.showPop"
+        [videoIndex]="videoIndex"
+        [video]="video"
+      ></app-pop-over-video> </mat-card
   ></ng-template>
 </div>
