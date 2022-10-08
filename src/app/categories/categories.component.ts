@@ -30,9 +30,11 @@ export class CategoriesComponent implements AfterViewInit {
     this.searchService.categoryIdChanged(categoryId);
   }
   ngAfterViewInit(): void {
-    const scroll = this.widgetsContent.nativeElement.scrollLeft + 150;
-    if (scroll > 0) {
-      this.scrollLeftBtn = true;
+    if (this.widgetsContent) {
+      const scroll = this.widgetsContent.nativeElement.scrollLeft + 150;
+      if (scroll > 0) {
+        this.scrollLeftBtn = true;
+      }
     }
   }
   public scrollRight(): void {

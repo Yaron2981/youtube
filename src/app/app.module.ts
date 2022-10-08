@@ -40,6 +40,8 @@ import { TruncatePipe } from './shared/pipes/truncate.pipe';
 import { CategoriesHolderComponent } from './shared/components/holders/categories-holder/categories-holder.component';
 import { ErrorCatchingInterceptor } from './interceptors/error-catching.interceptor';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NgxIndexedDBModule } from 'ngx-indexed-db';
+import { dbConfig } from './localDB/DBConfig';
 
 @NgModule({
   declarations: [
@@ -84,6 +86,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatDividerModule,
     CommonModule,
     MatSnackBarModule,
+    NgxIndexedDBModule.forRoot(dbConfig),
   ],
   providers: [
     {

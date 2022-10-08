@@ -1,15 +1,19 @@
 import { Component, OnInit } from '@angular/core';
+// import { LocalDBService } from '../shared/services/local-db.service';
+import { filter } from 'rxjs/operators';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
 
 @Component({
   selector: 'app-watch',
   templateUrl: './watch.component.html',
-  styleUrls: ['./watch.component.scss']
+  styleUrls: ['./watch.component.scss'],
 })
 export class WatchComponent implements OnInit {
-
-  constructor() { }
+  constructor(private localDB: NgxIndexedDBService) {}
 
   ngOnInit(): void {
+    // this.localDB
+    //   .bulkGet('videos', ['5odH45KGUWE', '7cWjBCl2daU'])
+    //   .subscribe((x: any) => console.log(x));
   }
-
 }

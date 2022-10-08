@@ -21,6 +21,7 @@ import {
   Video,
   VideosResponse,
 } from 'src/app/search.interface';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
 
 @Injectable({
   providedIn: 'root',
@@ -36,9 +37,39 @@ export class SearchService {
   //   'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE',
   //   'AIzaSyB7KHp81yAoioCEJInypVjd_adc0ZfAsko',
   // ][Math.floor(Math.random() * 3)];
-  constructor(private http: HttpClient, private ls: LocalService) {
+  constructor(
+    private http: HttpClient,
+    private ls: LocalService,
+    private localDB: NgxIndexedDBService
+  ) {
     this.getNextPage();
   }
+  videoIds = [
+    'jGeX8jSHiTU',
+    'gtbUB1XPW_o',
+    'BHJZQ70JQNQ',
+    'dz6rcaUaVsQ',
+    'dKBvBA-4gFo',
+    'Hg1dgrIA2Ck',
+    'Sj-M9Rj_Ijo',
+    'oSFSMlX-190',
+    'cbibjU9O4ME',
+    '3xQY_HuJUx8',
+    '7cWjBCl2daU',
+    '6khvyAE6y54',
+    'peHWvDzPonQ',
+    'bWM8IwiusJ4',
+    'Dx1GJic6hAs',
+    '-vPhCtCHDs0',
+    'Cx25dyEnO8Y',
+    'tEwvUu1dBTs',
+    '5odH45KGUWE',
+    'bTUV1EsJOoU',
+    'RNmhPcTCinU',
+    'WxUCJbYNraI',
+    'CBTZTWctPo8',
+    'JycoC01UD1c',
+  ];
   videoId$: Observable<boolean> = of(false);
   qcid = new BehaviorSubject<QCid>({ q: '', cid: 0 });
   qcid$: Observable<any> = this.qcid.asObservable();
@@ -52,12 +83,13 @@ export class SearchService {
   categoryIdChanged(categoryId: number) {
     this.currentCategoryId = categoryId;
     this.qcid.next({ q: '', cid: categoryId });
-    this.getNextPage();
+    // this.getSource();
   }
   getVideosByQuery(q: string) {
     this.qcid.next({ q: q, cid: 0 });
   }
   getNextPage(): void {
+    // this.getSource().subscribe();
     if (this.prevCategoryId != this.currentCategoryId) {
       this.getSource().subscribe((data) => this.obsArray.next(data));
       this.prevCategoryId = this.currentCategoryId;
@@ -72,36 +104,72 @@ export class SearchService {
     }
   }
 
-  getSource() {
+  getSource(): Observable<any> {
+    let videosIds: string[] = [];
     return this.qcid$.pipe(
-      // distinctUntilChanged(),
-      tap(() => this.loading$.next(true)),
+      tap(() => {
+        console.log('trigger');
+        this.loading$.next(true);
+      }),
       switchMap((qcid) =>
-        this.getVideos(qcid.q, qcid.cid).pipe(
-          mergeMap((res: VideosResponse) =>
-            forkJoin([
-              this.getChannels(res),
-              this.getVideoStatistics(res.items),
-            ]).pipe(
-              map((r: any) => {
-                return res.items.map((re: Video) => {
-                  return {
-                    ...re,
-                    viewCount: r[1][re.videoId].viewCount,
-                    duration: r[1][re.videoId].duration,
-                    channelThumbnail: r[0][re.channelId],
-                  };
-                });
-              }),
-              tap((data) => this.obsArray.next(data))
-              // tap((data: any) => this.ls.setData(qcid.q + qcid.cid, data))
-            )
-          )
+        this.localDB.count('lists', qcid.cid).pipe(
+          mergeMap((counter: number) => {
+            if (counter > 0) {
+              return this.localDB
+                .getByID('lists', qcid.cid)
+                .pipe(
+                  mergeMap((res: any) =>
+                    this.localDB
+                      .bulkGet('videos', res.videoIds)
+                      .pipe(
+                        tap((videos: Video[]) => this.obsArray.next(videos))
+                      )
+                  )
+                );
+            } else
+              return this.getVideos(qcid.q, qcid.cid).pipe(
+                mergeMap((res: VideosResponse) =>
+                  forkJoin([
+                    this.getChannels(res),
+                    this.getVideoStatistics(res.items),
+                  ]).pipe(
+                    map((r: any) => {
+                      return res.items.map((re: Video) => {
+                        videosIds.push(re.videoId);
+
+                        return {
+                          ...re,
+                          viewCount: r[1][re.videoId].viewCount,
+                          duration: r[1][re.videoId].duration,
+                          channelThumbnail: r[0][re.channelId],
+                        };
+                      });
+                    }),
+                    tap((videos: Video[]) => {
+                      this.obsArray.next(videos);
+                      console.log(qcid.cid, videosIds);
+                      this.localDB
+                        .update('lists', {
+                          cid: qcid.cid,
+                          videoIds: videosIds,
+                        })
+                        .subscribe();
+                      videos.forEach((e) => {
+                        this.localDB.update('videos', e).subscribe();
+                      });
+                    })
+                  )
+                )
+              );
+          }),
+          take(1)
         )
       ),
-      take(1),
+
       shareReplay(1),
-      tap(() => this.loading$.next(false))
+      tap(() => {
+        this.loading$.next(false);
+      })
     );
   }
   getVideosTitles(q: string): Observable<any> {

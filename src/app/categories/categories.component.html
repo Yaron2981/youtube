@@ -18,8 +18,8 @@
     >
       <mat-chip
         class="example-box"
-        (click)="categoryClicked(category.id); videoCategoryId = category.id"
-        [selected]="videoCategoryId == category.id"
+        (click)="categoryClicked(category.cid); videoCategoryId = category.cid"
+        [selected]="videoCategoryId == category.cid"
         *ngFor="let category of categories"
       >
         {{ category.title }}
