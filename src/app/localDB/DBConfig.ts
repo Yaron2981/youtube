@@ -66,6 +66,7 @@ export const dbConfig: DBConfig = {
       storeConfig: { keyPath: 'cid', autoIncrement: false },
       storeSchema: [
         { name: 'cid', keypath: 'cid', options: { unique: true } },
+        { name: 'lastPage', keypath: 'lastPage', options: { unique: true } },
         {
           name: 'videoIds',
           keypath: 'videoIds',

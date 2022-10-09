@@ -7,8 +7,8 @@ export interface Video {
   description: string;
   thumbnail: string;
   channelThumbnail: string;
-  showPop: boolean;
-  showPlayer: boolean;
+  showPop?: boolean;
+  showPlayer?: boolean;
   channelName: string;
   viewCount: number;
   duration: number;
@@ -36,4 +36,5 @@ export interface VideosResponse {
 export interface QCid {
   q: string;
   cid: number;
+  next: boolean;
 }

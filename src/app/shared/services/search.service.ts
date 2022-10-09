@@ -41,37 +41,10 @@ export class SearchService {
     private http: HttpClient,
     private ls: LocalService,
     private localDB: NgxIndexedDBService
-  ) {
-    this.getNextPage();
-  }
-  videoIds = [
-    'jGeX8jSHiTU',
-    'gtbUB1XPW_o',
-    'BHJZQ70JQNQ',
-    'dz6rcaUaVsQ',
-    'dKBvBA-4gFo',
-    'Hg1dgrIA2Ck',
-    'Sj-M9Rj_Ijo',
-    'oSFSMlX-190',
-    'cbibjU9O4ME',
-    '3xQY_HuJUx8',
-    '7cWjBCl2daU',
-    '6khvyAE6y54',
-    'peHWvDzPonQ',
-    'bWM8IwiusJ4',
-    'Dx1GJic6hAs',
-    '-vPhCtCHDs0',
-    'Cx25dyEnO8Y',
-    'tEwvUu1dBTs',
-    '5odH45KGUWE',
-    'bTUV1EsJOoU',
-    'RNmhPcTCinU',
-    'WxUCJbYNraI',
-    'CBTZTWctPo8',
-    'JycoC01UD1c',
-  ];
+  ) {}
+
   videoId$: Observable<boolean> = of(false);
-  qcid = new BehaviorSubject<QCid>({ q: '', cid: 0 });
+  qcid = new BehaviorSubject<QCid>({ q: '', cid: 0, next: false });
   qcid$: Observable<any> = this.qcid.asObservable();
   loading$ = new BehaviorSubject<boolean>(false);
   obsArray: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
@@ -82,85 +55,49 @@ export class SearchService {
   // source$: Observable<Video[]> =
   categoryIdChanged(categoryId: number) {
     this.currentCategoryId = categoryId;
-    this.qcid.next({ q: '', cid: categoryId });
+    this.qcid.next({ q: '', cid: categoryId, next: false });
     // this.getSource();
   }
   getVideosByQuery(q: string) {
-    this.qcid.next({ q: q, cid: 0 });
+    this.qcid.next({ q: q, cid: 0, next: false });
   }
   getNextPage(): void {
-    // this.getSource().subscribe();
-    if (this.prevCategoryId != this.currentCategoryId) {
-      this.getSource().subscribe((data) => this.obsArray.next(data));
-      this.prevCategoryId = this.currentCategoryId;
-    } else {
-      forkJoin([this.videos$.pipe(take(1)), this.getSource()]).subscribe({
-        next: (data: Array<Array<Video>>) => {
-          let newArr: Video[] = [];
-          newArr = [...data[0], ...data[1]];
-          this.obsArray.next(newArr);
-        },
-      });
-    }
+    this.qcid.next({ q: '', cid: this.currentCategoryId, next: true });
+    // // this.getSource().subscribe();
+    // if (this.prevCategoryId != this.currentCategoryId) {
+    //   this.getSource().pipe(tap((data) => this.obsArray.next(data)));
+    //   this.prevCategoryId = this.currentCategoryId;
+    // } else {
+    //   forkJoin([this.videos$.pipe(take(1)), this.getSource()]).subscribe({
+    //     next: (data: Array<Array<Video>>) => {
+    //       let newArr: Video[] = [];
+    //       newArr = [...data[0], ...data[1]];
+    //       this.obsArray.next(newArr);
+    //     },
+    //   });
+    // }
   }
 
   getSource(): Observable<any> {
+    console.log('source');
     let videosIds: string[] = [];
     return this.qcid$.pipe(
       tap(() => {
-        console.log('trigger');
         this.loading$.next(true);
       }),
       switchMap((qcid) =>
-        this.localDB.count('lists', qcid.cid).pipe(
-          mergeMap((counter: number) => {
-            if (counter > 0) {
-              return this.localDB
-                .getByID('lists', qcid.cid)
-                .pipe(
-                  mergeMap((res: any) =>
-                    this.localDB
-                      .bulkGet('videos', res.videoIds)
-                      .pipe(
-                        tap((videos: Video[]) => this.obsArray.next(videos))
-                      )
-                  )
-                );
-            } else
-              return this.getVideos(qcid.q, qcid.cid).pipe(
-                mergeMap((res: VideosResponse) =>
-                  forkJoin([
-                    this.getChannels(res),
-                    this.getVideoStatistics(res.items),
-                  ]).pipe(
-                    map((r: any) => {
-                      return res.items.map((re: Video) => {
-                        videosIds.push(re.videoId);
+        this.localDB.getByID('lists', qcid.cid).pipe(
+          mergeMap((listData: any) => {
+            console.log('trigger', listData, qcid);
 
-                        return {
-                          ...re,
-                          viewCount: r[1][re.videoId].viewCount,
-                          duration: r[1][re.videoId].duration,
-                          channelThumbnail: r[0][re.channelId],
-                        };
-                      });
-                    }),
-                    tap((videos: Video[]) => {
-                      this.obsArray.next(videos);
-                      console.log(qcid.cid, videosIds);
-                      this.localDB
-                        .update('lists', {
-                          cid: qcid.cid,
-                          videoIds: videosIds,
-                        })
-                        .subscribe();
-                      videos.forEach((e) => {
-                        this.localDB.update('videos', e).subscribe();
-                      });
-                    })
-                  )
-                )
-              );
+            if (listData && (listData.videoIds.length == 100 || !qcid.next)) {
+              return this.localDB
+                .bulkGet('videos', listData.videoIds)
+                .pipe(tap((videos: Video[]) => this.obsArray.next(videos)));
+            } else {
+              if (listData) videosIds = listData.videoIds;
+              return this.getVideos(qcid.q, qcid.cid, videosIds);
+            }
           }),
           take(1)
         )
@@ -173,33 +110,47 @@ export class SearchService {
     );
   }
   getVideosTitles(q: string): Observable<any> {
-    const url = `${this.API_URL}?q=${q}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=14&regionCode=il&relevanceLanguage=he`;
-    return this.http.get(url).pipe(
-      map((response: any) =>
-        response.items.map((item: any) =>
-          item.snippet.title
-            .toLowerCase()
-            .match(/[\p{L}]+/gu)
-            .slice(0, 3)
-            .join(' ')
-            .trim()
-        )
-      ),
-      distinct(),
-      filter((t: string) => t != ''),
-      tap((res) => this.ls.setData('search', res)),
-      shareReplay(1)
+    return this.localDB.getByID('search', q).pipe(
+      mergeMap((listData: any) => {
+        if (listData) {
+          return of(listData.titles);
+        } else {
+          const url = `${this.API_URL}?q=${q}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=14&regionCode=il&relevanceLanguage=he`;
+          return this.http.get(url).pipe(
+            map((response: any) => {
+              return response.items.map((item: any) =>
+                item.snippet.title
+                  .toLowerCase()
+                  .match(/[\p{L}]+/gu)
+                  .slice(0, 3)
+                  .join(' ')
+                  .trim()
+              );
+            }),
+            distinct(),
+            filter((t: string) => t != ''),
+            tap((res) => {
+              this.localDB.update('search', { q: q, titles: res });
+            }),
+            shareReplay(1)
+          );
+        }
+      })
     );
   }
-  getVideos(query: string = '', categoryId: number = 0): Observable<any> {
-    const affix =
+  getVideos(
+    query: string = '',
+    categoryId: number = 0,
+    videosIds: any = []
+  ): Observable<any> {
+    const widthCategory =
       categoryId > 0 ? `videoCategoryId=${categoryId}` : `q=${query}`;
     const pageToken = this.nextPageToken
       ? `&pageToken=${this.nextPageToken}`
       : '';
-    const url = `${this.API_URL}?${affix}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=24&regionCode=il${pageToken}`;
+    const url = `${this.API_URL}?${widthCategory}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=50&regionCode=il${pageToken}`;
     return this.http.get<VideosResponse>(url).pipe(
-      map((response: VideosResponse) => {
+      map((response: any) => {
         return {
           ...response,
           items: response.items.map((item: any) => {
@@ -212,17 +163,49 @@ export class SearchService {
               publishedAt: item.snippet.publishedAt,
               description: item.snippet.description,
               thumbnail: item.snippet.thumbnails.medium.url,
-              showPop: false,
-              showPlayer: false,
             };
           }),
         };
       }),
+      mergeMap((res: VideosResponse) =>
+        forkJoin([
+          this.getChannelsInfo(res),
+          this.getVideoStatisticsInfo(res.items),
+        ]).pipe(
+          map((r: any) => {
+            return res.items.map((re: Video) => {
+              videosIds.push(re.videoId);
+
+              return {
+                ...re,
+                viewCount: r[1][re.videoId].viewCount,
+                duration: r[1][re.videoId].duration,
+                channelThumbnail: r[0][re.channelId],
+              };
+            });
+          }),
+          tap((videos: Video[]) => {
+            this.obsArray.next(videos);
+            this.localDB
+              .update('lists', {
+                cid: categoryId,
+                lastPage: this.nextPageToken,
+                videoIds: [
+                  ...new Set([...videosIds, ...videos.map((v) => v.videoId)]),
+                ],
+              })
+              .subscribe();
+            videos.forEach((e) => {
+              this.localDB.update('videos', e).subscribe();
+            });
+          })
+        )
+      ),
       shareReplay(1)
     );
   }
 
-  getChannels(res: any): Observable<any> {
+  getChannelsInfo(res: any): Observable<any> {
     const channelIds = [
       ...new Set(res.items.map((r: any) => r.channelId)),
     ].join(',');
@@ -240,7 +223,7 @@ export class SearchService {
       shareReplay(1)
     );
   }
-  getVideoStatistics(res: any): Observable<any> {
+  getVideoStatisticsInfo(res: any): Observable<any> {
     const videoIds = [...new Set(res.map((r: any) => r.videoId))].join(',');
     const url = `${this.API_STATISTIC_URL}?id=${videoIds}&key=${this.API_TOKEN}&part=statistics,contentDetails`;
     console.log(url);
@@ -261,7 +244,7 @@ export class SearchService {
               (acc: number, v: number, k: number) => (acc += v * 60 ** k),
               0
             );
-          statistics[r.videoId] = {
+          statistics[r.videoId as string] = {
             viewCount: videoById.statistics.viewCount,
             duration: duration,
           };

@@ -12,6 +12,7 @@ export class WatchComponent implements OnInit {
   constructor(private localDB: NgxIndexedDBService) {}
 
   ngOnInit(): void {
+    this.localDB.getByID('lists', 10).subscribe((x) => console.log(x));
     // this.localDB
     //   .bulkGet('videos', ['5odH45KGUWE', '7cWjBCl2daU'])
     //   .subscribe((x: any) => console.log(x));
