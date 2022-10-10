@@ -27,6 +27,9 @@ import { NgxIndexedDBService } from 'ngx-indexed-db';
   providedIn: 'root',
 })
 export class SearchService {
+  private RESULTS_LIMIT: number = 100;
+  private LIMIT: number = 50;
+
   private API_URL = 'https://www.googleapis.com/youtube/v3/search';
   private API_CHANNEL_URL =
     'https://youtube.googleapis.com/youtube/v3/channels';
@@ -90,10 +93,16 @@ export class SearchService {
           mergeMap((listData: any) => {
             console.log('trigger', listData, qcid);
 
-            if (listData && (listData.videoIds.length == 100 || !qcid.next)) {
-              return this.localDB
-                .bulkGet('videos', listData.videoIds)
-                .pipe(tap((videos: Video[]) => this.obsArray.next(videos)));
+            if (
+              listData &&
+              (listData.videoIds.length == this.RESULTS_LIMIT || !qcid.next)
+            ) {
+              return this.localDB.bulkGet('videos', listData.videoIds).pipe(
+                tap((videos: Video[]) => {
+                  if (!qcid.next) videos = videos.slice(0, this.LIMIT);
+                  this.obsArray.next(videos);
+                })
+              );
             } else {
               if (listData) videosIds = listData.videoIds;
               return this.getVideos(qcid.q, qcid.cid, videosIds);
@@ -148,7 +157,7 @@ export class SearchService {
     const pageToken = this.nextPageToken
       ? `&pageToken=${this.nextPageToken}`
       : '';
-    const url = `${this.API_URL}?${widthCategory}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=50&regionCode=il${pageToken}`;
+    const url = `${this.API_URL}?${widthCategory}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=${this.LIMIT}&regionCode=il${pageToken}`;
     return this.http.get<VideosResponse>(url).pipe(
       map((response: any) => {
         return {

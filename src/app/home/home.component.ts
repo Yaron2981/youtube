@@ -9,10 +9,27 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import {
+  Observable,
+  of,
+  fromEvent,
+  switchMap,
+  mergeMap,
+  combineLatest,
+  combineLatestWith,
+  forkJoin,
+  startWith,
+  distinctUntilChanged,
+  distinct,
+  debounceTime,
+  map,
+} from 'rxjs';
 import { CategoriesService } from '../categories/categories.service';
 import { Video } from '../search.interface';
 import { SearchService } from '../shared/services/search.service';
+import { media } from '../shared/helpers/media';
+import { SharedService } from '../shared/services/shared.service';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -24,7 +41,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private searchService: SearchService,
     private ref: ChangeDetectorRef,
     private router: Router,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    private sharedService: SharedService
   ) {}
   items = Array.from({ length: 100 }).map((_, i) => `Item #${i}`);
 
@@ -33,6 +51,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   videos$: Observable<Video[]> = of([]);
   videosLoading$ = this.searchService.loading$;
   categoriesLoading$ = this.categoriesService.loading$;
+  mediaVideoSize: number = 0;
   killMeObservable: Subscription = new Subscription();
   ngOnInit() {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -41,7 +60,22 @@ export class HomeComponent implements OnInit, OnDestroy {
     // this.searchService.qcid.next({ q: '', cid: 0, next: false });
     this.videos$ = this.searchService.videos$;
     this.ref.detectChanges();
+    this.test().subscribe((x: any) => console.log(x));
   }
+  test(): Observable<any> {
+    return combineLatest([
+      this.sharedService.sidebarTriggerBtn$,
+      fromEvent(window, 'resize').pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        map((event) => (event.target as Window).innerWidth),
+        startWith(window.innerWidth)
+      ),
+    ]);
+
+    //return of(r.target.innerWidth == 1848 && trigger ? 5 : 4);
+  }
+
   nextPage(trigger: boolean) {
     this.searchService.getNextPage();
     this.ref.detectChanges();
