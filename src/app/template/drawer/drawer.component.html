@@ -21,22 +21,26 @@
           class="menu-icon"
           (click)="this.sidebarBtn.next(!this.sidebarBtn.value)"
         >
-          <mat-icon style="margin-left: -10px">menu</mat-icon>
+          <mat-icon>menu</mat-icon>
         </button>
-        <div class="logo"></div>
-      </mat-list-item>
-      <mat-list-item style="background-color: #d9d9d9">
-        <mat-icon mat-list-icon>home</mat-icon>
-        <div mat-line>Home</div>
-        <span class="mini-text">Home</span>
+        <div *ngIf="sidebarBtn$ | async" class="logo"></div>
       </mat-list-item>
       <mat-list-item>
-        <mat-icon mat-list-icon fontSet="material-icons-outlined"
-          >explore
-        </mat-icon>
+        <a>
+          <mat-icon mat-list-icon>home</mat-icon>
+          <div mat-line>Home</div>
+          <span class="mini-text">Home</span>
+        </a>
+      </mat-list-item>
+      <mat-list-item>
+        <a>
+          <mat-icon mat-list-icon fontSet="material-icons-outlined"
+            >explore
+          </mat-icon>
 
-        <div mat-line>Explore{{ [].constructor(24).join("&nbsp;") }}</div>
-        <span class="mini-text">Explore</span>
+          <div mat-line>Explore{{ [].constructor(24).join("&nbsp;") }}</div>
+          <span class="mini-text">Explore</span>
+        </a>
       </mat-list-item>
       <mat-list-item> </mat-list-item>
       <mat-divider></mat-divider>

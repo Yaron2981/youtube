@@ -25,7 +25,6 @@
   }
   span.mini-text {
     display: block;
-    position: absolute;
     top: 42px;
     font-size: 11px;
   }
@@ -40,13 +39,28 @@
   span.mini-text {
     display: none;
   }
+  a.mat-list-item {
+    background-color: #d9d9d9;
+  }
 }
-::ng-deep .mat-list-item-content {
-  padding: 0 1.25rem !important;
+::ng-depp .max-drawer .mat-list-item-content a {
+  align-items: center !important;
+  display: inherit !important;
+}
+::ng-deep .min-drawer .mat-list .mat-list-item:not(:first-child) {
+  padding: 10px 0px !important;
+}
+::ng-deep .min-drawer .mat-list-item-content {
+  padding: 0px 0px !important;
+}
+::ng-deep .min-drawer .mat-list-item-content a {
+  padding: 0px 0px !important;
+  width: 72px !important;
+  text-align: center;
 }
 .mat-drawer-container {
   background-color: transparent;
 }
-::ng-deep .side-over > .mat-list-item-content {
+::ng-deep .min-drawer .mat-list-item-content {
   justify-content: center;
 }
