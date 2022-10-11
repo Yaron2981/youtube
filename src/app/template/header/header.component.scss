@@ -42,10 +42,10 @@
   display: flex;
   position: fixed;
   justify-content: space-between;
-  z-index: 10;
+  z-index: 1;
   right: 1rem;
   div button:first-child {
-    margin-left: 1rem;
+    margin-left: 20px;
   }
 }
 .search-con:focus-within {
@@ -122,7 +122,7 @@ form {
   max-height: 100% !important;
 }
 
-.logo {
+::ng-deep .logo {
   margin-left: 1.1rem;
   display: inline-block;
   width: 100px;

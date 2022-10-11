@@ -9,21 +9,7 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import {
-  Observable,
-  of,
-  fromEvent,
-  switchMap,
-  mergeMap,
-  combineLatest,
-  combineLatestWith,
-  forkJoin,
-  startWith,
-  distinctUntilChanged,
-  distinct,
-  debounceTime,
-  map,
-} from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CategoriesService } from '../categories/categories.service';
 import { Video } from '../search.interface';
 import { SearchService } from '../shared/services/search.service';
@@ -60,20 +46,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     // this.searchService.qcid.next({ q: '', cid: 0, next: false });
     this.videos$ = this.searchService.videos$;
     this.ref.detectChanges();
-    this.test().subscribe((x: any) => console.log(x));
-  }
-  test(): Observable<any> {
-    return combineLatest([
-      this.sharedService.sidebarTriggerBtn$,
-      fromEvent(window, 'resize').pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        map((event) => (event.target as Window).innerWidth),
-        startWith(window.innerWidth)
-      ),
-    ]);
-
-    //return of(r.target.innerWidth == 1848 && trigger ? 5 : 4);
+    // this.sharedService
+    //   .videCellsPerRowByQuery()
+    //   .subscribe((x: any) => console.log(x));
   }
 
   nextPage(trigger: boolean) {

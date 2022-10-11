@@ -1,17 +1,35 @@
-<mat-drawer-container class="drawer" autosize>
+<mat-drawer-container
+  *ngIf="drawerModeSubscription$ | async as dmsWidth"
+  class="drawer"
+  autosize
+  [ngClass]="
+    (sidebarBtn$ | async) && dmsWidth <= 1300 ? 'over-drawer' : 'side-drawer'
+  "
+  ><!--(sidebarBtn$ | async) && dmsWidth < 1300-->
   <mat-drawer
     #drawer
-    class="sidenav"
-    mode="side"
+    [mode]="dmsWidth > 1300 ? 'side' : (sidebarBtn$ | async) ? 'over' : 'side'"
     opened
-    [ngClass]="(sidebarBtn$ | async) ? 'max-drawer' : 'min-drawer'"
+    [ngClass]="
+      (sidebarBtn$ | async) ? 'sidenav max-drawer' : 'sidenav min-drawer'
+    "
   >
     <mat-list>
-      <a mat-list-item routerLink="/">
+      <mat-list-item>
+        <button
+          mat-icon-button
+          class="menu-icon"
+          (click)="this.sidebarBtn.next(!this.sidebarBtn.value)"
+        >
+          <mat-icon style="margin-left: -10px">menu</mat-icon>
+        </button>
+        <div class="logo"></div>
+      </mat-list-item>
+      <mat-list-item style="background-color: #d9d9d9">
         <mat-icon mat-list-icon>home</mat-icon>
         <div mat-line>Home</div>
         <span class="mini-text">Home</span>
-      </a>
+      </mat-list-item>
       <mat-list-item>
         <mat-icon mat-list-icon fontSet="material-icons-outlined"
           >explore
@@ -24,5 +42,7 @@
       <mat-divider></mat-divider>
     </mat-list>
   </mat-drawer>
-  <router-outlet style="margin-top: 5rem"></router-outlet>
+  <mat-drawer-content
+    ><router-outlet style="margin-top: 5rem"></router-outlet
+  ></mat-drawer-content>
 </mat-drawer-container>
