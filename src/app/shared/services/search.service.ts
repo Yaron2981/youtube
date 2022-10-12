@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, forkJoin, of } from 'rxjs';
 
 import {
   mergeMap,
-  of,
-  forkJoin,
-  BehaviorSubject,
   distinct,
   filter,
   map,
@@ -18,13 +15,7 @@ import {
   tap,
 } from 'rxjs/operators';
 import { LocalService } from './local.service';
-import {
-  Channel,
-  QCid,
-  Statistic,
-  Video,
-  VideosResponse,
-} from 'src/app/search.interface';
+import { QCid, Video, VideosResponse } from 'src/app/search.interface';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 
 @Injectable({
@@ -39,11 +30,7 @@ export class SearchService {
     'https://youtube.googleapis.com/youtube/v3/channels';
   private API_STATISTIC_URL = 'https://www.googleapis.com/youtube/v3/videos';
   private API_TOKEN = 'AIzaSyB7KHp81yAoioCEJInypVjd_adc0ZfAsko';
-  // private API_TOKEN = [
-  //   'AIzaSyDzgvf6dJM0EHAjkfdjLIKyvgcMnAXP8uM',
-  //   'AIzaSyAihzHStyDE_PYGqEGNQjXTdmvDb2LCgdE',
-  //   'AIzaSyB7KHp81yAoioCEJInypVjd_adc0ZfAsko',
-  // ][Math.floor(Math.random() * 3)];
+
   constructor(
     private http: HttpClient,
     private ls: LocalService,
@@ -59,34 +46,18 @@ export class SearchService {
   nextPageToken: string | null = null;
   currentCategoryId: number = 0;
   prevCategoryId: number = 0;
-  // source$: Observable<Video[]> =
   categoryIdChanged(categoryId: number) {
     this.currentCategoryId = categoryId;
     this.qcid.next({ q: '', cid: categoryId, next: false });
-    // this.getSource();
   }
   getVideosByQuery(q: string) {
     this.qcid.next({ q: q, cid: 0, next: false });
   }
   getNextPage(): void {
     this.qcid.next({ q: '', cid: this.currentCategoryId, next: true });
-    // // this.getSource().subscribe();
-    // if (this.prevCategoryId != this.currentCategoryId) {
-    //   this.getSource().pipe(tap((data) => this.obsArray.next(data)));
-    //   this.prevCategoryId = this.currentCategoryId;
-    // } else {
-    //   forkJoin([this.videos$.pipe(take(1)), this.getSource()]).subscribe({
-    //     next: (data: Array<Array<Video>>) => {
-    //       let newArr: Video[] = [];
-    //       newArr = [...data[0], ...data[1]];
-    //       this.obsArray.next(newArr);
-    //     },
-    //   });
-    // }
   }
 
   getSource(): Observable<any> {
-    console.log('source');
     let videosIds: string[] = [];
     return this.qcid$.pipe(
       tap(() => {
@@ -102,8 +73,6 @@ export class SearchService {
           .pipe(
             mergeMap((listData: any) => {
               if (!qcid.next) this.obsArray.next([]);
-              console.log('trigger', listData, qcid);
-
               if (
                 listData &&
                 (listData.videoIds.length == this.RESULTS_LIMIT || !qcid.next)
@@ -155,7 +124,7 @@ export class SearchService {
                   );
                 }),
                 distinct(),
-                filter((t: string) => t != ''),
+                filter((t: any) => t != ''),
                 tap((res: string[]) => {
                   this.localDB
                     .update('search', { q: q, titles: res })
@@ -264,7 +233,6 @@ export class SearchService {
   getVideoStatisticsInfo(res: any): Observable<any> {
     const videoIds = [...new Set(res.map((r: any) => r.videoId))].join(',');
     const url = `${this.API_STATISTIC_URL}?id=${videoIds}&key=${this.API_TOKEN}&part=statistics,contentDetails`;
-    console.log(url);
     return this.http.get(url).pipe(
       map((response: any) => {
         const statistics: any = {};

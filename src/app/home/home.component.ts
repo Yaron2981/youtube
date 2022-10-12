@@ -40,15 +40,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   mediaVideoSize: number = 0;
   killMeObservable: Subscription = new Subscription();
   ngOnInit() {
+    console.log('init');
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = 'reload';
+    this.searchService.qcid.next({ q: '', cid: 0, next: false });
+
     this.killMeObservable = this.searchService.getSource().subscribe();
-    // this.searchService.qcid.next({ q: '', cid: 0, next: false });
     this.videos$ = this.searchService.videos$;
     this.ref.detectChanges();
-    // this.sharedService
-    //   .videCellsPerRowByQuery()
-    //   .subscribe((x: any) => console.log(x));
   }
 
   nextPage(trigger: boolean) {
