@@ -20,6 +20,9 @@
 }
 .min-drawer {
   padding-right: 0px !important;
+  ::ng-deep .mat-drawer-inner-container {
+    overflow: hidden !important;
+  }
   span.mini-text {
     display: block;
     top: 42px;
