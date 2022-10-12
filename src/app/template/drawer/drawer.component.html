@@ -6,8 +6,9 @@
     (sidebarBtn$ | async) && dmsWidth <= 1300 ? 'over-drawer' : 'side-drawer'
   "
   ><!--(sidebarBtn$ | async) && dmsWidth < 1300-->
+
   <mat-drawer
-    #drawer
+    #sidenav
     [mode]="dmsWidth > 1300 ? 'side' : (sidebarBtn$ | async) ? 'over' : 'side'"
     opened
     [ngClass]="
@@ -16,16 +17,29 @@
   >
     <mat-list>
       <mat-list-item>
-        <button
-          mat-icon-button
-          class="menu-icon"
-          (click)="this.sidebarBtn.next(!this.sidebarBtn.value)"
-        >
-          <mat-icon>menu</mat-icon>
-        </button>
-        <div *ngIf="sidebarBtn$ | async" class="logo"></div>
+        <div fxLayout="row" fxFlexAlign="center" fxLayoutAlign="start center">
+          <div fxFlex="30">
+            <button
+              mat-icon-button
+              class="menu-icon"
+              (click)="this.sidebarBtn.next(!this.sidebarBtn.value)"
+            >
+              <mat-icon>menu</mat-icon>
+            </button>
+          </div>
+
+          <div fxFlex="70" *ngIf="sidebarBtn$ | async">
+            <span class="logo"></span>
+          </div>
+        </div>
       </mat-list-item>
-      <mat-list-item>
+      <mat-list-item
+        [ngStyle]="{
+          background:
+            (sidebarBtn$ | async) === true ? '#E5E5E5' : 'transparent',
+          cursor: 'pointer'
+        }"
+      >
         <a>
           <mat-icon mat-list-icon>home</mat-icon>
           <div mat-line>Home</div>
@@ -46,7 +60,8 @@
       <mat-divider></mat-divider>
     </mat-list>
   </mat-drawer>
-  <mat-drawer-content
-    ><router-outlet style="margin-top: 5rem"></router-outlet
+  <mat-drawer-content>
+    <app-header></app-header>
+    <router-outlet></router-outlet
   ></mat-drawer-content>
 </mat-drawer-container>

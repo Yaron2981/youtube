@@ -20,9 +20,6 @@
 }
 .min-drawer {
   padding-right: 0px !important;
-  ::ng-deep .mat-list-text {
-    display: none !important;
-  }
   span.mini-text {
     display: block;
     top: 42px;
@@ -31,8 +28,21 @@
   .mat-line {
     display: none;
   }
-  a.mat-list-item {
-    // padding: 16px 0 14px;
+
+  .mat-list .mat-list-item:not(:first-child) {
+    padding: 10px 0px !important;
+  }
+  .mat-list-item-content {
+    padding: 0px 0px !important;
+  }
+  .mat-list-item-content {
+    padding: 0px 0px !important;
+    width: 74px !important;
+    height: 56px;
+    text-align: center;
+  }
+  .mat-list-item-content {
+    justify-content: center;
   }
 }
 .max-drawer {
@@ -42,25 +52,53 @@
   a.mat-list-item {
     background-color: #d9d9d9;
   }
-}
-::ng-depp .max-drawer .mat-list-item-content a {
-  align-items: center !important;
-  display: inherit !important;
-}
-::ng-deep .min-drawer .mat-list .mat-list-item:not(:first-child) {
-  padding: 10px 0px !important;
-}
-::ng-deep .min-drawer .mat-list-item-content {
-  padding: 0px 0px !important;
-}
-::ng-deep .min-drawer .mat-list-item-content a {
-  padding: 0px 0px !important;
-  width: 72px !important;
-  text-align: center;
+  .mat-list .mat-list-item:not(:first-child) {
+    height: 40px;
+    padding: 0px;
+    cursor: pointer;
+    .mat-icon {
+      margin-right: 24px;
+    }
+    &:hover {
+      background-color: #eee;
+    }
+  }
+  .mat-list .mat-list-item:nth-child(2) {
+    margin-top: 20px;
+  }
+  .mat-list .mat-list-item:nth-child(4) {
+    pointer-events: none;
+    &:hover {
+      background-color: none !important;
+    }
+  }
+  .mat-line {
+    align-items: center !important;
+    display: inline !important;
+    flex: 1;
+    flex-basis: 1e-9px;
+  }
+  .mat-list-item-content {
+    padding: 0 20px !important;
+  }
 }
 .mat-drawer-container {
   background-color: transparent;
 }
-::ng-deep .min-drawer .mat-list-item-content {
+
+.max-drawer a {
+  display: flex;
   justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+.mat-list .mat-list-item:nth-child(2) {
+  padding-top: 10px;
+}
+.mat-icon-button {
+  width: 32px;
+  height: 44px;
+}
+.button span {
+  padding: 12px;
 }

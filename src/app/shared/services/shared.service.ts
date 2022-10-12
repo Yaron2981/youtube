@@ -29,10 +29,10 @@ export class SharedService {
 
   resizedScreenWidth(): Observable<any> {
     return fromEvent(window, 'resize').pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
       map((event) => (event.target as Window).innerWidth),
-      startWith(window.innerWidth)
+      startWith(window.innerWidth),
+      debounceTime(200),
+      distinctUntilChanged()
     );
   }
 

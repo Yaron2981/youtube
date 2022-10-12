@@ -8,6 +8,8 @@ import {
   map,
   shareReplay,
   startWith,
+  debounceTime,
+  distinctUntilChanged,
   switchMap,
   take,
   tap,
@@ -88,29 +90,36 @@ export class SearchService {
       tap(() => {
         this.loading$.next(true);
       }),
-      switchMap((qcid) =>
-        this.localDB.getByID('lists', qcid.cid).pipe(
-          mergeMap((listData: any) => {
-            console.log('trigger', listData, qcid);
+      switchMap((qcid) => {
+        const searchBy =
+          qcid.q && qcid.q.length > 0
+            ? { store: 'searchLists', indexName: 'q', key: qcid.q }
+            : { store: 'categoryLists', indexName: 'cid', key: qcid.cid };
+        return this.localDB
+          .getByIndex(searchBy.store, searchBy.indexName, searchBy.key)
+          .pipe(
+            mergeMap((listData: any) => {
+              if (!qcid.next) this.obsArray.next([]);
+              console.log('trigger', listData, qcid);
 
-            if (
-              listData &&
-              (listData.videoIds.length == this.RESULTS_LIMIT || !qcid.next)
-            ) {
-              return this.localDB.bulkGet('videos', listData.videoIds).pipe(
-                tap((videos: Video[]) => {
-                  if (!qcid.next) videos = videos.slice(0, this.LIMIT);
-                  this.obsArray.next(videos);
-                })
-              );
-            } else {
-              if (listData) videosIds = listData.videoIds;
-              return this.getVideos(qcid.q, qcid.cid, videosIds);
-            }
-          }),
-          take(1)
-        )
-      ),
+              if (
+                listData &&
+                (listData.videoIds.length == this.RESULTS_LIMIT || !qcid.next)
+              ) {
+                return this.localDB.bulkGet('videos', listData.videoIds).pipe(
+                  tap((videos: Video[]) => {
+                    if (!qcid.next) videos = videos.slice(0, this.LIMIT);
+                    this.obsArray.next(videos);
+                  })
+                );
+              } else {
+                if (listData) videosIds = listData.videoIds;
+                return this.getVideos(qcid.q, qcid.cid, videosIds);
+              }
+            }),
+            take(1)
+          );
+      }),
 
       shareReplay(1),
       tap(() => {
@@ -119,31 +128,43 @@ export class SearchService {
     );
   }
   getVideosTitles(q: string): Observable<any> {
-    return this.localDB.getByID('search', q).pipe(
-      mergeMap((listData: any) => {
-        if (listData) {
-          return of(listData.titles);
-        } else {
-          const url = `${this.API_URL}?q=${q}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=14&regionCode=il&relevanceLanguage=he`;
-          return this.http.get(url).pipe(
-            map((response: any) => {
-              return response.items.map((item: any) =>
-                item.snippet.title
-                  .toLowerCase()
-                  .match(/[\p{L}]+/gu)
-                  .slice(0, 3)
-                  .join(' ')
-                  .trim()
+    q = q.trim();
+    return of(q).pipe(
+      debounceTime(200),
+      distinctUntilChanged((curr, prev) => {
+        return curr.toLowerCase() === prev.toLowerCase();
+      }),
+      switchMap((text) => {
+        console.log(text);
+        return this.localDB.getByID('search', text).pipe(
+          mergeMap((listData: any) => {
+            if (listData) {
+              return of(listData.titles);
+            } else {
+              const url = `${this.API_URL}?q=${q}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=14&regionCode=il&relevanceLanguage=he`;
+              return this.http.get(url).pipe(
+                map((response: any) => {
+                  return response.items.map((item: any) =>
+                    item.snippet.title
+                      .toLowerCase()
+                      .match(/[\p{L}]+/gu)
+                      .slice(0, 3)
+                      .join(' ')
+                      .trim()
+                  );
+                }),
+                distinct(),
+                filter((t: string) => t != ''),
+                tap((res) => {
+                  this.localDB
+                    .update('search', { q: q, titles: res })
+                    .subscribe();
+                }),
+                shareReplay(1)
               );
-            }),
-            distinct(),
-            filter((t: string) => t != ''),
-            tap((res) => {
-              this.localDB.update('search', { q: q, titles: res });
-            }),
-            shareReplay(1)
-          );
-        }
+            }
+          })
+        );
       })
     );
   }
@@ -184,7 +205,6 @@ export class SearchService {
           map((r: any) => {
             return res.items.map((re: Video) => {
               videosIds.push(re.videoId);
-
               return {
                 ...re,
                 viewCount: r[1][re.videoId].viewCount,
@@ -195,9 +215,17 @@ export class SearchService {
           }),
           tap((videos: Video[]) => {
             this.obsArray.next(videos);
+            const searchBy =
+              query && query.length > 0
+                ? { store: 'searchLists', key: { q: query } }
+                : {
+                    store: 'categoryLists',
+                    key: { cid: categoryId },
+                  };
+
             this.localDB
-              .update('lists', {
-                cid: categoryId,
+              .update(searchBy.store, {
+                ...searchBy.key,
                 lastPage: this.nextPageToken,
                 videoIds: [
                   ...new Set([...videosIds, ...videos.map((v) => v.videoId)]),

@@ -43,20 +43,23 @@
         #auto="matAutocomplete"
         (optionSelected)="eventToLink($event)"
       >
-        <mat-option *ngFor="let title of titles$ | async" [value]="title">
-          <mat-icon fontSet="material-icons-outlined">search</mat-icon
-          >{{ title }}
-        </mat-option>
-        <mat-option
-          style="
-            font-style: italic;
-            margin-top: 10px;
-            text-align: right;
-            pointer-events: none;
-          "
-        >
-          <mat-card-subtitle> Report search predictions</mat-card-subtitle>
-        </mat-option>
+        <div *ngIf="titles$ | async as titles">
+          <mat-option *ngFor="let title of titles" [value]="title">
+            <mat-icon fontSet="material-icons-outlined">search</mat-icon
+            >{{ title }}
+          </mat-option>
+          <mat-option
+            *ngIf="titles.length > 0"
+            style="
+              font-style: italic;
+              margin-top: 10px;
+              text-align: right;
+              pointer-events: none;
+            "
+          >
+            <mat-card-subtitle> Report search predictions</mat-card-subtitle>
+          </mat-option>
+        </div>
       </mat-autocomplete>
     </form>
   </div>

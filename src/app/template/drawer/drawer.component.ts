@@ -1,17 +1,28 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { Subscription } from 'rxjs';
-import { MatDrawerToggleResult } from '@angular/material/sidenav';
+import {
+  MatDrawerToggleResult,
+  MatDrawer,
+  MatDrawerContainer,
+} from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-drawer',
   templateUrl: './drawer.component.html',
   styleUrls: ['./drawer.component.scss'],
 })
-export class DrawerComponent implements OnInit {
+export class DrawerComponent implements OnInit, AfterViewInit {
   constructor(private sharedService: SharedService) {}
   drawerModeSubscription$ = this.sharedService.resizedWindowWidth$;
-  @ViewChild('drawer') drawer: any;
+  @ViewChild('sidenav') sidenav: any;
 
   menuTriggerBtn$ = this.sharedService.menuTriggerBtn$;
   menuTriggerBtn = this.sharedService.menuTriggerBtn;
@@ -22,12 +33,18 @@ export class DrawerComponent implements OnInit {
       if (x < 1310) this.sidebarBtn.next(false);
       else this.sidebarBtn.next(true);
     });
-    this.sidebarBtn.subscribe((x) => {
-      if (!x) this.drawer.updateContentMargins();
-    });
   }
 
   ngAfterViewInit(): void {
-    this.drawer.open();
+    let timeoutNum = 250;
+    setTimeout(() => {
+      timeoutNum = 10;
+    }, 250);
+    this.sidebarBtn.subscribe((x) => {
+      //adding setTimeout fix margin bug
+      setTimeout(() => {
+        this.sidenav.open();
+      }, timeoutNum);
+    });
   }
 }
