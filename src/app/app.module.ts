@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgModule } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -14,13 +13,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatChipsModule } from '@angular/material/chips';
+
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SafePipe } from './shared/pipes/safe.pipe';
 import { DateAgoPipe } from './pipes/date-ago.pipe';
 import { ShortNumberPipe } from './pipes/short-number.pipe';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatChipsModule } from '@angular/material/chips';
 import { VideoComponent } from './shared/components/videos/video/video.component';
 import { PlayerComponent } from './shared/components/videos/video/pop-over-video/player/player.component';
 import { PopOverVideoComponent } from './shared/components/videos/video/pop-over-video/pop-over-video.component';
@@ -40,6 +40,8 @@ import { ErrorCatchingInterceptor } from './interceptors/error-catching.intercep
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgxIndexedDBModule } from 'ngx-indexed-db';
 import { dbConfig } from './localDB/DBConfig';
+import { MatDividerModule } from '@angular/material/divider';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
