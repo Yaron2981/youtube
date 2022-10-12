@@ -1,20 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 import {
-  delay,
+  mergeMap,
+  of,
+  forkJoin,
+  BehaviorSubject,
   distinct,
   filter,
   map,
   shareReplay,
-  startWith,
   debounceTime,
   distinctUntilChanged,
   switchMap,
   take,
   tap,
 } from 'rxjs/operators';
-import { Observable, mergeMap, of, forkJoin, BehaviorSubject } from 'rxjs';
 import { LocalService } from './local.service';
 import {
   Channel,
@@ -90,7 +92,7 @@ export class SearchService {
       tap(() => {
         this.loading$.next(true);
       }),
-      switchMap((qcid) => {
+      switchMap((qcid: QCid) => {
         const searchBy =
           qcid.q && qcid.q.length > 0
             ? { store: 'searchLists', indexName: 'q', key: qcid.q }
@@ -131,11 +133,10 @@ export class SearchService {
     q = q.trim();
     return of(q).pipe(
       debounceTime(200),
-      distinctUntilChanged((curr, prev) => {
+      distinctUntilChanged((curr: string, prev: string) => {
         return curr.toLowerCase() === prev.toLowerCase();
       }),
-      switchMap((text) => {
-        console.log(text);
+      switchMap((text: string) => {
         return this.localDB.getByID('search', text).pipe(
           mergeMap((listData: any) => {
             if (listData) {
@@ -155,7 +156,7 @@ export class SearchService {
                 }),
                 distinct(),
                 filter((t: string) => t != ''),
-                tap((res) => {
+                tap((res: string[]) => {
                   this.localDB
                     .update('search', { q: q, titles: res })
                     .subscribe();

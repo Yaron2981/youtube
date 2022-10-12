@@ -27,14 +27,12 @@ import { PopOverVideoComponent } from './shared/components/videos/video/pop-over
 import { TemplateComponent } from './template/template.component';
 import { HomeComponent } from './home/home.component';
 import { CategoriesComponent } from './categories/categories.component';
-import { MatDividerModule } from '@angular/material/divider';
 import { VideosComponent } from './shared/components/videos/videos.component';
 import { HeaderComponent } from './template/header/header.component';
 import { FotterComponent } from './template/fotter/fotter.component';
 import { DrawerComponent } from './template/drawer/drawer.component';
 import { ResultsComponent } from './results/results.component';
 import { WatchComponent } from './watch/watch.component';
-import { CommonModule } from '@angular/common';
 import { VideosHolderComponent } from './shared/components/holders/videos-holder/videos-holder.component';
 import { TruncatePipe } from './shared/pipes/truncate.pipe';
 import { CategoriesHolderComponent } from './shared/components/holders/categories-holder/categories-holder.component';
