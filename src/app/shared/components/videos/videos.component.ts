@@ -13,7 +13,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { BehaviorSubject, fromEvent, map, Observable, of } from 'rxjs';
-import { QCid, Video } from 'src/app/search.interface';
+import { Video } from 'src/app/search.interface';
 import { EventEmitter } from '@angular/core';
 import { SharedService } from '../../services/shared.service';
 
@@ -31,7 +31,7 @@ import { SharedService } from '../../services/shared.service';
   // ],
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VideosComponent implements OnInit, AfterViewInit {
+export class VideosComponent implements OnInit {
   constructor(
     private ref: ChangeDetectorRef,
     private sharedService: SharedService
@@ -57,6 +57,4 @@ export class VideosComponent implements OnInit, AfterViewInit {
       this.posType == 'horizontal' ? 80 : this.miniSidebar ? 18.5 : 22.5;
     this.ref.detectChanges();
   }
-
-  ngAfterViewInit() {}
 }

@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SearchService } from '../shared/services/search.service';
+import { VideosService } from '../shared/services/videos.service';
 
 @Component({
   selector: 'app-categories',
@@ -25,9 +26,9 @@ export class CategoriesComponent implements AfterViewInit {
   scrollLeftBtn: boolean = false;
   scrollRightBtn: boolean = true;
   videoCategoryId: number = 0;
-  constructor(private searchService: SearchService) {}
+  constructor(private videosService: VideosService) {}
   categoryClicked(categoryId: number) {
-    this.searchService.categoryIdChanged(categoryId);
+    this.videosService.emitCategoryChanged(categoryId);
   }
   ngAfterViewInit(): void {
     if (this.widgetsContent) {

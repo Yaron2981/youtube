@@ -13,12 +13,12 @@ import {
   tap,
 } from 'rxjs/operators';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { YOUTUBE_CONST } from '../constants/yt';
+import { YOUTUBE_CONST } from '../../shared/constants/yt';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SearchService {
+export class QueryService {
   private API_TOKEN = 'AIzaSyB7KHp81yAoioCEJInypVjd_adc0ZfAsko';
 
   constructor(private http: HttpClient, private localDB: NgxIndexedDBService) {}

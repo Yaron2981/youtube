@@ -33,7 +33,15 @@ export interface VideosResponse {
   items: Video[];
 }
 //https://blog.logrocket.com/build-a-youtube-video-search-app-with-angular-and-rxjs/
-export interface QCid {
+export interface NQuery {
+  q: string;
+  next: boolean;
+}
+export interface NCategory {
+  cid: number;
+  next: boolean;
+}
+export interface NQCategory {
   q: string;
   cid: number;
   next: boolean;

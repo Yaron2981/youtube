@@ -2,19 +2,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  HostListener,
   Input,
   OnDestroy,
   OnInit,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { CategoriesService } from '../categories/categories.service';
 import { Video } from '../search.interface';
-import { SearchService } from '../shared/services/search.service';
-import { media } from '../shared/helpers/media';
-import { SharedService } from '../shared/services/shared.service';
+import { VideosService } from '../shared/services/videos.service';
 
 @Component({
   selector: 'app-home',
@@ -24,37 +21,38 @@ import { SharedService } from '../shared/services/shared.service';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   constructor(
-    private searchService: SearchService,
+    private videosService: VideosService,
     private ref: ChangeDetectorRef,
     private router: Router,
-    private categoriesService: CategoriesService,
-    private sharedService: SharedService
+    private categoriesService: CategoriesService
   ) {}
-  items = Array.from({ length: 100 }).map((_, i) => `Item #${i}`);
 
   @Input('miniSidebar') miniSidebar = false;
+  ngUnsubscribe = new Subject<void>();
   categories$ = this.categoriesService.categories$;
-  videos$: Observable<Video[]> = of([]);
-  videosLoading$ = this.searchService.loading$;
+  videos$: Observable<Video[]> = this.videosService.videosData$.category;
+  videosLoading$ = this.videosService.loading$.category;
   categoriesLoading$ = this.categoriesService.loading$;
   mediaVideoSize: number = 0;
-  killMeObservable: Subscription = new Subscription();
+
   ngOnInit() {
     console.log('init');
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = 'reload';
-    this.searchService.qcid.next({ q: '', cid: 0, next: false });
+    this.videosService
+      .getCategorySource()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe();
 
-    this.killMeObservable = this.searchService.getSource().subscribe();
-    this.videos$ = this.searchService.videos$;
     this.ref.detectChanges();
   }
 
-  nextPage(trigger: boolean) {
-    this.searchService.getNextPage();
+  nextPage() {
+    this.videosService.emitCategoryNextPage();
     this.ref.detectChanges();
   }
   ngOnDestroy() {
-    if (this.killMeObservable) this.killMeObservable.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

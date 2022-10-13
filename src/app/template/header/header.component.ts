@@ -8,12 +8,11 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { SearchService } from '../../shared/services/search.service';
 import { LocalService } from 'src/app/shared/services/local.service';
-import { EventEmitter } from '@angular/core';
-import { ActivatedRoute, ActivationEnd, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SharedService } from 'src/app/shared/services/shared.service';
+import { QueryService } from './query.service';
 
 @Component({
   selector: 'app-header',
@@ -22,7 +21,7 @@ import { SharedService } from 'src/app/shared/services/shared.service';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
-    private searchService: SearchService,
+    private queryService: QueryService,
     private ls: LocalService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -35,7 +34,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   titles$ = this.fetchtitles$.pipe(
     switchMap(() => this.control.valueChanges),
     debounceTime(400),
-    switchMap((val) => this.searchService.getVideosTitles(val)),
+    switchMap((val) => this.queryService.getVideosTitles(val)),
     startWith(this.ls.isExsist('search') ? this.ls.getData('search') : [])
   );
   ngOnInit() {
