@@ -14,18 +14,16 @@ import {
   NQCategory,
   NQuery,
   Video,
+  VideoDataType,
   VideosResponse,
 } from 'src/app/search.interface';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { YOUTUBE_CONST } from '../constants/yt';
+import { RESULTS, YOUTUBE_CONST } from '../constants/yt';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VideosService {
-  private MAX_RESULTS: number = 100;
-  private LIMIT: number = 50;
-
   constructor(private http: HttpClient, private localDB: NgxIndexedDBService) {}
 
   videoId$: Observable<boolean> = of(false);
@@ -58,27 +56,14 @@ export class VideosService {
   emitCategoryNextPage(): void {
     this.nCategory$.next({ cid: this.currentCategoryId, next: true });
   }
-
-  // getVideosByQuery(query: string = '', videosIds: any = []): Observable<any> {
-  //   return this._getVideos(query, 0, videosIds);
-  // }
-  // getVideosByCateoryId(
-  //   categoryId: number = 0,
-  //   videosIds: any = []
-  // ): Observable<any> {
-  //   return this._getVideos('', categoryId, videosIds);
-  // }
   getCategorySource(): Observable<Video[]> {
     return this._getSource('category', this.nCategory$);
   }
   getQuerySource(): Observable<Video[]> {
     return this._getSource('query', this.nQuery$);
   }
-  _getSource(
-    type: 'category' | 'query',
-    listener: Observable<any>
-  ): Observable<any> {
-    let videosIds: string[] = [];
+  _getSource(type: VideoDataType, listener: Observable<any>): Observable<any> {
+    let videoIds: string[] = [];
     return listener.pipe(
       tap(() => {
         this.loading$[type].next(true);
@@ -95,23 +80,22 @@ export class VideosService {
               if (!nqc.next) this.videosData$[type].next([]);
               if (
                 listData &&
-                (listData.videoIds.length == this.MAX_RESULTS || !nqc.next)
+                (listData.videoIds.length >= RESULTS.MAX_RESULTS || !nqc.next)
               ) {
                 return this.localDB.bulkGet('videos', listData.videoIds).pipe(
                   tap((videos: Video[]) => {
-                    if (!nqc.next) videos = videos.slice(0, this.LIMIT);
+                    if (!nqc.next) videos = videos.slice(0, RESULTS.LIMIT);
                     this.videosData$[type].next(videos);
                   })
                 );
               } else {
-                if (listData) videosIds = listData.videoIds;
-                return this._getVideos(type, nqc.q, nqc.cid, videosIds);
+                if (listData) videoIds = listData.videoIds;
+                return this._getVideos(type, nqc.q, nqc.cid, videoIds);
               }
             }),
             take(1)
           );
       }),
-
       shareReplay(1),
       tap(() => {
         this.loading$[type].next(false);
@@ -120,17 +104,17 @@ export class VideosService {
   }
 
   _getVideos(
-    type: 'category' | 'query',
+    type: VideoDataType,
     query: string = '',
     categoryId: number = 0,
-    videosIds: any = []
+    videoIds: any = []
   ): Observable<any> {
     const widthCategory =
       categoryId > 0 ? `videoCategoryId=${categoryId}` : `q=${query}`;
     const pageToken = this.nextPageToken
       ? `&pageToken=${this.nextPageToken}`
       : '';
-    const url = `${YOUTUBE_CONST.API_SEARCH_URL}?${widthCategory}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet&type=video&maxResults=${this.LIMIT}&regionCode=il${pageToken}`;
+    const url = `${YOUTUBE_CONST.API_SEARCH_URL}?${widthCategory}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet&type=video&maxResults=${RESULTS.LIMIT}&regionCode=il${pageToken}`;
     return this.http.get<VideosResponse>(url).pipe(
       map((response: any) => {
         return {
@@ -156,7 +140,7 @@ export class VideosService {
         ]).pipe(
           map((r: any) => {
             return res.items.map((re: Video) => {
-              videosIds.push(re.videoId);
+              videoIds.push(re.videoId);
               return {
                 ...re,
                 viewCount: r[1][re.videoId].viewCount,
@@ -165,33 +149,61 @@ export class VideosService {
               };
             });
           }),
-          tap((videos: Video[]) => {
-            this.videosData$[type].next(videos);
-            const searchBy =
-              query && query.length > 0
-                ? { store: 'searchLists', key: { q: query } }
-                : {
-                    store: 'categoryLists',
-                    key: { cid: categoryId },
-                  };
-
-            this.localDB
-              .update(searchBy.store, {
-                ...searchBy.key,
-                lastPage: this.nextPageToken,
-                videoIds: [
-                  ...new Set([...videosIds, ...videos.map((v) => v.videoId)]),
-                ],
+          /*
+            Upsert (insert/update) data to indexDB
+          */
+          mergeMap((videos) => {
+            return forkJoin(
+              this._upsertIndexDBData(
+                type,
+                videos,
+                videoIds,
+                query,
+                categoryId,
+                this.nextPageToken
+              )
+            ).pipe(
+              mergeMap((r: any) => {
+                return of(videos);
               })
-              .subscribe();
-            videos.forEach((e) => {
-              this.localDB.update('videos', e).subscribe();
-            });
-          })
+            );
+          }),
+          tap((videos) => this.videosData$[type].next(videos))
         )
       ),
       shareReplay(1)
     );
+  }
+  _upsertIndexDBData(
+    type: string,
+    videos: Video[],
+    videoIds: [],
+    query: string,
+    categoryId: number,
+    lastPage: string | null
+  ): Array<Observable<any>> {
+    const observables = [];
+    const searchBy =
+      type == 'query'
+        ? { store: 'searchLists', key: { q: query } }
+        : {
+            store: 'categoryLists',
+            key: { cid: categoryId },
+          };
+
+    observables.push(
+      this.localDB.update(searchBy.store, {
+        ...searchBy.key,
+        lastPage: lastPage,
+        videoIds: [
+          ...new Set([...videoIds, ...videos.map((v) => v.videoId)]),
+        ].slice(0, RESULTS.MAX_RESULTS),
+      })
+    );
+    videos.forEach((e) => {
+      observables.push(this.localDB.update('videos', e));
+    });
+    return observables;
   }
   _getChannelsInfo(res: any): Observable<any> {
     const channelIds = [

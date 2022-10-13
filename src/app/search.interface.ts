@@ -46,3 +46,4 @@ export interface NQCategory {
   cid: number;
   next: boolean;
 }
+export type VideoDataType = 'category' | 'query';

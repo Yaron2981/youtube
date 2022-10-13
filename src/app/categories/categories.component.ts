@@ -1,8 +1,10 @@
+import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  Inject,
   Input,
   ViewChild,
 } from '@angular/core';
@@ -26,8 +28,12 @@ export class CategoriesComponent implements AfterViewInit {
   scrollLeftBtn: boolean = false;
   scrollRightBtn: boolean = true;
   videoCategoryId: number = 0;
-  constructor(private videosService: VideosService) {}
+  constructor(
+    private videosService: VideosService,
+    @Inject(DOCUMENT) private document: Document
+  ) {}
   categoryClicked(categoryId: number) {
+    this.document.querySelector('.example-viewport')?.scroll(0, 0);
     this.videosService.emitCategoryChanged(categoryId);
   }
   ngAfterViewInit(): void {

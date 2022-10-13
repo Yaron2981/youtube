@@ -5,3 +5,7 @@ export const YOUTUBE_CONST = {
   API_CHANNEL_INFO_URL: 'https://youtube.googleapis.com/youtube/v3/channels',
   API_STATISTIC_INFO_URL: 'https://www.googleapis.com/youtube/v3/videos',
 };
+export const RESULTS = {
+  MAX_RESULTS: 100,
+  LIMIT: 50,
+};

@@ -66,7 +66,7 @@ export const dbConfig: DBConfig = {
       storeConfig: { keyPath: 'cid', autoIncrement: false },
       storeSchema: [
         { name: 'cid', keypath: 'cid', options: { unique: true } },
-        { name: 'lastPage', keypath: 'lastPage', options: { unique: true } },
+        { name: 'lastPage', keypath: 'lastPage', options: { unique: false } },
         {
           name: 'videoIds',
           keypath: 'videoIds',
@@ -78,7 +78,7 @@ export const dbConfig: DBConfig = {
       store: 'searchLists',
       storeConfig: { keyPath: 'q', autoIncrement: false },
       storeSchema: [
-        { name: 'lastPage', keypath: 'lastPage', options: { unique: true } },
+        { name: 'lastPage', keypath: 'lastPage', options: { unique: false } },
         { name: 'q', keypath: 'q', options: { unique: true } },
         {
           name: 'videoIds',

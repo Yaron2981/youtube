@@ -34,7 +34,13 @@ export class DrawerComponent implements OnInit, AfterViewInit {
       else this.sidebarBtn.next(true);
     });
   }
-
+  onActivate(event: Event) {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }
   ngAfterViewInit(): void {
     let timeoutNum = 250;
     setTimeout(() => {

@@ -5,9 +5,11 @@
   ></app-categories>
   <div class="videos-inner-fixer"></div>
   <app-videos
+    style="height: 100vh"
     [miniSidebar]="miniSidebar"
     [loading]="videosLoading$"
     [videos]="videos$"
     (nextPage)="nextPage()"
+    [allowScrolling]="allowScrolling"
   ></app-videos>
 </div>

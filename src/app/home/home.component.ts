@@ -12,6 +12,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { CategoriesService } from '../categories/categories.service';
 import { Video } from '../search.interface';
 import { VideosService } from '../shared/services/videos.service';
+import { YOUTUBE_CONST } from '../shared/constants/yt';
 
 @Component({
   selector: 'app-home',
@@ -34,7 +35,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   videosLoading$ = this.videosService.loading$.category;
   categoriesLoading$ = this.categoriesService.loading$;
   mediaVideoSize: number = 0;
-
+  currentvideosLoading: boolean = false;
+  allowScrolling: boolean = true;
   ngOnInit() {
     console.log('init');
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
@@ -44,10 +46,17 @@ export class HomeComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe();
 
+    this.videosLoading$.subscribe((loading) => {
+      this.currentvideosLoading = loading;
+    });
+
     this.ref.detectChanges();
   }
 
   nextPage() {
+    console.log('before return');
+    if (this.currentvideosLoading) return;
+    console.log('after return');
     this.videosService.emitCategoryNextPage();
     this.ref.detectChanges();
   }

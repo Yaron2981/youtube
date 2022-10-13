@@ -1,6 +1,10 @@
-<div class="example-viewport" (scroll)="onScroll($event)">
+<div
+  class="example-viewport"
+  *ngIf="videos$ | async as videos; loading$"
+  (scroll)="onScroll($event, videos.length)"
+>
   <div
-    *ngIf="videos$ | async as videos"
+    *ngIf="videos"
     fxLayout="row wrap"
     fxLayoutAlign="center"
     fxLayoutGap="16px grid"
@@ -12,7 +16,7 @@
       [videoIndex]="i"
       [posType]="posType"
       [fxFlex.gt-md]="
-        posType == 'vertical' ? ((sidebarBtn$ | async) ? 24 : 19) : 100
+        posType == 'vertical' ? (sidebarTriggerBtn ? 24 : 19) : 100
       "
       [fxFlex.md]="posType == 'vertical' ? 24 : 100"
       [fxFlex.sm]="posType == 'vertical' ? 50 : 100"
