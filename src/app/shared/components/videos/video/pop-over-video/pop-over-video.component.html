@@ -1,5 +1,6 @@
-<div class="pop-over-video" [@fade]="video && video.showPop">
+<div class="pop-over-video">
   <mat-card
+    [@smallToBig]="currentState"
     class="inner-card mat-elevation-z0"
     [ngStyle]="{ transform: 'translate(' + remainder + '%, -45%)' }"
   >
@@ -7,6 +8,7 @@
       <ng-template [ngIf]="video && video.showPlayer">
         <a target="_blank" [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'">
           <app-player
+            style="margin-right: -1px"
             [duration]="video.duration"
             [videoId]="video.videoId"
           ></app-player>
@@ -15,7 +17,7 @@
     </div>
 
     <ng-template [ngIf]="video && video.showPop">
-      <mat-card-content>
+      <mat-card-content style="margin-right: -1px; margin-top: -16px">
         <div fxLayout="row">
           <div fxFlex="18" fxLayoutAlign="center">
             <img
@@ -32,7 +34,7 @@
               [innerHtml]="video.title | safe: 'html'"
             ></a>
 
-            <div fxLayout="row" class="mt-1rem">
+            <div fxLayout="row">
               <mat-card-subtitle xFlex="100">
                 <a
                   target="_blank"
@@ -54,11 +56,11 @@
         fxLayout="row"
         fxLayoutGap="16"
       >
-        <a fxFlex="50" mat-stroked-button href="#"
+        <a fxFlex="50" mat-stroked-button [routerLink]="null"
           ><mat-icon fontSet="material-icons-outlined">watch_later</mat-icon>
           &nbsp; Watch later</a
         >
-        <a fxFlex="50" mat-stroked-button href="#"
+        <a fxFlex="50" mat-stroked-button [routerLink]="null"
           ><mat-icon fontSet="material-icons-outlined">add_to_queue</mat-icon>
           &nbsp; Add to queue</a
         >

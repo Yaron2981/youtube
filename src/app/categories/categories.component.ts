@@ -33,7 +33,7 @@ export class CategoriesComponent implements AfterViewInit {
     @Inject(DOCUMENT) private document: Document
   ) {}
   categoryClicked(categoryId: number) {
-    this.document.querySelector('.example-viewport')?.scroll(0, 0);
+    this.document.querySelector('.videos-viewport')?.scroll(0, 0);
     this.videosService.emitCategoryChanged(categoryId);
   }
   ngAfterViewInit(): void {

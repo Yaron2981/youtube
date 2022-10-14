@@ -9,7 +9,10 @@ import {
 } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Video } from 'src/app/search.interface';
-import { FADE_STATE_ANIMATION } from 'src/app/shared/animations/fade-state';
+import {
+  FADE_STATE_ANIMATION,
+  SMALL_TO_BIG_STATE_ANIMATION,
+} from 'src/app/shared/animations/fade-state';
 import { YOUTUBE_CONST } from 'src/app/shared/constants/yt';
 import { SharedService } from 'src/app/shared/services/shared.service';
 
@@ -17,7 +20,7 @@ import { SharedService } from 'src/app/shared/services/shared.service';
   selector: 'app-pop-over-video',
   templateUrl: './pop-over-video.component.html',
   styleUrls: ['./pop-over-video.component.scss'],
-  animations: FADE_STATE_ANIMATION,
+  animations: [FADE_STATE_ANIMATION, SMALL_TO_BIG_STATE_ANIMATION],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PopOverVideoComponent implements AfterViewInit {
@@ -31,9 +34,13 @@ export class PopOverVideoComponent implements AfterViewInit {
   subscription: Subscription | undefined;
   remainder: number = 0;
   popPos: number = -50;
+  currentState = 'initial';
+
   ngAfterViewInit() {
+    this.currentState = this.currentState === 'initial' ? 'final' : 'initial';
+
     /*
-      fix pop-over window position. If got 4||5 videos in a row do remainder of 4||5 and if got 1 so pos window to right else 0 pos to left all the rest in the middle "transform: 'translate(4||5 %, -45%)'"
+      fix pop-over window position. For ex if got 4/5 videos in a row do remainder of 4/5 and if got 1 so pos window to right else 0 pos to left all the rest in the middle "transform: 'translate(4/5 %, -45%)'"
     */
     this.subscription = this.sharedService.sidebarTriggerBtn$.subscribe(
       (sb) => {

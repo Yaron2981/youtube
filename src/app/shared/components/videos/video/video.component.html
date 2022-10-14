@@ -25,28 +25,18 @@
             [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
           >
             <img
+              class="min-circle-img"
               mat-card-image
-              style="
-                display: block;
-                min-height: 202px;
-                background-color: rgba(0, 0, 0, 0.05);
-              "
               [src]="video.thumbnail"
               [alt]="video.title"
+              (error)="handleMissingImage($event)"
             />
             <ng-container *ngIf="video.showPlayer">
               <a
                 [@fade]="video.showPop"
                 target="_blank"
                 [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
-                style="
-                  min-width: 360px;
-                  max-height: 202px;
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  z-index: 99;
-                "
+                class="player-link"
               >
                 <app-player
                   [posType]="posType"

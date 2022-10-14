@@ -17,10 +17,10 @@ a.channel-title:hover {
 .inner-card {
   position: absolute !important;
   top: 0;
-  width: 26.6rem;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -45%);
+  width: 100%;
+  // left: 50%;
+  // top: 50%;
+  // transform: translate(-50%, -45%);
   z-index: 1000;
   margin: 0px;
 }
@@ -35,6 +35,19 @@ a.channel-title:hover {
 }
 .mt-1rem {
   margin-top: 1rem;
+}
+.mt-8px {
+  margin-top: 8px;
+}
+.mat-card-subtitle {
+  margin-bottom: 5px;
+}
+.popover-buttons {
+  margin: 13px !important;
+  margin-top: 0px !important;
+}
+.mat-card-content {
+  margin: 5px;
 }
 .popover-buttons a {
   background-color: rgba(0, 0, 0, 0.05);

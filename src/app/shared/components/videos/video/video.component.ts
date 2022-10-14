@@ -1,4 +1,10 @@
-import { state, style, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -25,6 +31,7 @@ import { YOUTUBE_CONST } from '../../../constants/yt';
       ),
       state(
         'true',
+
         style({
           opacity: '1',
         })
@@ -41,8 +48,12 @@ export class VideoComponent implements OnDestroy {
   showVertical: TemplateRef<any> | undefined;
   timeout: ReturnType<typeof setTimeout> | undefined;
   timeoutPlayer: ReturnType<typeof setTimeout> | undefined;
+  triggerAnimation: string = 'initial';
 
   onMouseEnter(video: Video) {
+    this.triggerAnimation =
+      this.triggerAnimation === 'initial' ? 'final' : 'initial';
+    this.ref.detectChanges();
     clearTimeout(this.timeout);
     this.timeout = setTimeout(() => {
       video.showPop = true;
@@ -59,6 +70,9 @@ export class VideoComponent implements OnDestroy {
     this.ref.detectChanges();
     clearTimeout(this.timeout);
     clearTimeout(this.timeoutPlayer);
+  }
+  public handleMissingImage(event: Event) {
+    (event.target as HTMLImageElement).style.display = 'none';
   }
   ngOnDestroy() {
     clearTimeout(this.timeoutPlayer);

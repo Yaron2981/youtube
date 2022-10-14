@@ -2,10 +2,22 @@
   position: relative;
   top: -2px;
 }
-
+.min-circle-img {
+  display: block;
+  min-height: 202px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
 a.channel-title:hover {
   color: #030303;
   text-align: left;
+}
+.player-link {
+  min-width: 360px;
+  max-height: 202px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 99;
 }
 .card-avatar {
   width: 40px !important;
