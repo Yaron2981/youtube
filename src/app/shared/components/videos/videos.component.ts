@@ -8,7 +8,13 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { BehaviorSubject, Subject, Observable, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  Observable,
+  takeUntil,
+  Subscription,
+} from 'rxjs';
 import { Video } from 'src/app/search.interface';
 import { EventEmitter } from '@angular/core';
 import { SharedService } from '../../services/shared.service';
@@ -44,9 +50,11 @@ export class VideosComponent implements OnInit, OnDestroy {
   @Input('loading') loading$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false);
   @Output('nextPage') nextPage = new EventEmitter<boolean>();
-  videoFlexSize: number | null =
-    this.posType == 'horizontal' ? 80 : this.miniSidebar ? 18.5 : 22.5;
+  popPos: number = -50;
+  subscription: Subscription = new Subscription();
+  remainder: number = 0;
   onScroll(e: any, resLength: number) {
+    e.preventDefault();
     if (
       resLength < RESULTS.MAX_RESULTS &&
       e.target.offsetHeight + e.target.scrollTop >= e.target.scrollHeight
@@ -55,14 +63,33 @@ export class VideosComponent implements OnInit, OnDestroy {
     }
   }
   ngOnInit() {
+    this.sharedService
+      .numberOfCellsByWindowSize()
+      .subscribe((x) => console.log(x));
+
     this.sharedService.sidebarTriggerBtn$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(
         (sidebarTriggerBtn) => (this.sidebarTriggerBtn = sidebarTriggerBtn)
       );
-    this.videoFlexSize =
-      this.posType == 'horizontal' ? 80 : this.miniSidebar ? 18.5 : 22.5;
     this.ref.detectChanges();
+  }
+  ngAfterViewInit() {
+    /*
+      fix pop-over window position. For ex if got 4/5 videos in a row do remainder of 4/5 and if got 1 so pos window to right else 0 pos to left all the rest in the middle "transform: 'translate(4/5 %, -45%)'"
+    */
+    // this.subscription = this.sharedService.sidebarTriggerBtn$.pipe().subscribe(
+    //   (sb) => {
+    //     const rim = sb ? 4 : 5;
+    //     this.remainder =
+    //       (this.videoIndex + 1) % rim == 0
+    //         ? -53
+    //         : (this.videoIndex + 1) % rim == 1
+    //         ? -47
+    //         : -50;
+    //     this.ref.detectChanges();
+    //   }
+    // );
   }
   ngOnDestroy() {
     this.ngUnsubscribe.next();

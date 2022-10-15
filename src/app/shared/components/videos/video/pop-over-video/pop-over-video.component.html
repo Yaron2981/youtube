@@ -35,7 +35,7 @@
             ></a>
 
             <div fxLayout="row">
-              <mat-card-subtitle xFlex="100">
+              <mat-card-subtitle xFlex="100" style="font-size: 0.9em">
                 <a
                   target="_blank"
                   class="channel-title"
@@ -44,8 +44,8 @@
                 ><br />
                 {{ video.viewCount! | shortNumber }}
                 <span>&bull;</span>
-                {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
-              >
+                <span>{{ video.publishedAt! | dateAgo }}</span>
+              </mat-card-subtitle>
             </div>
           </div>
         </div>

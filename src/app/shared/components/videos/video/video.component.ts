@@ -1,18 +1,16 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
+import { state, style, trigger } from '@angular/animations';
+import { mergeMap, of, takeUntil, delay } from 'rxjs';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Input,
   OnDestroy,
+  OnInit,
   TemplateRef,
 } from '@angular/core';
+import { AnyARecord } from 'dns';
+import { EventEmitter } from '@angular/core';
 import { Video } from '../../../../search.interface';
 import { YOUTUBE_CONST } from '../../../constants/yt';
 
@@ -39,7 +37,7 @@ import { YOUTUBE_CONST } from '../../../constants/yt';
     ]),
   ],
 })
-export class VideoComponent implements OnDestroy {
+export class VideoComponent implements OnInit, OnDestroy {
   YT = YOUTUBE_CONST;
   constructor(private ref: ChangeDetectorRef) {}
   @Input() videoIndex: number = 0;
@@ -48,34 +46,50 @@ export class VideoComponent implements OnDestroy {
   showVertical: TemplateRef<any> | undefined;
   timeout: ReturnType<typeof setTimeout> | undefined;
   timeoutPlayer: ReturnType<typeof setTimeout> | undefined;
-  triggerAnimation: string = 'initial';
+  triggerAni: string = 'initial';
+  private _mouseEnterStream: EventEmitter<Video> = new EventEmitter();
+  private _mouseLeaveStream: EventEmitter<Video> = new EventEmitter();
 
-  onMouseEnter(video: Video) {
-    this.triggerAnimation =
-      this.triggerAnimation === 'initial' ? 'final' : 'initial';
-    this.ref.detectChanges();
-    clearTimeout(this.timeout);
-    this.timeout = setTimeout(() => {
-      video.showPop = true;
-      this.ref.detectChanges();
-    }, 1500);
-    this.timeoutPlayer = setTimeout(() => {
-      video.showPlayer = true;
-      this.ref.detectChanges();
-    }, 0);
+  ngOnInit() {
+    this._mouseLeaveStream
+      .pipe(
+        mergeMap((video: Video) => {
+          this._setTrigger();
+          return of(video).pipe(delay(170), takeUntil(this._mouseEnterStream));
+        })
+      )
+      .subscribe((video: Video) => {
+        this.closePop(video);
+      });
+
+    this._mouseEnterStream.subscribe((video) => this.openPop(video!));
   }
+  onMouseEnter(video: Video) {
+    this._mouseEnterStream.emit(video);
+  }
+
   onMouseLeave(video: Video) {
+    this._mouseLeaveStream.emit(video);
+  }
+  openPop(video: Video): void {
+    this._setTrigger();
+    video.showPop = true;
+    video.showPlayer = true;
+    this.ref.detectChanges();
+  }
+  closePop(video: Video): void {
     video.showPop = false;
     video.showPlayer = false;
     this.ref.detectChanges();
-    clearTimeout(this.timeout);
-    clearTimeout(this.timeoutPlayer);
   }
-  public handleMissingImage(event: Event) {
+  _setTrigger(): void {
+    this.triggerAni = this.triggerAni === 'initial' ? 'final' : 'initial';
+  }
+  handleMissingImage(event: Event) {
     (event.target as HTMLImageElement).style.display = 'none';
   }
   ngOnDestroy() {
-    clearTimeout(this.timeoutPlayer);
-    clearTimeout(this.timeout);
+    this._mouseEnterStream.complete();
+    this._mouseLeaveStream.complete();
   }
 }

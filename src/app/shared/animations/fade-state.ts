@@ -20,22 +20,21 @@ export const FADE_STATE_ANIMATION = trigger('fade', [
     })
   ),
 ]);
-export const SMALL_TO_BIG_STATE_ANIMATION = trigger('smallToBig', [
+export const SCALE_ANIMATION = trigger('smallToBig', [
   state(
     'initial',
     style({
-      position: 'absolute !important',
-      transform: 'scale(0)',
+      opacity: '0',
+      transform: 'scale(1)',
     })
   ),
   state(
     'final',
     style({
-      position: 'absolute !important',
-
-      transform: 'scale(1.15)',
+      opacity: '1',
+      transform: 'scale(1.08)',
     })
   ),
-  transition('final=>initial', animate('200ms')),
-  transition('initial=>final', animate('125ms')),
+  transition('final=>initial', animate('170ms ease-out')),
+  transition('initial=>final', animate('0.250s  1.4s ease-in')),
 ]);
