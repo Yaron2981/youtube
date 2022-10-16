@@ -42,7 +42,6 @@ export class SharedService {
       this.menuTriggerBtn$,
     ]).pipe(
       mergeMap(([width, trigger]: any) => {
-        console.log([width, trigger]);
         this.menuTriggerBtn.next(width <= 1300 ? false : true);
         let nOfv = 4;
         if (width > 2130 && !trigger) nOfv = 6;
@@ -50,11 +49,9 @@ export class SharedService {
         else if (width <= 2300 && width >= 1980 && trigger) nOfv = 5;
         else if (width <= 2300 && width >= 1800 && !trigger) nOfv = 5;
         else if (width <= 1799 && width >= 1142) nOfv = 4;
-        else if (width <= 1141 && width >= 866) nOfv = 3;
-        else if (width <= 865 && width >= 486) nOfv = 2;
+        else if (width <= 1141 && width >= 887) nOfv = 3;
+        else if (width <= 886 && width >= 486) nOfv = 2;
         else if (width <= 485) nOfv = 1;
-        console.log(nOfv);
-
         return of(nOfv);
       })
     );

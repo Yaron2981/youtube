@@ -42,6 +42,7 @@ import { NgxIndexedDBModule } from 'ngx-indexed-db';
 import { dbConfig } from './localDB/DBConfig';
 import { MatDividerModule } from '@angular/material/divider';
 import { CommonModule } from '@angular/common';
+import { ChunkPipe } from './shared/pipes/chunk.pipe';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { CommonModule } from '@angular/common';
     VideosHolderComponent,
     TruncatePipe,
     CategoriesHolderComponent,
+    ChunkPipe,
   ],
   imports: [
     BrowserModule,

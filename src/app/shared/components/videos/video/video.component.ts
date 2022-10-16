@@ -89,7 +89,7 @@ export class VideoComponent implements OnInit, OnDestroy {
     (event.target as HTMLImageElement).style.display = 'none';
   }
   ngOnDestroy() {
-    this._mouseEnterStream.complete();
-    this._mouseLeaveStream.complete();
+    this._mouseEnterStream.unsubscribe();
+    this._mouseLeaveStream.unsubscribe();
   }
 }

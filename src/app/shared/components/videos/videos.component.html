@@ -3,24 +3,19 @@
   *ngIf="videos$ | async as videos; loading$"
   (scroll)="onScroll($event, videos.length)"
 >
+  {{ videos.length }}
   <div
-    *ngIf="videos"
+    *ngFor="let videosRow of videos | chunk: videosInRow"
     fxLayout="row wrap"
     fxLayoutAlign="center"
-    fxLayoutGap="16px grid"
-    [class]="posType"
-    style="margin: 0 2rem !important"
+    fxLayoutGap="16px"
+    [class]="posType + ' videos-viewport-row'"
   >
     <app-video
-      *ngFor="let video of videos; let i = index"
+      *ngFor="let video of videosRow; let i = index"
       [videoIndex]="i"
       [posType]="posType"
-      [fxFlex.gt-md]="
-        posType == 'vertical' ? (sidebarTriggerBtn ? 24 : 19) : 100
-      "
-      [fxFlex.md]="posType == 'vertical' ? 24 : 100"
-      [fxFlex.sm]="posType == 'vertical' ? 50 : 100"
-      [fxFlex.xs]="100"
+      [fxFlex]="100 / videosInRow - 2"
       [video]="video"
     ></app-video>
   </div>

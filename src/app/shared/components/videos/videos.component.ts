@@ -19,6 +19,7 @@ import { Video } from 'src/app/search.interface';
 import { EventEmitter } from '@angular/core';
 import { SharedService } from '../../services/shared.service';
 import { RESULTS } from '../../constants/yt';
+import { mathFloor } from 'src/utils/utils';
 
 @Component({
   selector: 'app-videos',
@@ -46,6 +47,8 @@ export class VideosComponent implements OnInit, OnDestroy {
   sidebarTriggerBtn: boolean = false;
   @Input() miniSidebar: boolean = false;
   @Input() allowScrolling: boolean = false;
+  @Input() videosInRow: number = 1;
+
   @Input() posType: string = 'vertical';
   @Input('loading') loading$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false);
@@ -53,6 +56,9 @@ export class VideosComponent implements OnInit, OnDestroy {
   popPos: number = -50;
   subscription: Subscription = new Subscription();
   remainder: number = 0;
+  get Math() {
+    return Math;
+  }
   onScroll(e: any, resLength: number) {
     e.preventDefault();
     if (
@@ -63,10 +69,6 @@ export class VideosComponent implements OnInit, OnDestroy {
     }
   }
   ngOnInit() {
-    this.sharedService
-      .numberOfCellsByWindowSize()
-      .subscribe((x) => console.log(x));
-
     this.sharedService.sidebarTriggerBtn$
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(

@@ -7,5 +7,5 @@ export const YOUTUBE_CONST = {
 };
 export const RESULTS = {
   MAX_RESULTS: 100,
-  LIMIT: 16,
+  LIMIT: 18,
 };

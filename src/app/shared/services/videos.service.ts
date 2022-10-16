@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, forkJoin, of } from 'rxjs';
+import {
+  Observable,
+  BehaviorSubject,
+  forkJoin,
+  of,
+  zip,
+  combineLatest,
+} from 'rxjs';
 import {
   mergeMap,
   map,
@@ -25,12 +32,12 @@ import { RESULTS, YOUTUBE_CONST } from '../constants/yt';
 })
 export class VideosService {
   constructor(private http: HttpClient, private localDB: NgxIndexedDBService) {}
-
+  pageNumber = 0;
   videoId$: Observable<boolean> = of(false);
 
-  nCategory$ = new BehaviorSubject<NCategory>({ cid: 0, next: false });
+  nCategory$ = new BehaviorSubject<NCategory>({ cid: 0, page: 0 });
 
-  nQuery$ = new BehaviorSubject<NQuery>({ q: '', next: false });
+  nQuery$ = new BehaviorSubject<NQuery>({ q: '', page: 0 });
 
   loading$ = {
     category: new BehaviorSubject<boolean>(false),
@@ -48,13 +55,17 @@ export class VideosService {
 
   emitCategoryChanged(categoryId: number) {
     this.currentCategoryId = categoryId;
-    this.nCategory$.next({ cid: categoryId, next: false });
+    this.nCategory$.next({ cid: categoryId, page: 0 });
   }
   emitVideosByQuery(q: string) {
-    this.nQuery$.next({ q: q, next: false });
+    this.nQuery$.next({ q: q, page: 0 });
   }
   emitCategoryNextPage(): void {
-    this.nCategory$.next({ cid: this.currentCategoryId, next: true });
+    this.pageNumber = this.pageNumber + 1;
+    this.nCategory$.next({
+      cid: this.currentCategoryId,
+      page: this.pageNumber,
+    });
   }
   getCategorySource(): Observable<Video[]> {
     return this._getSource('category', this.nCategory$);
@@ -77,23 +88,35 @@ export class VideosService {
           .getByIndex(searchBy.store, searchBy.indexName, searchBy.key)
           .pipe(
             mergeMap((listData: any) => {
-              if (!nqc.next) this.videosData$[type].next([]);
+              console.log(nqc.page);
+              if (nqc.page == 0) this.videosData$[type].next([]);
               if (
                 listData &&
-                (listData.videoIds.length >= RESULTS.MAX_RESULTS || !nqc.next)
+                (listData.videoIds.length >= RESULTS.MAX_RESULTS ||
+                  nqc.page > 0)
               ) {
                 return this.localDB.bulkGet('videos', listData.videoIds).pipe(
                   tap((videos: Video[]) => {
-                    if (!nqc.next) videos = videos.slice(0, RESULTS.LIMIT);
-                    this.videosData$[type].next(videos);
+                    if (nqc.page > 0) {
+                      videos = videos.slice(
+                        0,
+                        RESULTS.LIMIT * nqc.page + RESULTS.LIMIT
+                      );
+
+                      console.log(videos);
+                      this.videosData$[type].next(videos);
+                    } else {
+                      videos = videos.slice(0, RESULTS.LIMIT);
+                      this.videosData$[type].next(videos);
+                    }
                   })
                 );
               } else {
                 if (listData) videoIds = listData.videoIds;
                 return this._getVideos(type, nqc.q, nqc.cid, videoIds);
               }
-            }),
-            take(1)
+            })
+            // take(1)
           );
       }),
       shareReplay(1),
@@ -102,7 +125,9 @@ export class VideosService {
       })
     );
   }
-
+  _mergeData(type: VideoDataType, videos: Video[]) {
+    this.videosData$[type].pipe(map((a) => a.concat(videos)));
+  }
   _getVideos(
     type: VideoDataType,
     query: string = '',

@@ -6,13 +6,12 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { CategoriesService } from '../categories/categories.service';
 import { Video } from '../search.interface';
 import { VideosService } from '../shared/services/videos.service';
-import { YOUTUBE_CONST } from '../shared/constants/yt';
+import { SharedService } from '../shared/services/shared.service';
 
 @Component({
   selector: 'app-home',
@@ -25,7 +24,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private videosService: VideosService,
     private ref: ChangeDetectorRef,
     private router: Router,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    private sharedService: SharedService
   ) {}
 
   @Input('miniSidebar') miniSidebar = false;
@@ -37,8 +37,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   mediaVideoSize: number = 0;
   currentvideosLoading: boolean = false;
   allowScrolling: boolean = true;
+  videosInRow: number = 4;
   ngOnInit() {
-    console.log('init');
+    this.sharedService.numberOfCellsByWindowSize().subscribe((vir) => {
+      this.videosInRow = vir;
+      this.ref.detectChanges();
+    });
+
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = 'reload';
     this.videosService
@@ -48,9 +53,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.videosLoading$.subscribe((loading) => {
       this.currentvideosLoading = loading;
+      this.ref.detectChanges();
     });
-
-    this.ref.detectChanges();
   }
 
   nextPage() {

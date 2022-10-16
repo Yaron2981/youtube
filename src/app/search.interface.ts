@@ -35,15 +35,15 @@ export interface VideosResponse {
 //https://blog.logrocket.com/build-a-youtube-video-search-app-with-angular-and-rxjs/
 export interface NQuery {
   q: string;
-  next: boolean;
+  page: number;
 }
 export interface NCategory {
   cid: number;
-  next: boolean;
+  page: number;
 }
 export interface NQCategory {
   q: string;
   cid: number;
-  next: boolean;
+  page: number;
 }
 export type VideoDataType = 'category' | 'query';
