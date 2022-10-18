@@ -11,7 +11,17 @@ export interface Video {
   showPlayer?: boolean;
   channelName: string;
   viewCount: number;
+  commentCount: number;
+  favoriteCount: number;
+  likeCount: number;
+
   duration: number;
+  loader: VideoLoader;
+}
+export interface VideoLoader {
+  thumbnail: boolean;
+  channelThumbnail: boolean;
+  content: boolean;
 }
 export interface Channel {
   channelThumbnail: string;

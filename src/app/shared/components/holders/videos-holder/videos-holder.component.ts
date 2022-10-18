@@ -18,6 +18,7 @@ export class VideosHolderComponent {
   sidebarBtn$ = this.sharedService.sidebarTriggerBtn$;
   @Input('posType') posType: string = 'vertical';
   @Input('miniSidebar') miniSidebar: boolean = false;
+  @Input() videoFlex: number = 24;
   @Input('loading') loading$: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false);
 }

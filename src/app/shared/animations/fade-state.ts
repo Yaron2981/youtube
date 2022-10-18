@@ -20,21 +20,31 @@ export const FADE_STATE_ANIMATION = trigger('fade', [
     })
   ),
 ]);
-export const SCALE_ANIMATION = trigger('smallToBig', [
+export const SCALE_BY_RIMAINDER_ANIMATION = trigger('smallToBig', [
   state(
     'initial',
     style({
       opacity: '0',
-      transform: 'scale(1)',
-    })
+      display: 'none',
+      transform: 'scale(1) translate({{remainder}}px, 0px)',
+    }),
+    { params: { remainder: '0' } }
   ),
   state(
     'final',
     style({
       opacity: '1',
-      transform: 'scale(1.08)',
-    })
+      display: 'block',
+      transform: 'scale(1.08) translate({{remainder}}px, 0px)',
+    }),
+    { params: { remainder: '0' } }
   ),
-  transition('final=>initial', animate('170ms ease-out')),
-  transition('initial=>final', animate('0.250s  1.4s ease-in')),
+  transition('final=>initial', [
+    style({ display: 'none' }),
+    animate('170ms ease-out'),
+  ]),
+  transition('initial=>final', [
+    style({ display: 'block' }),
+    animate('0.250s  1.4s ease-in'),
+  ]),
 ]);

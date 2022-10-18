@@ -1,3 +1,5 @@
+@import "../../../../../styles/colors";
+
 .pb-counter-con {
   position: relative;
   top: -2px;
@@ -56,4 +58,53 @@ a.channel-title:hover {
 .mat-card-content {
   padding-top: 16px;
   background-color: #f9f9f9;
+}
+.img-con {
+  background-color: #fafafa;
+  position: relative;
+  margin-right: 16px;
+  max-width: 360px;
+  min-width: 240px;
+  margin-bottom: 0.75rem;
+}
+.holder-thumbnail-con {
+  height: 202px;
+  .thumbnail {
+    width: 100%;
+    background-color: $holderLightGrey;
+    height: calc((6.6vw + 15px) * 1.8);
+  }
+}
+.holder-channel-humbnail {
+  width: 40px;
+  height: 40px;
+  background-color: $holderLightGrey;
+  border-radius: 50%;
+}
+.holder-content {
+  .title {
+    margin-bottom: 5px;
+    margin-top: 2px;
+    width: 100%;
+    background-color: $holderLightGrey;
+    height: 15px;
+  }
+  .title2 {
+    margin-bottom: 1.25rem;
+    width: 100%;
+    background-color: $holderLightGrey;
+    height: 15px;
+  }
+  .channel {
+    margin-bottom: 8px;
+    width: 68%;
+    background-color: $holderLightGrey;
+    height: 15px;
+  }
+  .views {
+    margin-bottom: 35px;
+    width: 55%;
+    background-color: $holderLightGrey;
+    height: 13px;
+  }
 }

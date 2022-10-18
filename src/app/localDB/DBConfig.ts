@@ -35,6 +35,17 @@ export const dbConfig: DBConfig = {
         { name: 'thumbnail', keypath: 'thumbnail', options: { unique: false } },
         { name: 'videoId', keypath: 'videoId', options: { unique: true } },
         { name: 'viewCount', keypath: 'viewCount', options: { unique: false } },
+        {
+          name: 'commentCount',
+          keypath: 'commentCount',
+          options: { unique: false },
+        },
+        {
+          name: 'favoriteCount',
+          keypath: 'favoriteCount',
+          options: { unique: false },
+        },
+        { name: 'likeCount', keypath: 'likeCount', options: { unique: false } },
       ],
     },
     {

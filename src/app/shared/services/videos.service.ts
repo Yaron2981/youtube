@@ -7,6 +7,7 @@ import {
   of,
   zip,
   combineLatest,
+  startWith,
 } from 'rxjs';
 import {
   mergeMap,
@@ -15,6 +16,7 @@ import {
   switchMap,
   take,
   tap,
+  delay,
 } from 'rxjs/operators';
 import {
   NCategory,
@@ -22,15 +24,19 @@ import {
   NQuery,
   Video,
   VideoDataType,
+  VideoLoader,
   VideosResponse,
 } from 'src/app/search.interface';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { RESULTS, YOUTUBE_CONST } from '../constants/yt';
+import { EMPTY_VIDEO, RESULTS, YOUTUBE_CONST } from '../constants/yt';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VideosService {
+  videosLoader: any = [...Array(RESULTS.LIMIT).keys()].map(
+    (vl: any) => EMPTY_VIDEO
+  );
   constructor(private http: HttpClient, private localDB: NgxIndexedDBService) {}
   pageNumber = 0;
   videoId$: Observable<boolean> = of(false);
@@ -39,11 +45,19 @@ export class VideosService {
 
   nQuery$ = new BehaviorSubject<NQuery>({ q: '', page: 0 });
 
+  // generateData$:Observable<{type:string,data:Video[],trigger:string}> = new BehaviorSubject({type:'new',data:this.videosLoader,trigger:'new'}).pipe(sw)
+
   loading$ = {
     category: new BehaviorSubject<boolean>(false),
     query: new BehaviorSubject<boolean>(false),
   };
-
+  videoData: {
+    category: Video[];
+    query: Video[];
+  } = {
+    category: [],
+    query: [],
+  };
   videosData$ = {
     category: new BehaviorSubject<Video[]>([]),
     query: new BehaviorSubject<Video[]>([]),
@@ -74,12 +88,16 @@ export class VideosService {
     return this._getSource('query', this.nQuery$);
   }
   _getSource(type: VideoDataType, listener: Observable<any>): Observable<any> {
+    console.log(this.videosLoader);
     let videoIds: string[] = [];
     return listener.pipe(
       tap(() => {
         this.loading$[type].next(true);
       }),
       switchMap((nqc: NQCategory) => {
+        if (nqc.page > 0) {
+          this._setData(type, this.videosLoader, 'push');
+        } else this._setData(type, this.videosLoader, 'new');
         const searchBy =
           nqc.q && nqc.q.length > 0
             ? { store: 'searchLists', indexName: 'q', key: nqc.q }
@@ -89,7 +107,10 @@ export class VideosService {
           .pipe(
             mergeMap((listData: any) => {
               console.log(nqc.page);
-              if (nqc.page == 0) this.videosData$[type].next([]);
+              // if (nqc.page == 0) {
+              //   this._setData(type, this.videosLoader, 'new');
+              //   // this.videosData$[type].next([]);
+              // }
               if (
                 listData &&
                 (listData.videoIds.length >= RESULTS.MAX_RESULTS ||
@@ -103,17 +124,21 @@ export class VideosService {
                         RESULTS.LIMIT * nqc.page + RESULTS.LIMIT
                       );
 
-                      console.log(videos);
-                      this.videosData$[type].next(videos);
+                      this._setData(type, videos, 'merge');
                     } else {
                       videos = videos.slice(0, RESULTS.LIMIT);
-                      this.videosData$[type].next(videos);
+                      this._setData(type, videos, 'merge');
                     }
                   })
                 );
               } else {
                 if (listData) videoIds = listData.videoIds;
-                return this._getVideos(type, nqc.q, nqc.cid, videoIds);
+                return this._getVideos(type, nqc.q, nqc.cid, videoIds).pipe(
+                  tap((videos) => {
+                    if (nqc.page > 0) this._setData(type, videos, 'merge');
+                    else this._setData(type, videos, 'new');
+                  })
+                );
               }
             })
             // take(1)
@@ -125,8 +150,35 @@ export class VideosService {
       })
     );
   }
-  _mergeData(type: VideoDataType, videos: Video[]) {
-    this.videosData$[type].pipe(map((a) => a.concat(videos)));
+
+  _setData(type: VideoDataType, videos: Video[], trigger: string) {
+    switch (trigger) {
+      case 'new':
+        this.videoData[type] = videos;
+        break;
+      case 'push':
+        this.videoData[type] = this.videoData[type].concat(videos);
+        break;
+      case 'merge':
+        this.videoData[type] = this.videoData[type].map((video, k) => {
+          return video.videoId === null
+            ? {
+                ...videos[k],
+                ...{
+                  loader: {
+                    thumbnail: true,
+                    channelThumbnail: true,
+                    content: false,
+                  },
+                },
+              }
+            : video;
+        });
+        break;
+    }
+    this.videosData$[type].next(this.videoData[type]);
+
+    // this.videosData$[type].pipe(map((a) => a.concat(videos)));
   }
   _getVideos(
     type: VideoDataType,
@@ -168,6 +220,9 @@ export class VideosService {
               videoIds.push(re.videoId);
               return {
                 ...re,
+                commentCount: r[1][re.videoId].commentCount,
+                favoriteCount: r[1][re.videoId].favoriteCount,
+                likeCount: r[1][re.videoId].likeCount,
                 viewCount: r[1][re.videoId].viewCount,
                 duration: r[1][re.videoId].duration,
                 channelThumbnail: r[0][re.channelId],
@@ -192,8 +247,7 @@ export class VideosService {
                 return of(videos);
               })
             );
-          }),
-          tap((videos) => this.videosData$[type].next(videos))
+          })
         )
       ),
       shareReplay(1)
@@ -250,9 +304,10 @@ export class VideosService {
   }
   _getVideoStatisticsInfo(res: any): Observable<any> {
     const videoIds = [...new Set(res.map((r: any) => r.videoId))].join(',');
-    const url = `${YOUTUBE_CONST.API_STATISTIC_INFO_URL}?id=${videoIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=statistics,contentDetails`;
+    const url = `${YOUTUBE_CONST.API_STATISTIC_INFO_URL}?id=${videoIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=statistics,contentDetails,player`;
     return this.http.get(url).pipe(
       map((response: any) => {
+        console.log(response);
         const statistics: any = {};
         res.forEach((r: any) => {
           const videoById = response.items.find(

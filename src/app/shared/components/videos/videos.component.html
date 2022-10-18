@@ -1,9 +1,8 @@
 <div
   class="videos-viewport"
-  *ngIf="videos$ | async as videos; loading$"
+  *ngIf="videos$ | async as videos"
   (scroll)="onScroll($event, videos.length)"
 >
-  {{ videos.length }}
   <div
     *ngFor="let videosRow of videos | chunk: videosInRow"
     fxLayout="row wrap"
@@ -14,14 +13,10 @@
     <app-video
       *ngFor="let video of videosRow; let i = index"
       [videoIndex]="i"
-      [posType]="posType"
       [fxFlex]="100 / videosInRow - 2"
+      [videosInRow]="videosInRow"
+      [posType]="posType"
       [video]="video"
     ></app-video>
   </div>
-  <app-videos-holder
-    [loading]="loading$"
-    [posType]="posType"
-  ></app-videos-holder>
-  <div style="display: block; width: 100%; height: 100px"></div>
 </div>

@@ -1,22 +1,21 @@
 <div class="pop-over-video">
   <mat-card
-    [@smallToBig]="currentState"
+    [@smallToBig]="{ value: currentState, params: { remainder: remainder } }"
     class="inner-card mat-elevation-z0"
-    [ngStyle]="{ transform: 'translate(' + remainder + '%, -45%)' }"
+    style="margin-right: 200px"
   >
     <div>
-      <ng-template [ngIf]="video && video.showPlayer">
+      <ng-template [ngIf]="video && currentState != 'initial'">
         <a target="_blank" [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'">
           <app-player
             style="margin-right: -1px"
-            [duration]="video.duration"
             [videoId]="video.videoId"
           ></app-player>
         </a>
       </ng-template>
     </div>
 
-    <ng-template [ngIf]="video && video.showPop">
+    <ng-template [ngIf]="video && currentState != 'initial'">
       <mat-card-content style="margin-right: -1px; margin-top: -10px">
         <div fxLayout="row">
           <div fxFlex="18" fxLayoutAlign="center">

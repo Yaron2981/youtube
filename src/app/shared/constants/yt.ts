@@ -6,6 +6,27 @@ export const YOUTUBE_CONST = {
   API_STATISTIC_INFO_URL: 'https://www.googleapis.com/youtube/v3/videos',
 };
 export const RESULTS = {
+  MAX_SERVER_RESULTS: 100,
   MAX_RESULTS: 100,
   LIMIT: 18,
+};
+export const EMPTY_VIDEO = {
+  videoId: null,
+  channelId: null,
+  channelTitle: null,
+  title: null,
+  publishedAt: null,
+  description: null,
+  thumbnail: null,
+  channelThumbnail: null,
+  showPop: null,
+  showPlayer: null,
+  channelName: null,
+  viewCount: null,
+  duration: null,
+  loader: {
+    thumbnail: true,
+    channelThumbnail: true,
+    content: true,
+  },
 };

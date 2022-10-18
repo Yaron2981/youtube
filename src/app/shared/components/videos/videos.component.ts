@@ -76,23 +76,7 @@ export class VideosComponent implements OnInit, OnDestroy {
       );
     this.ref.detectChanges();
   }
-  ngAfterViewInit() {
-    /*
-      fix pop-over window position. For ex if got 4/5 videos in a row do remainder of 4/5 and if got 1 so pos window to right else 0 pos to left all the rest in the middle "transform: 'translate(4/5 %, -45%)'"
-    */
-    // this.subscription = this.sharedService.sidebarTriggerBtn$.pipe().subscribe(
-    //   (sb) => {
-    //     const rim = sb ? 4 : 5;
-    //     this.remainder =
-    //       (this.videoIndex + 1) % rim == 0
-    //         ? -53
-    //         : (this.videoIndex + 1) % rim == 1
-    //         ? -47
-    //         : -50;
-    //     this.ref.detectChanges();
-    //   }
-    // );
-  }
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

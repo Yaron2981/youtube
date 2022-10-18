@@ -1,5 +1,5 @@
 import { state, style, trigger } from '@angular/animations';
-import { mergeMap, of, takeUntil, delay } from 'rxjs';
+import { mergeMap, of, takeUntil, delay, debounceTime } from 'rxjs';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -37,59 +37,42 @@ import { YOUTUBE_CONST } from '../../../constants/yt';
     ]),
   ],
 })
-export class VideoComponent implements OnInit, OnDestroy {
+export class VideoComponent {
   YT = YOUTUBE_CONST;
   constructor(private ref: ChangeDetectorRef) {}
   @Input() videoIndex: number = 0;
   @Input() video: Video | null = null;
+  @Input() videosInRow: number = 4;
   @Input('posType') posType = 'vertical';
   showVertical: TemplateRef<any> | undefined;
   timeout: ReturnType<typeof setTimeout> | undefined;
   timeoutPlayer: ReturnType<typeof setTimeout> | undefined;
   triggerAni: string = 'initial';
-  private _mouseEnterStream: EventEmitter<Video> = new EventEmitter();
-  private _mouseLeaveStream: EventEmitter<Video> = new EventEmitter();
+  remainder: number = 50;
 
-  ngOnInit() {
-    this._mouseLeaveStream
-      .pipe(
-        mergeMap((video: Video) => {
-          this._setTrigger();
-          return of(video).pipe(delay(170), takeUntil(this._mouseEnterStream));
-        })
-      )
-      .subscribe((video: Video) => {
-        this.closePop(video);
-      });
-
-    this._mouseEnterStream.subscribe((video) => this.openPop(video!));
-  }
-  onMouseEnter(video: Video) {
-    this._mouseEnterStream.emit(video);
-  }
-
-  onMouseLeave(video: Video) {
-    this._mouseLeaveStream.emit(video);
-  }
-  openPop(video: Video): void {
+  onMouseEnter(e: Event, video: Video): void {
     this._setTrigger();
-    video.showPop = true;
-    video.showPlayer = true;
-    this.ref.detectChanges();
   }
-  closePop(video: Video): void {
-    video.showPop = false;
-    video.showPlayer = false;
-    this.ref.detectChanges();
+  onMouseLeave(e: Event, video: Video): void {
+    this._setTrigger();
   }
   _setTrigger(): void {
     this.triggerAni = this.triggerAni === 'initial' ? 'final' : 'initial';
+    this.ref.detectChanges();
   }
   handleMissingImage(event: Event) {
     (event.target as HTMLImageElement).style.display = 'none';
   }
-  ngOnDestroy() {
-    this._mouseEnterStream.unsubscribe();
-    this._mouseLeaveStream.unsubscribe();
+  ngAfterViewInit() {
+    /*
+      fix pop-over window position. For e.g if got 4/5 videos in a row do remainder of 4/5 and if got 1 so pos window to right else 0 pos to left all the rest in the middle "transform: 'translate(4/5 %, -45%)'"
+    */
+    this.remainder =
+      (this.videoIndex + 1) % this.videosInRow == 0
+        ? -40
+        : (this.videoIndex + 1) % this.videosInRow == 1
+        ? 0
+        : -20;
+    this.ref.detectChanges();
   }
 }
