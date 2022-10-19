@@ -36,8 +36,8 @@ a.channel-title:hover {
 }
 
 .title {
-  font-weight: 500;
-  font-size: 16px;
+  font-weight: 400;
+  font-size: 17px;
 }
 .mt-1rem {
   margin-top: 1rem;
@@ -72,7 +72,7 @@ a.channel-title:hover {
   .thumbnail {
     width: 100%;
     background-color: $holderLightGrey;
-    height: calc((6.6vw + 15px) * 1.8);
+    height: calc((6.6vw + 15px) * 1.45);
   }
 }
 .holder-channel-humbnail {
@@ -80,6 +80,16 @@ a.channel-title:hover {
   height: 40px;
   background-color: $holderLightGrey;
   border-radius: 50%;
+}
+.description {
+  font-size: 0.8rem;
+}
+.holder-channel-humbnail-mini {
+  border-radius: 50%;
+  background-color: $holderLightGrey;
+  width: 26px !important;
+  height: 26px !important;
+  display: block;
 }
 .holder-content {
   .title {
@@ -106,5 +116,44 @@ a.channel-title:hover {
     width: 55%;
     background-color: $holderLightGrey;
     height: 13px;
+  }
+}
+
+.horizontal {
+  .holder-content {
+    .title {
+      margin-bottom: 5px;
+      margin-top: 2px;
+      width: 45%;
+      background-color: $holderLightGrey;
+      height: 15px;
+    }
+    .title2 {
+      margin-bottom: 1rem;
+      width: 25%;
+      background-color: $holderLightGrey;
+      height: 15px;
+    }
+    .channel {
+      margin-bottom: 8px;
+      width: 13%;
+      background-color: $holderLightGrey;
+      height: 15px;
+      margin-left: 10px;
+    }
+    .desc {
+      margin-bottom: 8px;
+      width: 100%;
+      background-color: $holderLightGrey;
+      height: 13px;
+    }
+    .desc2 {
+      width: 80%;
+      background-color: $holderLightGrey;
+      height: 13px;
+    }
+    .row {
+      margin-bottom: 16px;
+    }
   }
 }

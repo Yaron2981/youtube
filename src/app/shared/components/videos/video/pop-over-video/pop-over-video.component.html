@@ -6,7 +6,11 @@
   >
     <div>
       <ng-template [ngIf]="video && currentState != 'initial'">
-        <a target="_blank" [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'">
+        <a
+          class="app-player-con"
+          target="_blank"
+          [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+        >
           <app-player
             style="margin-right: -1px"
             [videoId]="video.videoId"

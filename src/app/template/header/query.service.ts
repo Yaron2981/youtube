@@ -36,7 +36,7 @@ export class QueryService {
             if (listData) {
               return of(listData.titles);
             } else {
-              const url = `${YOUTUBE_CONST.API_TOKEN}?q=${q}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=14&regionCode=il&relevanceLanguage=he`;
+              const url = `${YOUTUBE_CONST.API_SEARCH_URL}?q=${q}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=14&regionCode=il&relevanceLanguage=he`;
               return this.http.get(url).pipe(
                 map((response: any) => {
                   return response.items.map((item: any) =>

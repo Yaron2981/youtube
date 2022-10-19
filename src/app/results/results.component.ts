@@ -27,7 +27,10 @@ export class ResultsComponent implements OnInit {
         this.activatedRoute.snapshot.queryParams['search_query']
       );
     this.activatedRoute.queryParamMap.subscribe(() => {
-      this.videosService.getQuerySource().pipe(takeUntil(this.ngUnsubscribe));
+      this.videosService
+        .getQuerySource()
+        .pipe(takeUntil(this.ngUnsubscribe))
+        .subscribe();
     });
   }
   ngOnDestroy() {

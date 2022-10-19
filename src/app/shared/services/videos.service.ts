@@ -88,13 +88,13 @@ export class VideosService {
     return this._getSource('query', this.nQuery$);
   }
   _getSource(type: VideoDataType, listener: Observable<any>): Observable<any> {
-    console.log(this.videosLoader);
     let videoIds: string[] = [];
     return listener.pipe(
       tap(() => {
         this.loading$[type].next(true);
       }),
       switchMap((nqc: NQCategory) => {
+        console.log(nqc);
         if (nqc.page > 0) {
           this._setData(type, this.videosLoader, 'push');
         } else this._setData(type, this.videosLoader, 'new');
@@ -106,15 +106,11 @@ export class VideosService {
           .getByIndex(searchBy.store, searchBy.indexName, searchBy.key)
           .pipe(
             mergeMap((listData: any) => {
-              console.log(nqc.page);
-              // if (nqc.page == 0) {
-              //   this._setData(type, this.videosLoader, 'new');
-              //   // this.videosData$[type].next([]);
-              // }
+              console.log(listData.videoIds.length, RESULTS.MAX_RESULTS);
               if (
                 listData &&
-                (listData.videoIds.length >= RESULTS.MAX_RESULTS ||
-                  nqc.page > 0)
+                listData.videoIds.length >=
+                  RESULTS.LIMIT * nqc.page + RESULTS.LIMIT
               ) {
                 return this.localDB.bulkGet('videos', listData.videoIds).pipe(
                   tap((videos: Video[]) => {

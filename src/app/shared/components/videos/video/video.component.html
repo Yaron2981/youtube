@@ -1,85 +1,143 @@
-<div [ngSwitch]="posType">
+<div [ngSwitch]="posType" [class]="posType">
   <ng-template ngSwitchCase="horizontal">
     <mat-card
-      fxLayout="row"
+      fxLayout="column"
+      fxLayoutGap="16px"
       *ngIf="video"
       class="card"
       class="mat-elevation-z0"
       style="padding-top: 0px; background-color: #fafafa"
-      (mouseenter)="onMouseEnter($event, video)"
-      (mouseleave)="onMouseLeave($event, video)"
     >
-      <div fxFlex="30">
-        <div class="img-con">
-          <a
-            target="_blank"
-            [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+      <div fxFlex="100">
+        <div fxLayout="row" fxFlexAlign="flex-start" style="max-width: 1096px">
+          <div
+            style="
+              max-width: 360px;
+              min-width: 240px;
+              flex: 1;
+              flex-basis: 1e-9px;
+            "
           >
-            <img
-              class="min-circle-img"
-              mat-card-image
-              [src]="video.thumbnail"
-              [alt]="video.title"
-              (error)="handleMissingImage($event)"
-            />
-            <ng-container *ngIf="video.showPlayer">
+            <div
+              class="img-con"
+              (mouseenter)="onMouseEnter($event, video)"
+              (mouseleave)="onMouseLeave($event, video)"
+            >
               <a
-                [@fade]="video.showPop"
                 target="_blank"
                 [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
-                class="player-link"
               >
-                <app-player
-                  [posType]="posType"
-                  [videoId]="video.videoId"
-                ></app-player>
+                <img
+                  class="min-circle-img"
+                  [ngClass]="{ hbp: video.loader.thumbnail }"
+                  mat-card-image
+                  [src]="video.thumbnail"
+                  [alt]="video.title"
+                  (error)="video.loader.thumbnail = true"
+                  (load)="video.loader.thumbnail = false"
+                />
+                <div
+                  *ngIf="video.loader.thumbnail"
+                  class="holder-thumbnail-con"
+                >
+                  <div class="thumbnail"></div>
+                </div>
+                <ng-container *ngIf="video.showPlayer">
+                  <a
+                    [@fade]="video.showPop"
+                    target="_blank"
+                    [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+                    class="player-link"
+                  >
+                    <app-player
+                      [posType]="posType"
+                      [videoId]="video.videoId"
+                    ></app-player>
+                  </a>
+                </ng-container>
               </a>
-            </ng-container>
-          </a>
-        </div>
-      </div>
-      <div fxFlex="70">
-        <mat-card-content>
-          <div fxLayout="row">
-            <a
-              fxFlex="100"
-              target="_blank"
-              [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
-              class="title"
-              [innerHtml]="video.title | safe: 'html'"
-            ></a>
-          </div>
-          <div fxLayout="row">
-            <mat-card-subtitle fxFlex="100">
-              {{ video.viewCount! | shortNumber }} <span>&bull;</span>
-              {{ video.publishedAt! | dateAgo }}</mat-card-subtitle
-            >
-          </div>
-          <div fxLayout="row">
-            <div fxFlex="100" mat-card-avatar fxLayoutAlign="start">
-              <img
-                class="card-avatar-mini"
-                [src]="video.channelThumbnail"
-                alt="Keep overing to play"
-              />
-              <a
-                style="margin-left: 0.75rem"
-                target="_blank"
-                class="channel-title"
-                [href]="YT.VIDEO_PATH + video.channelId | safe: 'url'"
-                >{{ video.channelTitle }}</a
-              >
             </div>
           </div>
-          <div fxLayout="row">
-            <mat-card-subtitle
-              fxFlex="100"
-              target="_blank"
-              class="title"
-              [innerHtml]="video.description | safe: 'html'"
-            ></mat-card-subtitle>
+          <div
+            style="
+              flex: 1;
+              flex-basis: 1e-9px;
+              display: flex;
+              flex-direction: column;
+            "
+          >
+            <mat-card-content style="padding-top: 5px">
+              <div>
+                <a
+                  *ngIf="!video.loader.content && video.title"
+                  fxFlex="100"
+                  target="_blank"
+                  [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+                  class="title"
+                  [innerHtml]="video.title | safe: 'html'"
+                ></a>
+                <div class="holder-content">
+                  <div class="title"></div>
+                </div>
+              </div>
+              <div class="holder-content">
+                <mat-card-subtitle
+                  *ngIf="video.viewCount && !video.loader.content"
+                >
+                  {{ video.viewCount! | shortNumber }} <span>&bull;</span>
+                  {{ video.publishedAt! | dateAgo }}
+                </mat-card-subtitle>
+                <div *ngIf="video.loader.content" class="title2"></div>
+              </div>
+              <div fxLayout="row" class="holder-content">
+                <div fxFlex="100" mat-card-avatar fxLayoutAlign="start">
+                  <span>
+                    <img
+                      [ngClass]="{ hbp: video.loader.channelThumbnail }"
+                      (error)="video.loader.channelThumbnail = true"
+                      class="card-avatar-mini"
+                      [src]="video.channelThumbnail"
+                      alt="Keep overing to play"
+                      (load)="video.loader.channelThumbnail = false"
+                    />
+
+                    <span
+                      class="holder-channel-humbnail-mini"
+                      *ngIf="video.loader.channelThumbnail"
+                    ></span>
+                  </span>
+
+                  <a
+                    *ngIf="video.channelTitle && !video.loader.content"
+                    style="margin-left: 0.75rem"
+                    target="_blank"
+                    class="channel-title"
+                    [href]="YT.VIDEO_PATH + video.channelId | safe: 'url'"
+                    >{{ video.channelTitle }}</a
+                  >
+                  <div
+                    *ngIf="!video.channelTitle || video.loader.content"
+                    class="channel"
+                  ></div>
+                </div>
+              </div>
+              <div>
+                <mat-card-subtitle
+                  *ngIf="video.description && !video.loader.content"
+                  target="_blank"
+                  class="description"
+                  [innerHtml]="video.description | safe: 'html'"
+                ></mat-card-subtitle>
+                <div class="holder-content">
+                  <div
+                    *ngIf="!video.description || video.loader.content"
+                    class="desc2"
+                  ></div>
+                </div>
+              </div>
+            </mat-card-content>
           </div>
-        </mat-card-content>
+        </div>
       </div>
     </mat-card>
   </ng-template>
@@ -91,17 +149,26 @@
       class="card"
       class="mat-elevation-z0"
       style="padding-top: 0px"
-      (mouseenter)="onMouseEnter($event, video)"
-      (mouseleave)="onMouseLeave($event, video)"
     >
-      <a target="_blank" [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'">
-        <img
-          [ngClass]="{ hbp: video.loader.thumbnail }"
-          mat-card-image
-          [src]="video.thumbnail"
-          [alt]="video.title"
-          (load)="video.loader.thumbnail = false"
-      /></a>
+      <div
+        (mouseenter)="onMouseEnter($event, video)"
+        (mouseleave)="onMouseLeave($event, video)"
+      >
+        <app-pop-over-video
+          [remainder]="remainder"
+          [videoIndex]="videoIndex"
+          [video]="video"
+          [triggerAnimation]="triggerAni"
+        ></app-pop-over-video>
+        <a target="_blank" [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'">
+          <img
+            [ngClass]="{ hbp: video.loader.thumbnail }"
+            mat-card-image
+            [src]="video.thumbnail"
+            [alt]="video.title"
+            (load)="video.loader.thumbnail = false"
+        /></a>
+      </div>
       <div *ngIf="video.loader.thumbnail" class="holder-thumbnail-con">
         <div class="thumbnail"></div>
       </div>
@@ -155,11 +222,6 @@
           </div>
         </div>
       </mat-card-content>
-      <app-pop-over-video
-        [remainder]="remainder"
-        [videoIndex]="videoIndex"
-        [video]="video"
-        [triggerAnimation]="triggerAni"
-      ></app-pop-over-video> </mat-card
-  ></ng-template>
+    </mat-card></ng-template
+  >
 </div>
