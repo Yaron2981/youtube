@@ -32,7 +32,6 @@
                   [ngClass]="{ hbp: video.loader.thumbnail }"
                   mat-card-image
                   [src]="video.thumbnail"
-                  [alt]="video.title"
                   (error)="video.loader.thumbnail = true"
                   (load)="video.loader.thumbnail = false"
                 />
@@ -97,7 +96,6 @@
                       (error)="video.loader.channelThumbnail = true"
                       class="card-avatar-mini"
                       [src]="video.channelThumbnail"
-                      alt="Keep overing to play"
                       (load)="video.loader.channelThumbnail = false"
                     />
 
@@ -165,7 +163,6 @@
             [ngClass]="{ hbp: video.loader.thumbnail }"
             mat-card-image
             [src]="video.thumbnail"
-            [alt]="video.title"
             (load)="video.loader.thumbnail = false"
         /></a>
       </div>
@@ -179,8 +176,8 @@
               [ngClass]="{ hbp: video.loader.channelThumbnail }"
               class="card-avatar"
               [src]="video.channelThumbnail"
-              alt="Keep overing to play"
               (load)="video.loader.channelThumbnail = false"
+              (error)="video.loader.channelThumbnail = true"
             />
             <div
               class="holder-channel-humbnail"

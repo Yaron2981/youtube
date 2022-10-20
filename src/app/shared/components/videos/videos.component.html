@@ -4,14 +4,14 @@
   (scroll)="onScroll($event, videos.length)"
 >
   <div
-    *ngFor="let videosRow of videos | chunk: videosInRow"
+    *ngFor="let videosRow of videos | chunk: videosInRow; trackBy: trackById"
     fxLayout="row wrap"
     fxLayoutAlign="center"
     fxLayoutGap="16px"
     class="videos-viewport-row"
   >
     <app-video
-      *ngFor="let video of videosRow; let i = index"
+      *ngFor="let video of videosRow.data; trackBy: trackById; let i = index"
       [videoIndex]="i"
       [fxFlex]="posType === 'horizontal' ? 80 : 100 / videosInRow - 2"
       [fxFlex.md]="100 / videosInRow - 2"

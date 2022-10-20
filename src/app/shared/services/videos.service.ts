@@ -29,6 +29,7 @@ import {
 } from 'src/app/search.interface';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { EMPTY_VIDEO, RESULTS, YOUTUBE_CONST } from '../constants/yt';
+import { chunk } from 'src/utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -66,7 +67,12 @@ export class VideosService {
   nextPageToken: string | null = null;
   currentCategoryId: number = 0;
   prevCategoryId: number = 0;
-
+  _setNewHolderData(startFrom: number = 0): any[] {
+    return [...Array(RESULTS.LIMIT).keys()].map((vl: any, k: number) => ({
+      ...EMPTY_VIDEO,
+      id: startFrom + k,
+    }));
+  }
   emitCategoryChanged(categoryId: number) {
     this.currentCategoryId = categoryId;
     this.nCategory$.next({ cid: categoryId, page: 0 });
@@ -96,8 +102,12 @@ export class VideosService {
       switchMap((nqc: NQCategory) => {
         console.log(nqc);
         if (nqc.page > 0) {
-          this._setData(type, this.videosLoader, 'push');
-        } else this._setData(type, this.videosLoader, 'new');
+          this._setData(
+            type,
+            this._setNewHolderData(nqc.page * RESULTS.LIMIT),
+            'push'
+          );
+        } else this._setData(type, this._setNewHolderData(0), 'new');
         const searchBy =
           nqc.q && nqc.q.length > 0
             ? { store: 'searchLists', indexName: 'q', key: nqc.q }
@@ -105,8 +115,8 @@ export class VideosService {
         return this.localDB
           .getByIndex(searchBy.store, searchBy.indexName, searchBy.key)
           .pipe(
+            delay(3000),
             mergeMap((listData: any) => {
-              console.log(listData.videoIds.length, RESULTS.MAX_RESULTS);
               if (
                 listData &&
                 listData.videoIds.length >=
@@ -132,7 +142,7 @@ export class VideosService {
                 return this._getVideos(type, nqc.q, nqc.cid, videoIds).pipe(
                   tap((videos) => {
                     if (nqc.page > 0) this._setData(type, videos, 'merge');
-                    else this._setData(type, videos, 'new');
+                    else this._setData(type, videos, 'merge');
                   })
                 );
               }
@@ -153,28 +163,34 @@ export class VideosService {
         this.videoData[type] = videos;
         break;
       case 'push':
-        this.videoData[type] = this.videoData[type].concat(videos);
+        if (!this.videoData[type].find((vd) => vd.videoId === null))
+          this.videoData[type] = this.videoData[type].concat(videos);
         break;
       case 'merge':
-        this.videoData[type] = this.videoData[type].map((video, k) => {
-          return video.videoId === null
-            ? {
-                ...videos[k],
-                ...{
-                  loader: {
-                    thumbnail: true,
-                    channelThumbnail: true,
-                    content: false,
-                  },
-                },
-              }
-            : video;
+        this.videoData[type] = this.videoData[type].map((video, index) => {
+          const svideo = videos.shift() as Video;
+          if (video.videoId === null) {
+            console.log('video', video);
+            console.log('videoshift', svideo);
+          }
+          return video.videoId === null ? { ...video, ...svideo } : video;
         });
+
         break;
     }
+    this.videoData[type] = this.videoData[type].map((video) => {
+      return {
+        ...video,
+        ...{
+          loader: {
+            thumbnail: trigger === 'merge' ? false : true,
+            channelThumbnail: trigger === 'merge' ? false : true,
+            content: false,
+          },
+        },
+      };
+    });
     this.videosData$[type].next(this.videoData[type]);
-
-    // this.videosData$[type].pipe(map((a) => a.concat(videos)));
   }
   _getVideos(
     type: VideoDataType,

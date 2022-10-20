@@ -81,6 +81,20 @@ export function createRound(method: string): Function {
     return func(value);
   };
 }
+export function chunk(input: any, size: number = 1) {
+  if (!isArray(input)) {
+    return input;
+  }
+
+  return [].concat.apply(
+    [],
+    input
+      .map((_elem: any, i: number) => {
+        return i % size ? [] : [input.slice(i, i + size)];
+      })
+      .slice(0, Math.floor(input.length / size) * size)
+  );
+}
 
 export function leftPad(str: string, len: number = 0, ch: any = ' ') {
   str = String(str);

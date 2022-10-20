@@ -8,7 +8,7 @@ export const YOUTUBE_CONST = {
 export const RESULTS = {
   MAX_SERVER_RESULTS: 100,
   MAX_RESULTS: 100,
-  LIMIT: 18,
+  LIMIT: 24,
 };
 export const EMPTY_VIDEO = {
   videoId: null,

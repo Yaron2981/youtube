@@ -1,4 +1,5 @@
 export interface Video {
+  id: number;
   videoId: string;
   channelId: string;
   channelTitle: string;

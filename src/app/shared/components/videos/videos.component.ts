@@ -76,7 +76,9 @@ export class VideosComponent implements OnInit, OnDestroy {
       );
     this.ref.detectChanges();
   }
-
+  trackById(index: number, video: Video) {
+    return video.id;
+  }
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

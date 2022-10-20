@@ -50,7 +50,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       .getCategorySource()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe();
-
+    this.videosService.videosData$.category.subscribe((d) =>
+      console.log('ddddddd', d)
+    );
     this.videosLoading$.subscribe((loading) => {
       this.currentvideosLoading = loading;
       this.ref.detectChanges();
