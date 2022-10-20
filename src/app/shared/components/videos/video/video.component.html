@@ -93,10 +93,12 @@
                   <span>
                     <img
                       [ngClass]="{ hbp: video.loader.channelThumbnail }"
-                      (error)="video.loader.channelThumbnail = true"
                       class="card-avatar-mini"
                       [src]="video.channelThumbnail"
-                      (load)="video.loader.channelThumbnail = false"
+                      (load)="
+                        !video.channelThumbnail ||
+                          (video.loader.channelThumbnail = false)
+                      "
                     />
 
                     <span
@@ -158,31 +160,52 @@
           [video]="video"
           [triggerAnimation]="triggerAni"
         ></app-pop-over-video>
-        <a target="_blank" [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'">
-          <img
-            [ngClass]="{ hbp: video.loader.thumbnail }"
-            mat-card-image
-            [src]="video.thumbnail"
-            (load)="video.loader.thumbnail = false"
-        /></a>
+        <div class="thumbnail-con">
+          <a
+            target="_blank"
+            [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+          >
+            <img
+              style="position: absolute; top: 0px"
+              [ngClass]="{ hbp: video.loader.thumbnail }"
+              mat-card-image
+              *ngIf="video.thumbnail"
+              [src]="video.thumbnail"
+              (load)="video.loader.thumbnail = false"
+          /></a>
+          <div
+            [@fadeAnimation]="
+              !video.thumbnail && !video.loader.thumbnail ? 'false' : 'true'
+            "
+            class="holder-thumbnail-con"
+          >
+            <div class="thumbnail"></div>
+          </div>
+        </div>
       </div>
-      <div *ngIf="video.loader.thumbnail" class="holder-thumbnail-con">
-        <div class="thumbnail"></div>
-      </div>
+
       <mat-card-content>
         <div fxLayout="row">
           <div fxFlex="18" mat-card-avatar fxLayoutAlign="start">
-            <img
-              [ngClass]="{ hbp: video.loader.channelThumbnail }"
-              class="card-avatar"
-              [src]="video.channelThumbnail"
-              (load)="video.loader.channelThumbnail = false"
-              (error)="video.loader.channelThumbnail = true"
-            />
-            <div
-              class="holder-channel-humbnail"
-              *ngIf="video.loader.channelThumbnail"
-            ></div>
+            <div style="display: relative">
+              <img
+                style="position: absolute"
+                [ngClass]="{ hbp: video.loader.channelThumbnail }"
+                class="card-avatar"
+                *ngIf="video.channelThumbnail"
+                [src]="video.channelThumbnail"
+                (load)="video.loader.channelThumbnail = false"
+                (error)="video.loader.channelThumbnail = true"
+              />
+              <div
+                [@fadeAnimation]="
+                  !video.channelThumbnail && !video.loader.channelThumbnail
+                    ? 'false'
+                    : 'true'
+                "
+                class="holder-channel-humbnail"
+              ></div>
+            </div>
           </div>
           <div fxFlex="82">
             <div

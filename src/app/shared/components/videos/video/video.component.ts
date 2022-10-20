@@ -1,41 +1,20 @@
-import { state, style, trigger } from '@angular/animations';
-import { mergeMap, of, takeUntil, delay, debounceTime } from 'rxjs';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Input,
-  OnDestroy,
-  OnInit,
   TemplateRef,
 } from '@angular/core';
-import { AnyARecord } from 'dns';
-import { EventEmitter } from '@angular/core';
 import { Video } from '../../../../search.interface';
 import { YOUTUBE_CONST } from '../../../constants/yt';
+import { FADE_VIDEO_IMAGE_STATE_ANIMATION } from 'src/app/shared/animations/fade-state';
 
 @Component({
   selector: 'app-video',
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('fade', [
-      state(
-        'false',
-        style({
-          opacity: '0',
-        })
-      ),
-      state(
-        'true',
-
-        style({
-          opacity: '1',
-        })
-      ),
-    ]),
-  ],
+  animations: [FADE_VIDEO_IMAGE_STATE_ANIMATION],
 })
 export class VideoComponent {
   YT = YOUTUBE_CONST;

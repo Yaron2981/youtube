@@ -67,12 +67,31 @@ a.channel-title:hover {
   min-width: 240px;
   margin-bottom: 0.75rem;
 }
+.thumbnail-con {
+  position: relative;
+  &:before {
+    display: block;
+    content: "";
+    width: 100%;
+    padding-top: 56.25%;
+  }
+}
+.vertical {
+  margin-bottom: 30px;
+}
 .holder-thumbnail-con {
-  height: 202px;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   .thumbnail {
     width: 100%;
     background-color: $holderLightGrey;
-    height: calc((6.6vw + 15px) * 1.45);
+    height: 100%;
   }
 }
 .holder-channel-humbnail {

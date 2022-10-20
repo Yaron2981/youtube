@@ -6,7 +6,7 @@ import {
   trigger,
 } from '@angular/animations';
 
-export const FADE_STATE_ANIMATION = trigger('fade', [
+export const FADE_STATE = trigger('fade', [
   state(
     'false',
     style({
@@ -19,6 +19,21 @@ export const FADE_STATE_ANIMATION = trigger('fade', [
       opacity: '1',
     })
   ),
+]);
+export const FADE_VIDEO_IMAGE_STATE_ANIMATION = trigger('fadeAnimation', [
+  state(
+    'false',
+    style({
+      opacity: '1',
+    })
+  ),
+  state(
+    'true',
+    style({
+      opacity: '0',
+    })
+  ),
+  transition('false=>true', animate('0.350s ease-in')),
 ]);
 export const SCALE_BY_RIMAINDER_ANIMATION = trigger('smallToBig', [
   state(

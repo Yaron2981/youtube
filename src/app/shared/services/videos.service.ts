@@ -115,7 +115,6 @@ export class VideosService {
         return this.localDB
           .getByIndex(searchBy.store, searchBy.indexName, searchBy.key)
           .pipe(
-            delay(3000),
             mergeMap((listData: any) => {
               if (
                 listData &&
@@ -183,8 +182,8 @@ export class VideosService {
         ...video,
         ...{
           loader: {
-            thumbnail: trigger === 'merge' ? false : true,
-            channelThumbnail: trigger === 'merge' ? false : true,
+            thumbnail: false,
+            channelThumbnail: false,
             content: false,
           },
         },
