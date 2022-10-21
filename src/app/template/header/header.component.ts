@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { SharedService } from 'src/app/shared/services/shared.service';
 import { QueryService } from './query.service';
+import { VideosService } from 'src/app/shared/services/videos.service';
 
 @Component({
   selector: 'app-header',
@@ -25,7 +26,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private ls: LocalService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private videosService: VideosService
   ) {}
   sidebarBtn = this.sharedService.sidebarTriggerBtn;
   control = new UntypedFormControl('');
@@ -38,9 +40,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
     startWith(this.ls.isExsist('search') ? this.ls.getData('search') : [])
   );
   ngOnInit() {
+    this.activatedRoute.queryParams.subscribe((params) => {
+      if (params['search_query']) {
+        this.videosService.emitQueryChanged(params['search_query']);
+        this.control.setValue(params['search_query']);
+      }
+    });
     this.router.events.pipe(take(1)).subscribe((x) => {
       this.routerEventSubscription = this.activatedRoute.queryParams.subscribe(
         (params) => {
+          console.log(params);
           if (params['search_query'])
             this.control.setValue(
               this.activatedRoute.snapshot.queryParams['search_query']
@@ -58,6 +67,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   buttonToLink(event: Event) {
     event.stopPropagation();
     if (this.control.value && this.control.value.length > 0) {
+      this.videosService.emitQueryChanged(this.control.value);
       this.router.navigate(['/results'], {
         queryParams: { search_query: this.control.value },
       });

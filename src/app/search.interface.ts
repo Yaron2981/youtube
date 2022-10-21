@@ -59,6 +59,6 @@ export interface NQCategory {
 }
 export type VideoDataType = 'category' | 'query';
 export interface videoData {
-  category: Video[];
-  query: Video[];
+  category: { data: Video[]; page: number };
+  query: { data: Video[]; page: number };
 }

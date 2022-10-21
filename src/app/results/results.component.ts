@@ -10,7 +10,6 @@ import { VideosService } from '../shared/services/videos.service';
   styleUrls: ['./results.component.scss'],
 })
 export class ResultsComponent implements OnInit {
-  @Input('miniSidebar') miniSidebar = false;
   constructor(
     private activatedRoute: ActivatedRoute,
     private videosService: VideosService
@@ -18,18 +17,21 @@ export class ResultsComponent implements OnInit {
   ngUnsubscribe = new Subject<void>();
   paramsSubscription: Subscription | undefined;
   videos$: Observable<Video[]> = this.videosService.videosData$.query;
-
+  q: string | null = null;
   ngOnInit() {
-    if (this.activatedRoute.snapshot.queryParams['search_query'].length > 0)
-      this.videosService.emitVideosByQuery(
-        this.activatedRoute.snapshot.queryParams['search_query']
-      );
+    if (this.activatedRoute.snapshot.queryParams['search_query'].length > 0) {
+      this.q = this.activatedRoute.snapshot.queryParams['search_query'];
+      this.videosService.emitQueryChanged(this.q!);
+    }
     this.activatedRoute.queryParamMap.subscribe(() => {
       this.videosService
         .getQuerySource()
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe();
     });
+  }
+  nextPage() {
+    if (this.q && this.q!.length > 0) this.videosService.emitQueryNextPage();
   }
   ngOnDestroy() {
     this.ngUnsubscribe.next();

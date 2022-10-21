@@ -249,7 +249,23 @@ export function deepEqual(a: any, b: any) {
 
   return true;
 }
-
+/*
+ * convert youtube duration to seconds
+ * @param string of youtube video time
+ * @return number
+ */
+export function ytDurationToSec(input: string): number {
+  const _match = input.match(/PT(?:(\d*)H)?(?:(\d*)M)?(?:(\d*)S)?/);
+  if (!_match) return 0;
+  return _match
+    .slice(1)
+    .map((v: any) => (!v ? 0 : v))
+    .reverse()
+    .reduce(
+      (acc: number, v: number, k: number) => (acc += v * 60 ** k),
+      0
+    ) as number;
+}
 export function isDeepObject(object: any) {
   return object.__isDeepObject__;
 }

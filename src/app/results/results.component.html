@@ -1,3 +1,7 @@
 <div style="margin-top: 5rem">
-  <app-videos posType="horizontal" [videos]="videos$"></app-videos>
+  <app-videos
+    posType="horizontal"
+    (nextPage)="nextPage()"
+    [videos]="videos$"
+  ></app-videos>
 </div>

@@ -16,10 +16,11 @@
               min-width: 240px;
               flex: 1;
               flex-basis: 1e-9px;
+              margin-bottom: 16px;
             "
           >
             <div
-              class="img-con"
+              class="thumbnail-con"
               (mouseenter)="onMouseEnter($event, video)"
               (mouseleave)="onMouseLeave($event, video)"
             >
@@ -30,13 +31,19 @@
                 <img
                   class="min-circle-img"
                   [ngClass]="{ hbp: video.loader.thumbnail }"
+                  style="position: absolute; top: 0px"
                   mat-card-image
                   [src]="video.thumbnail"
-                  (error)="video.loader.thumbnail = true"
+                  *ngIf="video.thumbnail"
+                  [src]="video.thumbnail"
                   (load)="video.loader.thumbnail = false"
                 />
                 <div
-                  *ngIf="video.loader.thumbnail"
+                  [@fadeAnimation]="
+                    !video.thumbnail && !video.loader.thumbnail
+                      ? 'false'
+                      : 'true'
+                  "
                   class="holder-thumbnail-con"
                 >
                   <div class="thumbnail"></div>
@@ -48,10 +55,6 @@
                     [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
                     class="player-link"
                   >
-                    <app-player
-                      [posType]="posType"
-                      [videoId]="video.videoId"
-                    ></app-player>
                   </a>
                 </ng-container>
               </a>
@@ -63,6 +66,7 @@
               flex-basis: 1e-9px;
               display: flex;
               flex-direction: column;
+              margin-left: 16px;
             "
           >
             <mat-card-content style="padding-top: 5px">
@@ -75,7 +79,10 @@
                   class="title"
                   [innerHtml]="video.title | safe: 'html'"
                 ></a>
-                <div class="holder-content">
+                <div
+                  class="holder-content"
+                  *ngIf="video.loader.content || !video.title"
+                >
                   <div class="title"></div>
                 </div>
               </div>
@@ -86,24 +93,26 @@
                   {{ video.viewCount! | shortNumber }} <span>&bull;</span>
                   {{ video.publishedAt! | dateAgo }}
                 </mat-card-subtitle>
-                <div *ngIf="video.loader.content" class="title2"></div>
+                <div
+                  *ngIf="video.loader.content || !video.viewCount"
+                  class="title2"
+                ></div>
               </div>
               <div fxLayout="row" class="holder-content">
                 <div fxFlex="100" mat-card-avatar fxLayoutAlign="start">
                   <span>
                     <img
                       [ngClass]="{ hbp: video.loader.channelThumbnail }"
+                      *ngIf="video.channelThumbnail"
                       class="card-avatar-mini"
                       [src]="video.channelThumbnail"
-                      (load)="
-                        !video.channelThumbnail ||
-                          (video.loader.channelThumbnail = false)
-                      "
+                      (load)="video.loader.channelThumbnail = false"
                     />
-
                     <span
                       class="holder-channel-humbnail-mini"
-                      *ngIf="video.loader.channelThumbnail"
+                      *ngIf="
+                        video.loader.channelThumbnail || !video.channelThumbnail
+                      "
                     ></span>
                   </span>
 
@@ -129,10 +138,7 @@
                   [innerHtml]="video.description | safe: 'html'"
                 ></mat-card-subtitle>
                 <div class="holder-content">
-                  <div
-                    *ngIf="!video.description || video.loader.content"
-                    class="desc2"
-                  ></div>
+                  <div *ngIf="video.loader.content" class="desc2"></div>
                 </div>
               </div>
             </mat-card-content>
@@ -142,8 +148,6 @@
     </mat-card>
   </ng-template>
   <ng-template ngSwitchCase="vertical">
-    <!-- <div>   (mouseenter)="onMouseEnter(video)"
-      (mouseleave)="onMouseLeave(video)"</div> -->
     <mat-card
       *ngIf="video"
       class="card"
@@ -195,7 +199,7 @@
                 *ngIf="video.channelThumbnail"
                 [src]="video.channelThumbnail"
                 (load)="video.loader.channelThumbnail = false"
-                (error)="video.loader.channelThumbnail = true"
+                (error)="video.channelThumbnail = video.channelThumbnail + '?'"
               />
               <div
                 [@fadeAnimation]="

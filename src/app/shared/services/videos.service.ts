@@ -20,6 +20,7 @@ import {
 } from 'src/app/search.interface';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { EMPTY_VIDEO, RESULTS, YOUTUBE_CONST } from '../constants/yt';
+import { ytDurationToSec } from 'src/utils/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -30,14 +31,19 @@ export class VideosService {
   videoId$: Observable<boolean> = of(false);
   nCategory$ = new BehaviorSubject<NCategory>({ cid: 0, page: 0 });
   nQuery$ = new BehaviorSubject<NQuery>({ q: '', page: 0 });
-  videoData: videoData = { category: [], query: [] };
+  videoData: videoData = {
+    category: { data: [], page: 0 },
+    query: { data: [], page: 0 },
+  };
   videosData$ = {
     category: new BehaviorSubject<Video[]>([]),
     query: new BehaviorSubject<Video[]>([]),
   };
   nextPageToken: string | null = null;
-  currentCategoryId: number = 0;
-  prevCategoryId: number = 0;
+
+  categoryId: number = 0;
+
+  query: string = '';
 
   _setNewHolderData(startFrom: number = 0): any[] {
     return [...Array(RESULTS.LIMIT).keys()].map((vl: any, k: number) => ({
@@ -46,19 +52,26 @@ export class VideosService {
     }));
   }
   emitCategoryChanged(categoryId: number) {
-    this.currentCategoryId = categoryId;
+    this.categoryId = categoryId;
     this.nCategory$.next({ cid: categoryId, page: 0 });
   }
-  emitVideosByQuery(q: string) {
+  emitQueryChanged(q: string) {
+    this.query = q;
     this.nQuery$.next({ q: q, page: 0 });
   }
   emitCategoryNextPage(): void {
-    this.pageNumber = this.pageNumber + 1;
     this.nCategory$.next({
-      cid: this.currentCategoryId,
-      page: this.pageNumber,
+      cid: this.categoryId,
+      page: (this.videoData.category.page = +1),
     });
   }
+  emitQueryNextPage(): void {
+    this.nQuery$.next({
+      q: this.query,
+      page: (this.videoData.query.page = +1),
+    });
+  }
+
   getCategorySource(): Observable<Video[]> {
     return this._getSource('category', this.nCategory$);
   }
@@ -66,10 +79,10 @@ export class VideosService {
     return this._getSource('query', this.nQuery$);
   }
   _getSource(type: VideoDataType, listener: Observable<any>): Observable<any> {
-    let videoIds: string[] = [];
     return listener.pipe(
       switchMap((nqc: NQCategory) => {
         if (nqc.page > 0) {
+          console.log(nqc.page);
           this._setData(
             type,
             this._setNewHolderData(nqc.page * RESULTS.LIMIT),
@@ -123,21 +136,21 @@ export class VideosService {
   _setData(type: VideoDataType, videos: Video[], trigger: string) {
     switch (trigger) {
       case 'new':
-        this.videoData[type] = videos;
+        this.videoData[type].data = videos;
         break;
       case 'push':
-        if (!this.videoData[type].find((vd) => vd.videoId === null))
-          this.videoData[type] = this.videoData[type].concat(videos);
+        if (!this.videoData[type].data.find((vd) => vd.videoId === null))
+          this.videoData[type].data = this.videoData[type].data.concat(videos);
         break;
       case 'merge':
-        this.videoData[type] = this.videoData[type].map((video) => {
+        this.videoData[type].data = this.videoData[type].data.map((video) => {
           return video.videoId
             ? video
             : { ...video, ...(videos.shift() as Video) };
         });
         break;
     }
-    this.videoData[type] = this.videoData[type].map((video) => {
+    this.videoData[type].data = this.videoData[type].data.map((video) => {
       return {
         ...video,
         ...{
@@ -149,14 +162,14 @@ export class VideosService {
         },
       };
     });
-    this.videosData$[type].next(this.videoData[type]);
+    this.videosData$[type].next(this.videoData[type].data);
   }
   _getVideos(
     type: VideoDataType,
     query: string = '',
     categoryId: number = 0
   ): Observable<any> {
-    let videoIds = this.videoData[type]
+    let videoIds = this.videoData[type].data
       .filter((vd) => vd.videoId)
       .map((vd) => vd.videoId);
     const widthCategory =
@@ -285,19 +298,10 @@ export class VideosService {
           const videoById = response.items.find(
             (re: any) => r.videoId === re.id
           );
-          //convert youtube duration to seconds
-          const duration = videoById.contentDetails.duration
-            .match(/PT(?:(\d*)H)?(?:(\d*)M)?(?:(\d*)S)?/)
-            .slice(1)
-            .map((v: []) => (!v ? 0 : v))
-            .reverse()
-            .reduce(
-              (acc: number, v: number, k: number) => (acc += v * 60 ** k),
-              0
-            );
+
           statistics[r.videoId as string] = {
             viewCount: videoById.statistics.viewCount,
-            duration: duration,
+            duration: ytDurationToSec(videoById.contentDetails.duration),
             favoriteCount: videoById.statistics.favoriteCount,
             dislikeCount: videoById.statistics.dislikeCount,
             likeCount: videoById.statistics.likeCount,

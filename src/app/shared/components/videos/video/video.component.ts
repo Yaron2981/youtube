@@ -42,6 +42,12 @@ export class VideoComponent {
   handleMissingImage(event: Event) {
     (event.target as HTMLImageElement).style.display = 'none';
   }
+  reRenderImg(type: string, video: any) {
+    console.log('rerender', video[type]);
+    const vct = video[type];
+    video[type] = false;
+    setTimeout(() => (video[type] = true), 100);
+  }
   ngAfterViewInit() {
     /*
       fix pop-over window position. For e.g if got 4/5 videos in a row do remainder of 4/5 and if got 1 so pos window to right else 0 pos to left all the rest in the middle "transform: 'translate(4/5 %, -45%)'"

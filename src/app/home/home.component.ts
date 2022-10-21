@@ -34,7 +34,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   videos$: Observable<Video[]> = this.videosService.videosData$.category;
   categoriesLoading$ = this.categoriesService.loading$;
   mediaVideoSize: number = 0;
-  currentvideosLoading: boolean = false;
   allowScrolling: boolean = true;
   videosInRow: number = 4;
   ngOnInit() {
@@ -52,9 +51,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   nextPage() {
-    console.log('before return');
-    if (this.currentvideosLoading) return;
-    console.log('after return');
     this.videosService.emitCategoryNextPage();
     this.ref.detectChanges();
   }
