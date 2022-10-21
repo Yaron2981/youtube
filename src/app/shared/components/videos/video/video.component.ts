@@ -30,10 +30,10 @@ export class VideoComponent {
   remainder: number = 50;
 
   onMouseEnter(e: Event, video: Video): void {
-    this._setTrigger();
+    if (video.videoId) this._setTrigger();
   }
   onMouseLeave(e: Event, video: Video): void {
-    this._setTrigger();
+    if (video.videoId) this._setTrigger();
   }
   _setTrigger(): void {
     this.triggerAni = this.triggerAni === 'initial' ? 'final' : 'initial';

@@ -1,6 +1,8 @@
 <mat-toolbar>
   <div style="flex: 1 1 0">
     <button
+      fxShow.xs="false"
+      fxShow="true"
       mat-icon-button
       class="menu-icon"
       (click)="this.sidebarBtn.next(!this.sidebarBtn.value)"
@@ -9,7 +11,7 @@
     </button>
     <span class="logo"></span>
   </div>
-  <div style="flex: 1 0">
+  <div style="flex: 1 0" class="mobile-search" fxShow.xs="false" fxShow="true">
     <form onSubmit="return false;">
       <div class="search-con" style="padding: 2px; position: relative">
         <mat-icon fontSet="material-icons-outlined">search</mat-icon>
@@ -30,6 +32,8 @@
         >
       </div>
       <button
+        fxShow.xs="false"
+        fxShow="true"
         (click)="buttonToLink($event)"
         mat-button
         MatPrefix

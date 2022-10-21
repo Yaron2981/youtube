@@ -4,7 +4,9 @@ export const YOUTUBE_CONST = {
   API_SEARCH_URL: 'https://www.googleapis.com/youtube/v3/search',
   API_CHANNEL_INFO_URL: 'https://youtube.googleapis.com/youtube/v3/channels',
   API_STATISTIC_INFO_URL: 'https://www.googleapis.com/youtube/v3/videos',
+  API_CATEGORIES_URL: 'https://www.googleapis.com/youtube/v3/videoCategories',
 };
+export const IGNORED_CATEGORIES = [18, 21, 28, 30, 31, 33, 38, 39, 40, 41, 18];
 export const RESULTS = {
   MAX_SERVER_RESULTS: 100,
   MAX_RESULTS: 100,

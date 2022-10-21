@@ -50,8 +50,6 @@ export class VideosComponent implements OnInit, OnDestroy {
   @Input() videosInRow: number = 1;
 
   @Input() posType: string = 'vertical';
-  @Input('loading') loading$: BehaviorSubject<boolean> =
-    new BehaviorSubject<boolean>(false);
   @Output('nextPage') nextPage = new EventEmitter<boolean>();
   popPos: number = -50;
   subscription: Subscription = new Subscription();

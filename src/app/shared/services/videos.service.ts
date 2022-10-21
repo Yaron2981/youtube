@@ -1,72 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {
-  Observable,
-  BehaviorSubject,
-  forkJoin,
-  of,
-  zip,
-  combineLatest,
-  startWith,
-} from 'rxjs';
+import { Observable, BehaviorSubject, forkJoin, of, throwError } from 'rxjs';
 import {
   mergeMap,
   map,
   shareReplay,
   switchMap,
-  take,
   tap,
-  delay,
+  retry,
 } from 'rxjs/operators';
 import {
   NCategory,
   NQCategory,
   NQuery,
   Video,
+  videoData,
   VideoDataType,
-  VideoLoader,
   VideosResponse,
 } from 'src/app/search.interface';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { EMPTY_VIDEO, RESULTS, YOUTUBE_CONST } from '../constants/yt';
-import { chunk } from 'src/utils/utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VideosService {
-  videosLoader: any = [...Array(RESULTS.LIMIT).keys()].map(
-    (vl: any) => EMPTY_VIDEO
-  );
   constructor(private http: HttpClient, private localDB: NgxIndexedDBService) {}
   pageNumber = 0;
   videoId$: Observable<boolean> = of(false);
-
   nCategory$ = new BehaviorSubject<NCategory>({ cid: 0, page: 0 });
-
   nQuery$ = new BehaviorSubject<NQuery>({ q: '', page: 0 });
-
-  // generateData$:Observable<{type:string,data:Video[],trigger:string}> = new BehaviorSubject({type:'new',data:this.videosLoader,trigger:'new'}).pipe(sw)
-
-  loading$ = {
-    category: new BehaviorSubject<boolean>(false),
-    query: new BehaviorSubject<boolean>(false),
-  };
-  videoData: {
-    category: Video[];
-    query: Video[];
-  } = {
-    category: [],
-    query: [],
-  };
+  videoData: videoData = { category: [], query: [] };
   videosData$ = {
     category: new BehaviorSubject<Video[]>([]),
     query: new BehaviorSubject<Video[]>([]),
   };
-
   nextPageToken: string | null = null;
   currentCategoryId: number = 0;
   prevCategoryId: number = 0;
+
   _setNewHolderData(startFrom: number = 0): any[] {
     return [...Array(RESULTS.LIMIT).keys()].map((vl: any, k: number) => ({
       ...EMPTY_VIDEO,
@@ -96,11 +68,7 @@ export class VideosService {
   _getSource(type: VideoDataType, listener: Observable<any>): Observable<any> {
     let videoIds: string[] = [];
     return listener.pipe(
-      tap(() => {
-        this.loading$[type].next(true);
-      }),
       switchMap((nqc: NQCategory) => {
-        console.log(nqc);
         if (nqc.page > 0) {
           this._setData(
             type,
@@ -137,8 +105,7 @@ export class VideosService {
                   })
                 );
               } else {
-                if (listData) videoIds = listData.videoIds;
-                return this._getVideos(type, nqc.q, nqc.cid, videoIds).pipe(
+                return this._getVideos(type, nqc.q, nqc.cid).pipe(
                   tap((videos) => {
                     if (nqc.page > 0) this._setData(type, videos, 'merge');
                     else this._setData(type, videos, 'merge');
@@ -149,10 +116,7 @@ export class VideosService {
             // take(1)
           );
       }),
-      shareReplay(1),
-      tap(() => {
-        this.loading$[type].next(false);
-      })
+      shareReplay(1)
     );
   }
 
@@ -166,15 +130,11 @@ export class VideosService {
           this.videoData[type] = this.videoData[type].concat(videos);
         break;
       case 'merge':
-        this.videoData[type] = this.videoData[type].map((video, index) => {
-          const svideo = videos.shift() as Video;
-          if (video.videoId === null) {
-            console.log('video', video);
-            console.log('videoshift', svideo);
-          }
-          return video.videoId === null ? { ...video, ...svideo } : video;
+        this.videoData[type] = this.videoData[type].map((video) => {
+          return video.videoId
+            ? video
+            : { ...video, ...(videos.shift() as Video) };
         });
-
         break;
     }
     this.videoData[type] = this.videoData[type].map((video) => {
@@ -194,9 +154,11 @@ export class VideosService {
   _getVideos(
     type: VideoDataType,
     query: string = '',
-    categoryId: number = 0,
-    videoIds: any = []
+    categoryId: number = 0
   ): Observable<any> {
+    let videoIds = this.videoData[type]
+      .filter((vd) => vd.videoId)
+      .map((vd) => vd.videoId);
     const widthCategory =
       categoryId > 0 ? `videoCategoryId=${categoryId}` : `q=${query}`;
     const pageToken = this.nextPageToken
@@ -204,23 +166,21 @@ export class VideosService {
       : '';
     const url = `${YOUTUBE_CONST.API_SEARCH_URL}?${widthCategory}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet&type=video&maxResults=${RESULTS.LIMIT}&regionCode=il${pageToken}`;
     return this.http.get<VideosResponse>(url).pipe(
-      map((response: any) => {
-        return {
-          ...response,
-          items: response.items.map((item: any) => {
-            this.nextPageToken = response.nextPageToken;
-            return {
-              videoId: item.id.videoId,
-              channelId: item.snippet.channelId,
-              channelTitle: item.snippet.channelTitle,
-              title: item.snippet.title,
-              publishedAt: item.snippet.publishedAt,
-              description: item.snippet.description,
-              thumbnail: item.snippet.thumbnails.medium.url,
-            };
-          }),
-        };
-      }),
+      map((response: any) => ({
+        ...response,
+        items: response.items.map((item: any) => {
+          this.nextPageToken = response.nextPageToken;
+          return {
+            videoId: item.id.videoId,
+            channelId: item.snippet.channelId,
+            channelTitle: item.snippet.channelTitle,
+            title: item.snippet.title,
+            publishedAt: item.snippet.publishedAt,
+            description: item.snippet.description,
+            thumbnail: item.snippet.thumbnails.medium.url,
+          };
+        }),
+      })),
       mergeMap((res: VideosResponse) =>
         forkJoin([
           this._getChannelsInfo(res),
@@ -231,17 +191,18 @@ export class VideosService {
               videoIds.push(re.videoId);
               return {
                 ...re,
-                commentCount: r[1][re.videoId].commentCount,
-                favoriteCount: r[1][re.videoId].favoriteCount,
-                likeCount: r[1][re.videoId].likeCount,
-                viewCount: r[1][re.videoId].viewCount,
-                duration: r[1][re.videoId].duration,
+                commentCount: parseInt(r[1][re.videoId].commentCount),
+                favoriteCount: parseInt(r[1][re.videoId].favoriteCount),
+                likeCount: parseInt(r[1][re.videoId].likeCount),
+                viewCount: parseInt(r[1][re.videoId].viewCount),
+                dislikeCount: parseInt(r[1][re.videoId].dislikeCount),
+                duration: parseInt(r[1][re.videoId].duration),
                 channelThumbnail: r[0][re.channelId],
               };
             });
           }),
           /*
-            Upsert (insert/update) data to indexDB
+            Upsert (insert/update) data to local indexDB
           */
           mergeMap((videos) => {
             return forkJoin(
@@ -267,7 +228,7 @@ export class VideosService {
   _upsertIndexDBData(
     type: string,
     videos: Video[],
-    videoIds: [],
+    videoIds: string[],
     query: string,
     categoryId: number,
     lastPage: string | null
@@ -337,6 +298,10 @@ export class VideosService {
           statistics[r.videoId as string] = {
             viewCount: videoById.statistics.viewCount,
             duration: duration,
+            favoriteCount: videoById.statistics.favoriteCount,
+            dislikeCount: videoById.statistics.dislikeCount,
+            likeCount: videoById.statistics.likeCount,
+            commentCount: videoById.statistics.commentCount,
           };
         });
         return statistics;

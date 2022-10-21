@@ -33,7 +33,6 @@ import { FotterComponent } from './template/fotter/fotter.component';
 import { DrawerComponent } from './template/drawer/drawer.component';
 import { ResultsComponent } from './results/results.component';
 import { WatchComponent } from './watch/watch.component';
-import { VideosHolderComponent } from './shared/components/holders/videos-holder/videos-holder.component';
 import { TruncatePipe } from './shared/pipes/truncate.pipe';
 import { CategoriesHolderComponent } from './shared/components/holders/categories-holder/categories-holder.component';
 import { ErrorCatchingInterceptor } from './interceptors/error-catching.interceptor';
@@ -62,7 +61,6 @@ import { ChunkPipe } from './shared/pipes/chunk.pipe';
     DrawerComponent,
     ResultsComponent,
     WatchComponent,
-    VideosHolderComponent,
     TruncatePipe,
     CategoriesHolderComponent,
     ChunkPipe,

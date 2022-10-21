@@ -8,6 +8,8 @@
   ><!--(sidebarBtn$ | async) && dmsWidth < 1300-->
 
   <mat-drawer
+    fxShow.xs="false"
+    fxShow="true"
     #sidenav
     [mode]="dmsWidth > 1300 ? 'side' : (sidebarBtn$ | async) ? 'over' : 'side'"
     opened

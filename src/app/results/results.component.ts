@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, of, Subscription, Subject, takeUntil } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, Subscription, Subject, takeUntil } from 'rxjs';
 import { Video } from '../search.interface';
 import { VideosService } from '../shared/services/videos.service';
 
@@ -13,13 +13,11 @@ export class ResultsComponent implements OnInit {
   @Input('miniSidebar') miniSidebar = false;
   constructor(
     private activatedRoute: ActivatedRoute,
-    private videosService: VideosService,
-    private router: Router
+    private videosService: VideosService
   ) {}
   ngUnsubscribe = new Subject<void>();
   paramsSubscription: Subscription | undefined;
   videos$: Observable<Video[]> = this.videosService.videosData$.query;
-  loading$ = this.videosService.loading$.query;
 
   ngOnInit() {
     if (this.activatedRoute.snapshot.queryParams['search_query'].length > 0)

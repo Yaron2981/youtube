@@ -14,8 +14,8 @@ export interface Video {
   viewCount: number;
   commentCount: number;
   favoriteCount: number;
+  dislikeCount: number;
   likeCount: number;
-
   duration: number;
   loader: VideoLoader;
 }
@@ -58,3 +58,7 @@ export interface NQCategory {
   page: number;
 }
 export type VideoDataType = 'category' | 'query';
+export interface videoData {
+  category: Video[];
+  query: Video[];
+}

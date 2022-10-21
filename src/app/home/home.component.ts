@@ -32,7 +32,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngUnsubscribe = new Subject<void>();
   categories$ = this.categoriesService.categories$;
   videos$: Observable<Video[]> = this.videosService.videosData$.category;
-  videosLoading$ = this.videosService.loading$.category;
   categoriesLoading$ = this.categoriesService.loading$;
   mediaVideoSize: number = 0;
   currentvideosLoading: boolean = false;
@@ -50,13 +49,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       .getCategorySource()
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe();
-    this.videosService.videosData$.category.subscribe((d) =>
-      console.log('ddddddd', d)
-    );
-    this.videosLoading$.subscribe((loading) => {
-      this.currentvideosLoading = loading;
-      this.ref.detectChanges();
-    });
   }
 
   nextPage() {

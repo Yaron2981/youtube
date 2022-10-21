@@ -46,6 +46,11 @@ export const dbConfig: DBConfig = {
           options: { unique: false },
         },
         { name: 'likeCount', keypath: 'likeCount', options: { unique: false } },
+        {
+          name: 'dislikeCount',
+          keypath: 'dislikeCount',
+          options: { unique: false },
+        },
       ],
     },
     {
