@@ -39,14 +39,20 @@ export class QueryService {
               const url = `${YOUTUBE_CONST.API_SEARCH_URL}?q=${q}&key=${this.API_TOKEN}&part=snippet&type=video&maxResults=14&regionCode=il&relevanceLanguage=he`;
               return this.http.get(url).pipe(
                 map((response: any) => {
-                  return response.items.map((item: any) =>
-                    item.snippet.title
-                      .toLowerCase()
-                      .match(/[\p{L}]+/gu)
-                      .slice(0, 3)
-                      .join(' ')
-                      .trim()
-                  );
+                  let x = [
+                    ...new Set(
+                      response.items.map((item: any) =>
+                        item.snippet.title
+                          .toLowerCase()
+                          .match(/[\p{L}]+/gu)
+                          .slice(0, 3)
+                          .join(' ')
+                          .trim()
+                      )
+                    ),
+                  ];
+                  console.log(x);
+                  return x;
                 }),
                 distinct(),
                 filter((t: any) => t != ''),
