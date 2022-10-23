@@ -1,18 +1,55 @@
 @import "../../styles/colors";
 .watch-con {
-  margin-top: 5rem;
   background-color: $lightGrey;
+  position: relative;
+}
+.watch {
+  top: 5rem;
+  position: absolute;
+  left: 50%;
+  width: 186vh; /* 100 * 16/9 ratio */
+  height: 100%;
+  margin-left: -94vh; /* width / 2 */
+  z-index: 0;
+}
+.left-con {
+  padding: 0 24px 0 0;
+  margin-left: 24px;
+}
+.right-con {
+  width: 400px;
+  padding-right: 26px;
+  min-width: 426px;
+  max-width: 426px;
+  object-fit: contain;
+  margin-right: 0px;
+}
+.left-resize-con {
 }
 .video-player {
+  height: 75.77vh;
   width: 100%;
   background-color: $holderLightGrey;
-  height: 75vh;
 }
 .video-comments {
   width: 100%;
   background-color: $holderLightGrey;
   height: 20vh;
   margin-top: 1rem;
+}
+.video-categories {
+  width: 100%;
+  background-color: $holderLightGrey;
+  height: 3rem;
+}
+.video-list {
+  width: 100%;
+  background-color: $holderLightGrey;
+  height: 100vh;
+  margin-top: 1rem;
+}
+.video-views {
+  color: grey;
 }
 .video-menu-buttons {
   span {

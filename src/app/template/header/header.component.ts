@@ -29,6 +29,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private sharedService: SharedService,
     private videosService: VideosService
   ) {}
+  showHideSTBtn$ = this.sharedService.showHideSTBtn$;
   sidebarBtn = this.sharedService.sidebarTriggerBtn;
   control = new UntypedFormControl('');
   fetchtitles$ = new Subject<void>();

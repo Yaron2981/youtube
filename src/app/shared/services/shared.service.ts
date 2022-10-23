@@ -20,6 +20,8 @@ export class SharedService {
   errorMsg: BehaviorSubject<any> = new BehaviorSubject(null);
   errorMsg$ = this.errorMsg.asObservable();
 
+  showHideSTBtn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
   sidebarTriggerBtn: BehaviorSubject<boolean> = new BehaviorSubject(true);
   sidebarTriggerBtn$ = this.sidebarTriggerBtn.asObservable();
 

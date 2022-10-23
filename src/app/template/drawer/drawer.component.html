@@ -13,6 +13,7 @@
     #sidenav
     [mode]="dmsWidth > 1300 ? 'side' : (sidebarBtn$ | async) ? 'over' : 'side'"
     opened
+    [hidden]="showHideSTBtn$ | async"
     [ngClass]="
       (sidebarBtn$ | async) ? 'sidenav max-drawer' : 'sidenav min-drawer'
     "

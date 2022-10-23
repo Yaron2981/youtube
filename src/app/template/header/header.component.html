@@ -5,7 +5,10 @@
       fxShow="true"
       mat-icon-button
       class="menu-icon"
-      (click)="this.sidebarBtn.next(!this.sidebarBtn.value)"
+      (click)="
+        this.sidebarBtn.next(!this.sidebarBtn.value);
+        this.showHideSTBtn$.next(false)
+      "
     >
       <mat-icon>menu</mat-icon>
     </button>

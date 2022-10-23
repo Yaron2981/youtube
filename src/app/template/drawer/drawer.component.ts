@@ -23,7 +23,7 @@ export class DrawerComponent implements OnInit, AfterViewInit {
   constructor(private sharedService: SharedService) {}
   drawerModeSubscription$ = this.sharedService.resizedWindowWidth$;
   @ViewChild('sidenav') sidenav: any;
-
+  showHideSTBtn$ = this.sharedService.showHideSTBtn$;
   menuTriggerBtn$ = this.sharedService.menuTriggerBtn$;
   menuTriggerBtn = this.sharedService.menuTriggerBtn;
   sidebarBtn$ = this.sharedService.sidebarTriggerBtn$;
