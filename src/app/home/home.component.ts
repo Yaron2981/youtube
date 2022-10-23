@@ -30,8 +30,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   @Input('miniSidebar') miniSidebar = false;
   ngUnsubscribe = new Subject<void>();
-  categories$ = this.categoriesService.categories$;
   videos$: Observable<Video[]> = this.videosService.videosData$.category;
+  categories$ = this.categoriesService.categories$;
   categoriesLoading$ = this.categoriesService.loading$;
   mediaVideoSize: number = 0;
   allowScrolling: boolean = true;

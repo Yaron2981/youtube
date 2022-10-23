@@ -1,1 +1,53 @@
-<p>watch works!</p>
+<div class="watch-con" fxLayout="row">
+  <div class="left-con" fxFlex="70">
+    <div class="video-player">video-player</div>
+    <div class="video-details">
+      <div class="video-hashtags"><a>#ljklk#lklk</a></div>
+      <h1 class="video-title" [innerHTML]="video.title"></h1>
+      <div
+        class="video-info-con"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+      >
+        <div class="video-views" fxFlex="30">
+          {{ video.viewCount | number }} views...
+        </div>
+        <div class="video-menu-buttons" fxFlex="90">
+          <div fxLayout="row" fxLayoutAlign="end center">
+            <span>
+              <mat-icon fontSet="material-icons-outlined">thumb_up</mat-icon>
+              {{ video.likeCount | shortNumber }}
+            </span>
+            <span>
+              <mat-icon fontSet="material-icons-outlined">thumb_down</mat-icon>
+              {{
+                video.dislikeCount > 0
+                  ? (video.dislikeCount | shortNumber)
+                  : "DISLIKE"
+              }}
+            </span>
+            <span>
+              <mat-icon fontSet="material-icons-outlined">share</mat-icon> SHARE
+            </span>
+            <span>
+              <mat-icon fontSet="material-icons-outlined">download</mat-icon>
+              DOWNLOAD
+            </span>
+            <span>
+              <mat-icon fontSet="material-icons-outlined">clip</mat-icon>CLIP
+            </span>
+            <span>
+              <mat-icon fontSet="material-icons-outlined">save</mat-icon>SAVE
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="video-description">video-description</div>
+    <div class="video-comments">comments</div>
+  </div>
+  <div class="right-con" fxFlex="30">
+    <div class="video-categories">video-categories</div>
+    <div class="video-list">video-list</div>
+  </div>
+</div>
