@@ -10,9 +10,12 @@ iframe {
   left: 0;
   width: 100%;
   height: 100%;
+}
+::ng-deep .app-player-con .yt-iframe {
   min-width: 248px;
   transform: scale(1.02) translate(-2px, 16px);
 }
+
 #yt-iframe {
   overflow: hidden;
   position: relative;

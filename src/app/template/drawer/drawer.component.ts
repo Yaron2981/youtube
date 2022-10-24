@@ -1,18 +1,5 @@
-import {
-  AfterViewChecked,
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { SharedService } from 'src/app/shared/services/shared.service';
-import { Subscription } from 'rxjs';
-import {
-  MatDrawerToggleResult,
-  MatDrawer,
-  MatDrawerContainer,
-} from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-drawer',
@@ -28,6 +15,7 @@ export class DrawerComponent implements OnInit, AfterViewInit {
   menuTriggerBtn = this.sharedService.menuTriggerBtn;
   sidebarBtn$ = this.sharedService.sidebarTriggerBtn$;
   sidebarBtn = this.sharedService.sidebarTriggerBtn;
+
   ngOnInit() {
     this.drawerModeSubscription$.subscribe((x: any) => {
       if (x < 1310) this.sidebarBtn.next(false);

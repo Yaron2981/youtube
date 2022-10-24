@@ -19,7 +19,6 @@ import {
 export class PlayerComponent implements AfterViewInit {
   constructor(private ref: ChangeDetectorRef) {}
   @Input('videoId') videoId: string | null = null;
-  @Input('posType') posType = 'vertical';
   @ViewChild('ytIframe') ytIframe: any;
 
   ngAfterViewInit() {

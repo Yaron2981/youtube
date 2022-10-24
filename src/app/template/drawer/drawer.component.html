@@ -1,9 +1,10 @@
 <mat-drawer-container
-  *ngIf="drawerModeSubscription$ | async as dmsWidth"
   class="drawer"
   autosize
   [ngClass]="
-    (sidebarBtn$ | async) && dmsWidth <= 1300 ? 'over-drawer' : 'side-drawer'
+    (sidebarBtn$ | async) && (drawerModeSubscription$ | async) <= 1300
+      ? 'over-drawer'
+      : 'side-drawer'
   "
   ><!--(sidebarBtn$ | async) && dmsWidth < 1300-->
 
@@ -11,7 +12,13 @@
     fxShow.xs="false"
     fxShow="true"
     #sidenav
-    [mode]="dmsWidth > 1300 ? 'side' : (sidebarBtn$ | async) ? 'over' : 'side'"
+    [mode]="
+      (drawerModeSubscription$ | async) > 1300
+        ? 'side'
+        : (sidebarBtn$ | async)
+        ? 'over'
+        : 'side'
+    "
     opened
     [hidden]="showHideSTBtn$ | async"
     [ngClass]="

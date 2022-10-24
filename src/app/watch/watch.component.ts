@@ -6,6 +6,7 @@ import { CategoriesService } from '../categories/categories.service';
 import { Video } from '../search.interface';
 import { EMPTY_VIDEO } from '../shared/constants/yt';
 import { SharedService } from '../shared/services/shared.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-watch',
@@ -16,7 +17,8 @@ export class WatchComponent implements OnInit {
   constructor(
     private localDB: NgxIndexedDBService,
     private categoriesService: CategoriesService,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.sharedService.sidebarTriggerBtn.next(false);
   }
@@ -24,9 +26,18 @@ export class WatchComponent implements OnInit {
   categories$ = this.categoriesService.categories$;
   categoriesLoading$ = this.categoriesService.loading$;
   video: any = EMPTY_VIDEO;
+  v: string = '';
   ngOnInit(): void {
-    this.localDB.getByID('videos', '1NjTWvl8x-U').subscribe((video: any) => {
-      this.video = video;
+    if (this.activatedRoute.snapshot.queryParams['v'].length > 0) {
+      console.log(this.activatedRoute.snapshot.queryParams['v']);
+      this.fetchVideoByVideoId(this.activatedRoute.snapshot.queryParams['v']);
+    }
+    // this.activatedRoute.queryParamMap.subscribe((params) => {
+    // });
+  }
+  fetchVideoByVideoId(id: string) {
+    this.localDB.getByID('videos', id).subscribe((video: any) => {
+      this.video = { ...this.video, ...video };
       console.log(video);
     });
   }

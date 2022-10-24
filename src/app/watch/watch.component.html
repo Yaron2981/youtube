@@ -1,8 +1,14 @@
 <div class="watch-con">
   <div class="watch" fxLayout="row ">
-    <div class="left-con" fxFlex="80" fxLayout="column">
+    <div class="left-con" fxFlex="85" fxLayout="column">
       <div class="left-resize">
-        <div class="video-player">video-player</div>
+        <div class="video-player">
+          <app-player
+            style="width: 100%"
+            *ngIf="video.videoId"
+            [videoId]="video.videoId"
+          ></app-player>
+        </div>
 
         <div class="video-details">
           <div class="video-hashtags"><a>#ljklk#lklk</a></div>
@@ -13,7 +19,7 @@
             fxLayoutAlign="space-between center"
           >
             <div class="video-views" fxFlex="30">
-              {{ video.viewCount | number }} views...
+              {{ video.viewCount | shortNumber: "full" }} views...
             </div>
             <div class="video-menu-buttons" fxFlex="90">
               <div fxLayout="row" fxLayoutAlign="end center">
@@ -43,19 +49,44 @@
                   >
                   DOWNLOAD
                 </span>
+
                 <span>
-                  <mat-icon fontSet="material-icons-outlined">clip</mat-icon
-                  >CLIP
-                </span>
-                <span>
-                  <mat-icon fontSet="material-icons-outlined">save</mat-icon
-                  >SAVE
+                  <mat-icon fontSet="material-icons-outlined">save</mat-icon>
+                  SAVE
                 </span>
               </div>
             </div>
           </div>
         </div>
-        <div class="video-description">video-description</div>
+        <mat-divider style="margin: 1rem 0 2rem 0"></mat-divider>
+        <div class="video-description">
+          <div fxLayout="row">
+            <div>
+              <img
+                style="border-radius: 50%; width: 48px"
+                [ngClass]="{ hbp: video.loader.channelThumbnail }"
+                *ngIf="video.channelThumbnail"
+                [src]="video.channelThumbnail"
+                (load)="video.loader.channelThumbnail = false"
+              />
+            </div>
+            <div style="margin-left: 1rem; flex: auto">
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div
+                  style="font-weight: 500"
+                  [innerHtml]="video.channelTitle"
+                ></div>
+                <div>
+                  <button mat-flat-button color="warn">SUBSCRIBE</button>
+                </div>
+              </div>
+
+              <p style="margin: 2em 0" [innerHtml]="video.description"></p>
+            </div>
+          </div>
+        </div>
+        <mat-divider style="margin: 1rem 0 2rem 0"></mat-divider>
+
         <div class="video-comments">comments</div>
       </div>
     </div>

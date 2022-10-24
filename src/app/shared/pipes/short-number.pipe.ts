@@ -9,6 +9,7 @@ export class ShortNumberPipe implements PipeTransform {
     if (number === null) return null;
     if (number === 0) return null;
     let abs = Math.abs(number);
+    const orgAbs = abs;
     const rounder = Math.pow(10, 1);
     const isNegative = number < 0; // will also work for Negetive numbers
     let key = '';
@@ -20,7 +21,6 @@ export class ShortNumberPipe implements PipeTransform {
       { key: 'M', value: Math.pow(10, 6) },
       { key: 'K', value: 1000 },
     ];
-
     for (let i = 0; i < powers.length; i++) {
       let reduced = abs / powers[i].value;
       reduced = Math.round(reduced * rounder) / rounder;
@@ -30,6 +30,11 @@ export class ShortNumberPipe implements PipeTransform {
         break;
       }
     }
+
+    if (args && args === 'full') {
+      return (isNegative ? '-' : '') + orgAbs.toLocaleString() + key;
+    }
+
     return (isNegative ? '-' : '') + abs + key;
   }
 }
