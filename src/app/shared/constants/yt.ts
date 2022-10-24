@@ -2,8 +2,8 @@ export const YOUTUBE_CONST = {
   VIDEO_PATH: 'https://www.youtube.com/watch?v=',
   API_TOKEN: 'AIzaSyB7KHp81yAoioCEJInypVjd_adc0ZfAsko',
   API_SEARCH_URL: 'https://www.googleapis.com/youtube/v3/search',
+  API_VIDEOS_URL: 'https://www.googleapis.com/youtube/v3/videos',
   API_CHANNEL_INFO_URL: 'https://youtube.googleapis.com/youtube/v3/channels',
-  API_STATISTIC_INFO_URL: 'https://www.googleapis.com/youtube/v3/videos',
   API_CATEGORIES_URL: 'https://www.googleapis.com/youtube/v3/videoCategories',
 };
 export const IGNORED_CATEGORIES = [18, 21, 28, 30, 31, 33, 38, 39, 40, 41, 18];
@@ -26,6 +26,7 @@ export const EMPTY_VIDEO = {
   channelName: null,
   viewCount: null,
   duration: null,
+  subscriberCount: null,
   loader: {
     thumbnail: true,
     channelThumbnail: true,

@@ -1,4 +1,5 @@
 <div [ngSwitch]="posType" [class]="posType">
+  {{ video?.channelId }}
   <ng-template ngSwitchCase="horizontal">
     <mat-card
       fxLayout="column"
@@ -26,7 +27,8 @@
             >
               <a
                 target="_blank"
-                [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+                [routerLink]="['./watch']"
+                [queryParams]="{ v: video.videoId }"
               >
                 <img
                   class="min-circle-img"
@@ -52,7 +54,8 @@
                   <a
                     [@fade]="video.showPop"
                     target="_blank"
-                    [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+                    [routerLink]="['./watch']"
+                    [queryParams]="{ v: video.videoId }"
                     class="player-link"
                   >
                   </a>
@@ -75,7 +78,8 @@
                   *ngIf="!video.loader.content && video.title"
                   fxFlex="100"
                   target="_blank"
-                  [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+                  [routerLink]="['./watch']"
+                  [queryParams]="{ v: video.videoId }"
                   class="title"
                   [innerHtml]="video.title | safe: 'html'"
                 ></a>
@@ -167,7 +171,8 @@
         <div class="thumbnail-con">
           <a
             target="_blank"
-            [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+            [routerLink]="['./watch']"
+            [queryParams]="{ v: video.videoId }"
           >
             <img
               style="position: absolute; top: 0px"
@@ -225,7 +230,8 @@
               <a
                 style="display: block; height: 40px; padding-right: 8px"
                 target="_blank"
-                [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+                [routerLink]="['./watch']"
+                [queryParams]="{ v: video.videoId }"
                 class="title"
                 [innerHtml]="video.title | truncate: [75, '...'] | safe: 'html'"
               ></a>

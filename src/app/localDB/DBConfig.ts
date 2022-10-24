@@ -41,6 +41,11 @@ export const dbConfig: DBConfig = {
           options: { unique: false },
         },
         {
+          name: 'subscriberCount',
+          keypath: 'subscriberCount',
+          options: { unique: false },
+        },
+        {
           name: 'favoriteCount',
           keypath: 'favoriteCount',
           options: { unique: false },

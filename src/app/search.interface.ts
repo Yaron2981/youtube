@@ -17,6 +17,7 @@ export interface Video {
   dislikeCount: number;
   likeCount: number;
   duration: number;
+  subscriberCount: number;
   loader: VideoLoader;
 }
 export interface VideoLoader {

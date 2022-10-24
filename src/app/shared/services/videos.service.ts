@@ -82,7 +82,6 @@ export class VideosService {
     return listener.pipe(
       switchMap((nqc: NQCategory) => {
         if (nqc.page > 0) {
-          console.log(nqc.page);
           this._setData(
             type,
             this._setNewHolderData(nqc.page * RESULTS.LIMIT),
@@ -172,12 +171,12 @@ export class VideosService {
     let videoIds = this.videoData[type].data
       .filter((vd) => vd.videoId)
       .map((vd) => vd.videoId);
-    const widthCategory =
+    const withCategory =
       categoryId > 0 ? `videoCategoryId=${categoryId}` : `q=${query}`;
     const pageToken = this.nextPageToken
       ? `&pageToken=${this.nextPageToken}`
       : '';
-    const url = `${YOUTUBE_CONST.API_SEARCH_URL}?${widthCategory}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet&type=video&maxResults=${RESULTS.LIMIT}&regionCode=il${pageToken}`;
+    const url = `${YOUTUBE_CONST.API_SEARCH_URL}?${withCategory}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet&maxResults=${RESULTS.LIMIT}&regionCode=il${pageToken}`;
     return this.http.get<VideosResponse>(url).pipe(
       map((response: any) => ({
         ...response,
@@ -189,7 +188,6 @@ export class VideosService {
             channelTitle: item.snippet.channelTitle,
             title: item.snippet.title,
             publishedAt: item.snippet.publishedAt,
-            description: item.snippet.description,
             thumbnail: item.snippet.thumbnails.medium.url,
           };
         }),
@@ -210,7 +208,9 @@ export class VideosService {
                 viewCount: parseInt(r[1][re.videoId].viewCount),
                 dislikeCount: parseInt(r[1][re.videoId].dislikeCount),
                 duration: parseInt(r[1][re.videoId].duration),
-                channelThumbnail: r[0][re.channelId],
+                channelThumbnail: r[0][re.channelId].channelThumbnail,
+                subscriberCount: parseInt(r[0][re.channelId].subscriberCount),
+                description: r[1][re.videoId].description,
               };
             });
           }),
@@ -273,14 +273,18 @@ export class VideosService {
     const channelIds = [
       ...new Set(res.items.map((r: any) => r.channelId)),
     ].join(',');
-    const url = `${YOUTUBE_CONST.API_CHANNEL_INFO_URL}?id=${channelIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet`;
+    const url = `${YOUTUBE_CONST.API_CHANNEL_INFO_URL}?id=${channelIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet,statistics`;
     return this.http.get(url).pipe(
       map((response: any) => {
         const thumbnails: any = {};
         res.items.forEach((r: any) => {
-          thumbnails[r.channelId] = response.items.find(
+          const channelById = response.items.find(
             (re: any) => r.channelId === re.id
-          ).snippet.thumbnails.default.url;
+          );
+          thumbnails[r.channelId] = {
+            channelThumbnail: channelById.snippet.thumbnails.default.url,
+            subscriberCount: channelById.statistics.subscriberCount,
+          };
         });
         return thumbnails;
       }),
@@ -289,7 +293,7 @@ export class VideosService {
   }
   _getVideoStatisticsInfo(res: any): Observable<any> {
     const videoIds = [...new Set(res.map((r: any) => r.videoId))].join(',');
-    const url = `${YOUTUBE_CONST.API_STATISTIC_INFO_URL}?id=${videoIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=statistics,contentDetails,player`;
+    const url = `${YOUTUBE_CONST.API_VIDEOS_URL}?id=${videoIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet,statistics,contentDetails,player`;
     return this.http.get(url).pipe(
       map((response: any) => {
         console.log(response);
@@ -298,8 +302,8 @@ export class VideosService {
           const videoById = response.items.find(
             (re: any) => r.videoId === re.id
           );
-
           statistics[r.videoId as string] = {
+            description: videoById.snippet.description,
             viewCount: videoById.statistics.viewCount,
             duration: ytDurationToSec(videoById.contentDetails.duration),
             favoriteCount: videoById.statistics.favoriteCount,

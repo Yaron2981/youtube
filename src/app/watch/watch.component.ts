@@ -7,6 +7,7 @@ import { Video } from '../search.interface';
 import { EMPTY_VIDEO } from '../shared/constants/yt';
 import { SharedService } from '../shared/services/shared.service';
 import { ActivatedRoute } from '@angular/router';
+import { nl2br, URLify } from 'src/utils/utils';
 
 @Component({
   selector: 'app-watch',
@@ -37,7 +38,11 @@ export class WatchComponent implements OnInit {
   }
   fetchVideoByVideoId(id: string) {
     this.localDB.getByID('videos', id).subscribe((video: any) => {
-      this.video = { ...this.video, ...video };
+      this.video = {
+        ...this.video,
+        ...video,
+        ...{ description: URLify(nl2br(video.description)) },
+      };
       console.log(video);
     });
   }

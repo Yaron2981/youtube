@@ -17,6 +17,9 @@ a {
   color: inherit;
   text-decoration: none;
 }
+a.fcu {
+  color: #065fd4;
+}
 *::-webkit-scrollbar {
   width: 16px;
 }
@@ -48,4 +51,7 @@ div[fxlayout="row wrap"] > :last-of-type {
   opacity: 0;
   position: absolute;
   z-index: 99999;
+}
+button {
+  border-radius: 0px !important;
 }

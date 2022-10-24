@@ -59,7 +59,7 @@
           </div>
         </div>
         <mat-divider style="margin: 1rem 0 2rem 0"></mat-divider>
-        <div class="video-description">
+        <div class="video-info">
           <div fxLayout="row">
             <div>
               <img
@@ -72,16 +72,31 @@
             </div>
             <div style="margin-left: 1rem; flex: auto">
               <div fxLayout="row" fxLayoutAlign="space-between center">
-                <div
-                  style="font-weight: 500"
-                  [innerHtml]="video.channelTitle"
-                ></div>
+                <div class="video-channel-title-con">
+                  <div
+                    style="font-weight: 500"
+                    [innerHtml]="video.channelTitle"
+                  ></div>
+                  <div>
+                    <small style="color: grey"
+                      >{{
+                        video.subscriberCount | shortNumber: "full"
+                      }}
+                      subscribers</small
+                    >
+                  </div>
+                </div>
+
                 <div>
                   <button mat-flat-button color="warn">SUBSCRIBE</button>
                 </div>
               </div>
 
-              <p style="margin: 2em 0" [innerHtml]="video.description"></p>
+              <p
+                class="video-description"
+                style="margin: 2em 0"
+                [innerHtml]="video.description"
+              ></p>
             </div>
           </div>
         </div>

@@ -249,6 +249,29 @@ export function deepEqual(a: any, b: any) {
 
   return true;
 }
+export function nl2br(str: string, is_xhtml: boolean = false): string {
+  var breakTag =
+    is_xhtml || typeof is_xhtml === 'undefined' ? '<br ' + '/>' : '<br>'; // Adjust comment to avoid issue on phpjs.org display
+
+  return (str + '').replace(
+    /([^>\r\n]?)(\r\n|\n\r|\r|\n)/g,
+    '$1' + breakTag + '$2'
+  );
+}
+export function URLify(str: string) {
+  const urls = str.match(
+    /((((ftp|https?):\/\/)|(w{3}\.))[\-\w@:%_\+.~#?,&\/\/=]+)/g
+  );
+  if (urls) {
+    urls.forEach(function (url) {
+      str = str.replace(
+        url,
+        '<a target="_blank" class="fcu" href="' + url + '">' + url + '</a>'
+      );
+    });
+  }
+  return str.replace('(', '<br/>(');
+}
 /*
  * convert youtube duration to seconds
  * @param string of youtube video time

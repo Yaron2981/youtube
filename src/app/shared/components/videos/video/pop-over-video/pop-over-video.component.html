@@ -9,7 +9,8 @@
         <a
           class="app-player-con"
           target="_blank"
-          [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+          [routerLink]="['./watch']"
+          [queryParams]="{ v: video.videoId }"
         >
           <app-player
             style="margin-right: -1px"
@@ -32,7 +33,8 @@
           <div fxFlex="82">
             <a
               target="_blank"
-              [href]="YT.VIDEO_PATH + video.videoId | safe: 'url'"
+              [routerLink]="['./watch']"
+              [queryParams]="{ v: video.videoId }"
               class="title"
               [innerHtml]="video.title | safe: 'html'"
             ></a>
