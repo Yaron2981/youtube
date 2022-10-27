@@ -176,7 +176,7 @@ export class VideosService {
     const pageToken = this.nextPageToken
       ? `&pageToken=${this.nextPageToken}`
       : '';
-    const url = `${YOUTUBE_CONST.API_SEARCH_URL}?${withCategory}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet&maxResults=${RESULTS.LIMIT}&regionCode=il${pageToken}`;
+    const url = `${YOUTUBE_CONST.API_SEARCH_URL}?${withCategory}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet&type=video&maxResults=${RESULTS.LIMIT}&regionCode=il${pageToken}`;
     return this.http.get<VideosResponse>(url).pipe(
       map((response: any) => ({
         ...response,

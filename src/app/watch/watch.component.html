@@ -4,6 +4,8 @@
       <div class="left-resize">
         <div class="video-player">
           <app-player
+            mute="0"
+            controls="0"
             style="width: 100%"
             *ngIf="video.videoId"
             [videoId]="video.videoId"
@@ -18,8 +20,11 @@
             fxLayout="row"
             fxLayoutAlign="space-between center"
           >
-            <div class="video-views" fxFlex="30">
-              {{ video.viewCount | shortNumber: "full" }} views...
+            <div class="video-views-con" fxFlex="30">
+              <span class="views">
+                {{ video.viewCount | shortNumber: "full" }} views
+              </span>
+              <span class="relase-date"> {{ video.publishedAt | date }}</span>
             </div>
             <div class="video-menu-buttons" fxFlex="90">
               <div fxLayout="row" fxLayoutAlign="end center">
@@ -48,11 +53,6 @@
                     >download</mat-icon
                   >
                   DOWNLOAD
-                </span>
-
-                <span>
-                  <mat-icon fontSet="material-icons-outlined">save</mat-icon>
-                  SAVE
                 </span>
               </div>
             </div>
@@ -92,11 +92,14 @@
                 </div>
               </div>
 
-              <p
-                class="video-description"
-                style="margin: 2em 0"
-                [innerHtml]="video.description"
-              ></p>
+              <p class="video-description" style="margin: 2em 0">
+                <read-more
+                  [maxHeight]="84"
+                  [text]="video.description"
+                  moreText="SHOW MORE"
+                  lessText="SHOW LESS"
+                ></read-more>
+              </p>
             </div>
           </div>
         </div>
