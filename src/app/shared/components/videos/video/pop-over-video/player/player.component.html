@@ -1,1 +1,10 @@
-
+<div id="yt-iframe">
+  <youtube-player
+    class="yt-iframe"
+    [videoId]="videoId"
+    (ready)="savePlayer($event)"
+    (change)="onStateChange($event)"
+    [playerVars]="playerVars"
+  >
+  </youtube-player>
+</div>
