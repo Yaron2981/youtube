@@ -42,6 +42,7 @@ import { dbConfig } from './localDB/DBConfig';
 import { MatDividerModule } from '@angular/material/divider';
 import { CommonModule } from '@angular/common';
 import { ChunkPipe } from './shared/pipes/chunk.pipe';
+import { ReadMoreComponent } from './shared/components/read-more/read-more.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { ChunkPipe } from './shared/pipes/chunk.pipe';
     TruncatePipe,
     CategoriesHolderComponent,
     ChunkPipe,
+    ReadMoreComponent,
   ],
   imports: [
     BrowserModule,
