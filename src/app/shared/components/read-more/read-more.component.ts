@@ -1,9 +1,10 @@
+import { DOCUMENT } from '@angular/common';
 import {
   Component,
   Input,
   ElementRef,
   AfterViewInit,
-  ViewChild,
+  Inject,
 } from '@angular/core';
 
 @Component({
@@ -15,9 +16,10 @@ import {
       [style.height]="isCollapsed ? maxHeight + 'px' : 'auto'"
     ></div>
     <a
+      class="read-more"
       [class.collapsed]="!isCollapsed"
       *ngIf="isCollapsable"
-      (click)="isCollapsed = !isCollapsed"
+      (click)="collapse()"
     >
       {{ isCollapsed ? moreText : lessText }}
     </a>
@@ -27,12 +29,10 @@ import {
       div.collapsed {
         overflow: hidden;
       }
-      a {
+      .read-more {
         cursor: pointer;
-      }
-      a.collapsed {
+        padding-top: 15px;
         display: inline-block;
-        margin-top: 15px;
       }
     `,
   ],
@@ -51,8 +51,17 @@ export class ReadMoreComponent implements AfterViewInit {
   public isCollapsed: boolean = false;
   public isCollapsable: boolean = false;
 
-  constructor(private elementRef: ElementRef) {}
-
+  constructor(
+    private elementRef: ElementRef,
+    @Inject(DOCUMENT) private document: Document
+  ) {}
+  collapse() {
+    this.isCollapsed = !this.isCollapsed;
+    if (this.isCollapsed)
+      this.document
+        .querySelector('.mat-drawer-content')
+        ?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
   ngAfterViewInit() {
     setTimeout(() => {
       let currentHeight =

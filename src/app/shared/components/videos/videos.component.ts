@@ -19,7 +19,6 @@ import { Video } from 'src/app/search.interface';
 import { EventEmitter } from '@angular/core';
 import { SharedService } from '../../services/shared.service';
 import { RESULTS } from '../../constants/yt';
-import { mathFloor } from 'src/utils/utils';
 
 @Component({
   selector: 'app-videos',
