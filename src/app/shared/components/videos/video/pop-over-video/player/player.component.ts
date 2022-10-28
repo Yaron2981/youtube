@@ -20,11 +20,11 @@ export class PlayerComponent implements AfterViewInit {
   constructor(private ref: ChangeDetectorRef) {}
   @Input() videoId: string = '';
   @ViewChild('ytIframe') ytIframe: any;
-  @Input() autoplay: number = 1;
+  @Input() autoplay: string = '1';
   @Input() mute: string = '1';
   @Input() controls: string = '0';
-  @Input() autohide: number = 1;
-  @Input() showInfo: number = 0;
+  @Input() autohide: string = '0';
+  @Input() showInfo: string = '0';
 
   ngAfterViewInit() {
     const ytIframe = document.getElementById('yt-iframe');

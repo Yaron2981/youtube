@@ -4,8 +4,8 @@
       <div class="left-resize">
         <div class="video-player">
           <app-player
-            mute="0"
-            controls="0"
+            autoplay="1"
+            controls="1"
             style="width: 100%"
             *ngIf="video.videoId"
             [videoId]="video.videoId"
@@ -94,7 +94,7 @@
 
               <p class="video-description" style="margin: 2em 0">
                 <read-more
-                  [maxHeight]="84"
+                  [maxHeight]="83"
                   [text]="video.description"
                   moreText="SHOW MORE"
                   lessText="SHOW LESS"

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 // import { LocalDBService } from '../shared/services/local-db.service';
 import { filter } from 'rxjs/operators';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
@@ -8,6 +8,7 @@ import { EMPTY_VIDEO } from '../shared/constants/yt';
 import { SharedService } from '../shared/services/shared.service';
 import { ActivatedRoute } from '@angular/router';
 import { nl2br, URLify } from 'src/utils/utils';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-watch',
@@ -19,7 +20,8 @@ export class WatchComponent implements OnInit {
     private localDB: NgxIndexedDBService,
     private categoriesService: CategoriesService,
     private sharedService: SharedService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.sharedService.sidebarTriggerBtn.next(false);
   }
@@ -35,6 +37,15 @@ export class WatchComponent implements OnInit {
     }
     // this.activatedRoute.queryParamMap.subscribe((params) => {
     // });
+    setTimeout(() => {
+      const btn = document.querySelector(
+        '.ytp-mute-button'
+      ) as HTMLElement | null;
+      console.log(btn);
+      if (btn != null) {
+        btn.click();
+      }
+    }, 2000);
   }
   fetchVideoByVideoId(id: string) {
     this.localDB.getByID('videos', id).subscribe((video: any) => {
