@@ -13,14 +13,13 @@
         </div>
 
         <div class="video-details">
-          <div class="video-hashtags"><a>#ljklk#lklk</a></div>
           <h1 class="video-title" [innerHTML]="video.title"></h1>
           <div
             class="video-info-con"
             fxLayout="row"
             fxLayoutAlign="space-between center"
           >
-            <div class="video-views-con" fxFlex="30">
+            <div class="video-views-con">
               <span class="views">
                 {{ video.viewCount | shortNumber: "full" }} views
               </span>
@@ -47,12 +46,6 @@
                 <span>
                   <mat-icon fontSet="material-icons-outlined">share</mat-icon>
                   SHARE
-                </span>
-                <span>
-                  <mat-icon fontSet="material-icons-outlined"
-                    >download</mat-icon
-                  >
-                  DOWNLOAD
                 </span>
               </div>
             </div>

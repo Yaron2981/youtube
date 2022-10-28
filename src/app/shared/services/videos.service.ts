@@ -98,17 +98,17 @@ export class VideosService {
             mergeMap((listData: any) => {
               if (
                 listData &&
-                listData.videoIds.length >=
+                listData.videoIds.length >
                   RESULTS.LIMIT * nqc.page + RESULTS.LIMIT
               ) {
                 return this.localDB.bulkGet('videos', listData.videoIds).pipe(
                   tap((videos: Video[]) => {
                     if (nqc.page > 0) {
                       videos = videos.slice(
-                        0,
-                        RESULTS.LIMIT * nqc.page + RESULTS.LIMIT
+                        RESULTS.LIMIT * nqc.page,
+                        RESULTS.LIMIT
                       );
-
+                      console.log(videos);
                       this._setData(type, videos, 'merge');
                     } else {
                       videos = videos.slice(0, RESULTS.LIMIT);
@@ -117,7 +117,7 @@ export class VideosService {
                   })
                 );
               } else {
-                return this._getVideos(type, nqc.q, nqc.cid).pipe(
+                return this._getVideos(listData, type, nqc.q, nqc.cid).pipe(
                   tap((videos) => {
                     if (nqc.page > 0) this._setData(type, videos, 'merge');
                     else this._setData(type, videos, 'merge');
@@ -164,6 +164,7 @@ export class VideosService {
     this.videosData$[type].next(this.videoData[type].data);
   }
   _getVideos(
+    listData: any,
     type: VideoDataType,
     query: string = '',
     categoryId: number = 0
@@ -178,6 +179,7 @@ export class VideosService {
       : '';
     const url = `${YOUTUBE_CONST.API_SEARCH_URL}?${withCategory}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet&type=video&maxResults=${RESULTS.LIMIT}&regionCode=il${pageToken}`;
     return this.http.get<VideosResponse>(url).pipe(
+      tap((res) => console.log('ddd', res)),
       map((response: any) => ({
         ...response,
         items: response.items.map((item: any) => {
@@ -225,7 +227,7 @@ export class VideosService {
                 videoIds,
                 query,
                 categoryId,
-                this.nextPageToken
+                listData
               )
             ).pipe(
               mergeMap((r: any) => {
@@ -244,7 +246,7 @@ export class VideosService {
     videoIds: string[],
     query: string,
     categoryId: number,
-    lastPage: string | null
+    listData: any
   ): Array<Observable<any>> {
     const observables = [];
     const searchBy =
@@ -254,11 +256,10 @@ export class VideosService {
             store: 'categoryLists',
             key: { cid: categoryId },
           };
-
     observables.push(
       this.localDB.update(searchBy.store, {
         ...searchBy.key,
-        lastPage: lastPage,
+        lastPage: this.nextPageToken,
         videoIds: [
           ...new Set([...videoIds, ...videos.map((v) => v.videoId)]),
         ].slice(0, RESULTS.MAX_RESULTS),

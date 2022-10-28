@@ -79,8 +79,14 @@
     margin-left: 0px;
   }
 }
-
+.video-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
 .views::after {
   content: "•";
   margin: 0 4px;
+}
+.video-views-con {
+  min-width: 220px;
 }
