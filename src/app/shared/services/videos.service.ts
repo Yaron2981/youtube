@@ -7,12 +7,16 @@ import {
   shareReplay,
   switchMap,
   tap,
+  first,
+  take,
   retry,
 } from 'rxjs/operators';
 import {
+  Category,
   NCategory,
   NQCategory,
   NQuery,
+  RelatedVideosCategories,
   Video,
   videoData,
   VideoDataType,
@@ -211,7 +215,7 @@ export class VideosService {
       mergeMap((res: VideosResponse) =>
         forkJoin([
           this._getChannelsInfo(res),
-          this._getVideoStatisticsInfo(res.items),
+          this._getVideoMoreInfo(res),
         ]).pipe(
           map((r: any) => {
             return res.items.map((re: Video) => {
@@ -227,6 +231,8 @@ export class VideosService {
                 channelThumbnail: r[0][re.channelId].channelThumbnail,
                 subscriberCount: parseInt(r[0][re.channelId].subscriberCount),
                 description: r[1][re.videoId].description,
+                categoryId: r[1][re.videoId].categoryId || '0',
+                categories: r[2],
               };
             });
           }),
@@ -289,8 +295,11 @@ export class VideosService {
       ...new Set(res.items.map((r: any) => r.channelId)),
     ].join(',');
     const url = `${YOUTUBE_CONST.API_CHANNEL_INFO_URL}?id=${channelIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet,statistics`;
+    console.log('channelUrl', url);
     return this.http.get(url).pipe(
       map((response: any) => {
+        console.log('channelResponse', url);
+
         const thumbnails: any = {};
         res.items.forEach((r: any) => {
           const channelById = response.items.find(
@@ -306,17 +315,19 @@ export class VideosService {
       shareReplay(1)
     );
   }
-  _getVideoStatisticsInfo(res: any): Observable<any> {
-    const videoIds = [...new Set(res.map((r: any) => r.videoId))].join(',');
-    const url = `${YOUTUBE_CONST.API_VIDEOS_URL}?id=${videoIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet,statistics,contentDetails,player`;
+  _getVideoMoreInfo(res: any): Observable<any> {
+    const videoIds = [...new Set(res.items.map((r: any) => r.videoId))].join(
+      ','
+    );
+    const url = `${YOUTUBE_CONST.API_VIDEOS_URL}?id=${videoIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet,statistics,contentDetails`;
     return this.http.get(url).pipe(
       map((response: any) => {
-        const statistics: any = {};
-        res.forEach((r: any) => {
+        const moreInfo: any = {};
+        res.items.forEach((r: any) => {
           const videoById = response.items.find(
             (re: any) => r.videoId === re.id
           );
-          statistics[r.videoId as string] = {
+          moreInfo[r.videoId as string] = {
             description: videoById.snippet.description,
             viewCount: videoById.statistics.viewCount,
             duration: ytDurationToSec(videoById.contentDetails.duration),
@@ -324,11 +335,121 @@ export class VideosService {
             dislikeCount: videoById.statistics.dislikeCount,
             likeCount: videoById.statistics.likeCount,
             commentCount: videoById.statistics.commentCount,
+            categoryId: videoById.snippet.categoryId,
           };
         });
-        return statistics;
+        return moreInfo;
       }),
       shareReplay(1)
+    );
+  }
+  getVideosByVideoIds(videoIds: string[]): Observable<Video[]> {
+    console.log('videoID', videoIds);
+    const videoURL = `${YOUTUBE_CONST.API_VIDEOS_URL}?id=${videoIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet,statistics,contentDetails`;
+    return this.localDB.bulkGet('videos', videoIds).pipe(
+      mergeMap((videosData: any) => {
+        videosData = videosData.filter((e: any) => e);
+        return videosData.length > 0
+          ? videosData
+          : this.http.get(videoURL).pipe(
+              mergeMap((res: any) => {
+                const channelIds = res.items.map((r: any) => ({
+                  channelId: r.snippet.channelId,
+                }));
+                return this._getChannelsInfo({ items: channelIds }).pipe(
+                  mergeMap((channelData: any) => {
+                    return of(
+                      res.items.map((videoData: any) => {
+                        return {
+                          videoId: videoData.id,
+                          channelId: videoData.snippet.channelId,
+                          channelTitle: videoData.snippet.channelTitle,
+                          title: videoData.snippet.title,
+                          publishedAt: videoData.snippet.publishedAt,
+                          thumbnail: videoData.snippet.thumbnails.medium.url,
+                          description: videoData.snippet.description,
+                          viewCount: videoData.statistics.viewCount,
+                          duration: ytDurationToSec(
+                            videoData.contentDetails.duration
+                          ),
+                          favoriteCount: videoData.statistics.favoriteCount,
+                          dislikeCount: videoData.statistics.dislikeCount,
+                          likeCount: videoData.statistics.likeCount,
+                          commentCount: videoData.statistics.commentCount,
+                          categoryId: videoData.snippet.categoryId,
+                          channelThumbnail:
+                            channelData[videoData.snippet.channelId]
+                              .channelThumbnail,
+                          subscriberCount: parseInt(
+                            channelData[videoData.snippet.channelId]
+                              .subscriberCount
+                          ),
+                        };
+                      })
+                    );
+                  })
+                );
+              })
+            );
+      })
+    );
+  }
+  getRelatedCategoriesToVideoId(categoryIds: string[]): Observable<Category[]> {
+    const url = `${YOUTUBE_CONST.API_CATEGORIES_URL}?id=${categoryIds.join(
+      ','
+    )}&key=${YOUTUBE_CONST.API_TOKEN}`;
+    return this.http.get(url).pipe(
+      tap((res) => console.log(res)),
+      map((response: any) => [
+        { cid: 0, title: 'All' },
+        ...response.items.map((item: any) => {
+          return {
+            cid: parseInt(item.id),
+            title: item.snippet.title,
+          };
+        }),
+      ]),
+      shareReplay(1)
+    );
+  }
+  getRelatedVideosToVideoId(videoId: string): Observable<{
+    categories: Observable<Category[]>;
+    videos: Observable<Video[]>;
+  }> {
+    const url = `${YOUTUBE_CONST.API_SEARCH_URL}?relatedToVideoId=${videoId}&key=${YOUTUBE_CONST.API_TOKEN}&part=id&type=video&maxResults=${RESULTS.LIMIT}&regionCode=il`;
+    return this.http.get<any>(url).pipe(
+      mergeMap((res) => {
+        const videoIds = res.items.map((r: any) => r.id.videoId);
+        return this.getVideosByVideoIds(videoIds).pipe(
+          mergeMap((videos: Video[]) => {
+            const categoryIds = videos.map((v) => v.categoryId);
+            return this.getRelatedCategoriesToVideoId(categoryIds).pipe(
+              mergeMap((relatedCategories: Category[]) => {
+                return of({
+                  categories: of(relatedCategories),
+                  videos: of(
+                    videos.map((v) => {
+                      return {
+                        ...v,
+                        loader: {
+                          thumbnail: false,
+                          channelThumbnail: false,
+                          content: false,
+                        },
+                      };
+                    })
+                  ),
+                });
+              })
+            );
+          })
+        );
+      })
+    );
+  }
+  getVideoByVideoId(videoId: string): Observable<Video> {
+    return this.getVideosByVideoIds([videoId]).pipe(
+      mergeMap((videos: Video[]) => of(videos[0]))
     );
   }
 }

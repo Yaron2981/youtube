@@ -1,14 +1,13 @@
-import { Component, Inject, OnInit } from '@angular/core';
-// import { LocalDBService } from '../shared/services/local-db.service';
-import { filter } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { CategoriesService } from '../categories/categories.service';
-import { Video } from '../search.interface';
 import { EMPTY_VIDEO } from '../shared/constants/yt';
 import { SharedService } from '../shared/services/shared.service';
 import { ActivatedRoute } from '@angular/router';
 import { nl2br, URLify } from 'src/utils/utils';
-import { DOCUMENT } from '@angular/common';
+import { VideosService } from '../shared/services/videos.service';
+import { Category, RelatedVideosCategories, Video } from '../search.interface';
+import { of, BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-watch',
@@ -18,16 +17,17 @@ import { DOCUMENT } from '@angular/common';
 export class WatchComponent implements OnInit {
   constructor(
     private localDB: NgxIndexedDBService,
-    private categoriesService: CategoriesService,
     private sharedService: SharedService,
-    private activatedRoute: ActivatedRoute,
-    @Inject(DOCUMENT) private document: Document
+    private videosService: VideosService,
+    private activatedRoute: ActivatedRoute
   ) {
     this.sharedService.sidebarTriggerBtn.next(false);
   }
   showHideSTBtn$ = this.sharedService.showHideSTBtn$.next(true);
-  categories$ = this.categoriesService.categories$;
-  categoriesLoading$ = this.categoriesService.loading$;
+  relatedVideosCategories$: Observable<{
+    categories: Observable<Category[]>;
+    videos: Observable<Video[]>;
+  }> = of({ categories: of([]), videos: of([]) });
   video: any = EMPTY_VIDEO;
   v: string = '';
   ngOnInit(): void {
@@ -35,26 +35,26 @@ export class WatchComponent implements OnInit {
       console.log(this.activatedRoute.snapshot.queryParams['v']);
       this.fetchVideoByVideoId(this.activatedRoute.snapshot.queryParams['v']);
     }
-    // this.activatedRoute.queryParamMap.subscribe((params) => {
-    // });
-    setTimeout(() => {
-      const btn = document.querySelector(
-        '.ytp-mute-button'
-      ) as HTMLElement | null;
-      console.log(btn);
-      if (btn != null) {
-        btn.click();
-      }
-    }, 2000);
   }
   fetchVideoByVideoId(id: string) {
     this.localDB.getByID('videos', id).subscribe((video: any) => {
-      this.video = {
-        ...this.video,
-        ...video,
-        ...{ description: URLify(nl2br(video.description)) },
-      };
-      console.log(video);
+      if (video) {
+        this.video = {
+          ...this.video,
+          ...video,
+          ...{ description: URLify(nl2br(video.description)) },
+        };
+      } else {
+        this.videosService.getVideoByVideoId(id).subscribe((video: Video) => {
+          this.video = {
+            ...this.video,
+            ...video,
+            ...{ description: URLify(nl2br(video.description)) },
+          };
+        });
+        this.relatedVideosCategories$ =
+          this.videosService.getRelatedVideosToVideoId(id);
+      }
     });
   }
 }

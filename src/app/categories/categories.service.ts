@@ -6,10 +6,9 @@ import {
   Observable,
   shareReplay,
   tap,
-  filter,
+  switchMap,
 } from 'rxjs';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
-import { switchMap } from 'rxjs';
 import { IGNORED_CATEGORIES, YOUTUBE_CONST } from '../shared/constants/yt';
 @Injectable({
   providedIn: 'root',
@@ -20,6 +19,7 @@ export class CategoriesService {
   ignoredCategories = IGNORED_CATEGORIES;
   categories$ = this.getCategories();
   loading$ = new BehaviorSubject<boolean>(false);
+
   getCategories(): Observable<any> {
     return this.localDB.count('categories').pipe(
       tap(() => this.loading$.next(true)),

@@ -19,6 +19,8 @@ export interface Video {
   duration: number;
   subscriberCount: number;
   loader: VideoLoader;
+  categoryId: string;
+  categories: [Category];
 }
 export interface VideoLoader {
   thumbnail: boolean;
@@ -62,4 +64,12 @@ export type VideoDataType = 'category' | 'query';
 export interface videoData {
   category: { data: Video[]; page: number };
   query: { data: Video[]; page: number };
+}
+export interface Category {
+  cid: number;
+  title: string;
+}
+export interface RelatedVideosCategories {
+  categories: Category[];
+  videos: Video[];
 }

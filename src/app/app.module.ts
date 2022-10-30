@@ -22,7 +22,7 @@ import { SafePipe } from './shared/pipes/safe.pipe';
 import { DateAgoPipe } from './shared/pipes/date-ago.pipe';
 import { ShortNumberPipe } from './shared/pipes/short-number.pipe';
 import { VideoComponent } from './shared/components/videos/video/video.component';
-import { PlayerComponent } from './shared/components/videos/video/pop-over-video/player/player.component';
+import { PlayerComponent } from './shared/components/player/player.component';
 import { PopOverVideoComponent } from './shared/components/videos/video/pop-over-video/pop-over-video.component';
 import { TemplateComponent } from './template/template.component';
 import { HomeComponent } from './home/home.component';
@@ -43,6 +43,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { CommonModule } from '@angular/common';
 import { ChunkPipe } from './shared/pipes/chunk.pipe';
 import { ReadMoreComponent } from './shared/components/read-more/read-more.component';
+import { HomeVideoListComponent } from './shared/components/videos/videos-themes/home-video-list/home-video-list.component';
+import { SearchVideoListComponent } from './shared/components/videos/videos-themes/search-video-list/search-video-list.component';
+import { RelatedVideoListComponent } from './shared/components/videos/videos-themes/related-video-list/related-video-list.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +69,9 @@ import { ReadMoreComponent } from './shared/components/read-more/read-more.compo
     CategoriesHolderComponent,
     ChunkPipe,
     ReadMoreComponent,
+    HomeVideoListComponent,
+    SearchVideoListComponent,
+    RelatedVideoListComponent,
   ],
   imports: [
     BrowserModule,
