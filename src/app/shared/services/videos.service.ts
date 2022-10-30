@@ -60,9 +60,10 @@ export class VideosService {
     this.nQuery$.next({ q: q, page: 0 });
   }
   emitCategoryNextPage(): void {
+    this.videoData.category.page = this.videoData.category.page + 1;
     this.nCategory$.next({
       cid: this.categoryId,
-      page: (this.videoData.category.page = +1),
+      page: this.videoData.category.page,
     });
   }
   emitQueryNextPage(): void {
@@ -103,12 +104,13 @@ export class VideosService {
               ) {
                 return this.localDB.bulkGet('videos', listData.videoIds).pipe(
                   tap((videos: Video[]) => {
+                    console.log(nqc.page, videos);
+
                     if (nqc.page > 0) {
                       videos = videos.slice(
                         RESULTS.LIMIT * nqc.page,
-                        RESULTS.LIMIT
+                        RESULTS.LIMIT + RESULTS.LIMIT * nqc.page
                       );
-                      console.log(videos);
                       this._setData(type, videos, 'merge');
                     } else {
                       videos = videos.slice(0, RESULTS.LIMIT);
@@ -142,13 +144,25 @@ export class VideosService {
           this.videoData[type].data = this.videoData[type].data.concat(videos);
         break;
       case 'merge':
-        this.videoData[type].data = this.videoData[type].data.map((video) => {
-          return video.videoId
-            ? video
-            : { ...video, ...(videos.shift() as Video) };
-        });
+        let videoIds: any = [];
+
+        this.videoData[type].data = this.videoData[type].data
+          .map((video) => {
+            return video.videoId
+              ? video
+              : { ...video, ...(videos.shift() as Video) };
+          })
+          //remove dupliacate from youtube API repeated videos
+          .filter((v) => {
+            if (videoIds.includes(v.videoId)) return false;
+            else {
+              videoIds.push(v.videoId);
+              return v;
+            }
+          });
         break;
     }
+
     this.videoData[type].data = this.videoData[type].data.map((video) => {
       return {
         ...video,
@@ -179,7 +193,7 @@ export class VideosService {
       : '';
     const url = `${YOUTUBE_CONST.API_SEARCH_URL}?${withCategory}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet&type=video&maxResults=${RESULTS.LIMIT}&regionCode=il${pageToken}`;
     return this.http.get<VideosResponse>(url).pipe(
-      tap((res) => console.log('ddd', res)),
+      tap((res) => console.log('VideosResponsedd', res)),
       map((response: any) => ({
         ...response,
         items: response.items.map((item: any) => {
@@ -297,7 +311,6 @@ export class VideosService {
     const url = `${YOUTUBE_CONST.API_VIDEOS_URL}?id=${videoIds}&key=${YOUTUBE_CONST.API_TOKEN}&part=snippet,statistics,contentDetails,player`;
     return this.http.get(url).pipe(
       map((response: any) => {
-        console.log(response);
         const statistics: any = {};
         res.forEach((r: any) => {
           const videoById = response.items.find(
