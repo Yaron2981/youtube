@@ -102,22 +102,19 @@
       </div>
     </div>
     <div class="right-con">
-      <div class="video-categories">
-        <app-categories
-          *ngIf="relatedVideosCategories$ | async as rvc"
-          [categories]="rvc.categories"
-        ></app-categories>
-      </div>
-      <div class="video-list">
-        <mat-card>
+      <ng-container *ngIf="relatedVideosCategories$ | async as rvc">
+        <div class="video-categories" style="max-width: 384px">
+          <app-categories [categories]="rvc.categories"></app-categories>
+        </div>
+        <div class="video-list">
           <app-videos
-            *ngIf="relatedVideosCategories$ | async as rvc"
+            posType="related-video-list"
             [videos]="rvc.videos"
-            posType="horizontal"
           ></app-videos>
-        </mat-card>
-        video-list
-      </div>
+
+          video-list
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>

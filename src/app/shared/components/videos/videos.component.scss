@@ -17,7 +17,8 @@
   overflow-y: auto;
   flex-direction: column-reverse;
 }
-.videos-viewport {
+.vertical.videos-viewport,
+.horizontal.videos-viewport {
   background-color: $lightGrey;
   padding-top: 1.5rem;
   height: 100vh;
@@ -30,5 +31,5 @@
   height: 370px;
 }
 .videos-viewport-row {
-  margin-left: 16px;
+  // margin-left: 16px;
 }

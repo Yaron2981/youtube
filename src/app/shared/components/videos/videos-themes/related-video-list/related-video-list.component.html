@@ -1,1 +1,89 @@
-<p>related-video-list works!</p>
+<ng-container *ngIf="video">
+  <div fxFlex="40">
+    <div class="thumbnail-con" style="position: relative">
+      <a
+        target="_blank"
+        [routerLink]="['/watch']"
+        [queryParams]="{ v: video.videoId }"
+      >
+        <img
+          class="min-circle-img"
+          [ngClass]="{ hbp: video.loader.thumbnail }"
+          style="position: absolute; top: 0px; max-width: 168px"
+          mat-card-image
+          [src]="video.thumbnail"
+          *ngIf="video.thumbnail"
+          [src]="video.thumbnail"
+          (load)="video.loader.thumbnail = false"
+        />
+        <div
+          [@fadeAnimation]="
+            !video.thumbnail && !video.loader.thumbnail ? 'false' : 'true'
+          "
+          class="holder-thumbnail-con"
+        >
+          <div class="thumbnail"></div>
+        </div>
+        <ng-container *ngIf="video.showPlayer">
+          <a
+            [@fade]="video.showPop"
+            target="_blank"
+            [routerLink]="['./watch']"
+            [queryParams]="{ v: video.videoId }"
+            class="player-link"
+          >
+          </a>
+        </ng-container>
+      </a>
+    </div>
+  </div>
+  <div fxFlex="60" style="align-self: start">
+    <mat-card-content style="padding-top: 5px">
+      <div>
+        <a
+          *ngIf="!video.loader.content && video.title"
+          fxFlex="100"
+          target="_blank"
+          [routerLink]="['/watch']"
+          [queryParams]="{ v: video.videoId }"
+          class="title"
+          [innerHtml]="video.title | safe: 'html'"
+        ></a>
+        <div
+          class="holder-content"
+          *ngIf="video.loader.content || !video.title"
+        >
+          <div class="title"></div>
+        </div>
+      </div>
+
+      <div fxLayout="row" class="holder-content">
+        <div fxFlex="100" mat-card-avatar fxLayoutAlign="start">
+          <a
+            *ngIf="video.channelTitle && !video.loader.content"
+            style="margin-left: 0.75rem"
+            target="_blank"
+            class="channel-title"
+            [href]="YT.VIDEO_PATH + video.channelId | safe: 'url'"
+            >{{ video.channelTitle }}</a
+          >
+          <div
+            *ngIf="!video.channelTitle || video.loader.content"
+            class="channel"
+          ></div>
+        </div>
+      </div>
+
+      <div class="holder-content">
+        <mat-card-subtitle *ngIf="video.viewCount && !video.loader.content">
+          {{ video.viewCount! | shortNumber }} <span>&bull;</span>
+          {{ video.publishedAt! | dateAgo }}
+        </mat-card-subtitle>
+        <div
+          *ngIf="video.loader.content || !video.viewCount"
+          class="title2"
+        ></div>
+      </div>
+    </mat-card-content>
+  </div>
+</ng-container>
