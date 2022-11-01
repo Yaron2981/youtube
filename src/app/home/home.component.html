@@ -1,8 +1,13 @@
 <div class="home">
-  <app-categories
-    [loading]="categoriesLoading$"
-    [categories]="categories$"
-  ></app-categories>
+  <div class="categories-con">
+    <app-categories
+      class="categories"
+      [loading]="categoriesLoading$"
+      [categories]="categories$"
+    ></app-categories>
+    <mat-divider></mat-divider>
+  </div>
+
   <div class="videos-inner-fixer"></div>
   <app-videos
     [videosInRow]="videosInRow"

@@ -6,40 +6,26 @@
   white-space: nowrap;
 }
 :host::ng-deep .mat-standard-chip {
-  margin: 12px !important;
+  margin: 12px 6px !important;
   padding: 1rem !important;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: none;
   background: rgba(0, 0, 0, 0.05);
+}
+.mat-icon-button {
+  border-radius: 50% !important;
 }
 .mat-chip-list {
   display: flex;
   overflow: hidden;
   scroll-behavior: smooth;
   padding-right: 50px;
-  padding-left: 2rem;
 }
 .categories {
-  position: absolute;
-  right: 1rem;
-  top: 0rem;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  background-color: white;
-  overflow: hidden;
-  padding: 0.5rem;
-  border-bottom: 1px solid #eee;
-  border-top: 1px solid #eee;
 }
 .categories-con {
-  position: fixed;
-  top: 4rem;
-  z-index: 99;
-  width: 100%;
-  width: -moz-available;
-  width: -webkit-fill-available;
-  width: stretch;
+}
+.mat-standard-chip {
+  border-radius: 12px;
 }
 .chip-bar-renderer {
   display: flex;
@@ -51,12 +37,14 @@
 }
 .chip-bar-renderer.right {
   right: 0px;
+  top: 0px;
+  right: -40px;
   margin-right: 0px;
   justify-content: start;
 }
 .chip-bar-renderer.left {
   justify-content: end;
-  left: 0px;
+  left: -15px;
   margin-left: 0px;
 }
 .chip-bar-renderer.right::after {

@@ -61,7 +61,6 @@
         <div fxFlex="100" mat-card-avatar fxLayoutAlign="start">
           <a
             *ngIf="video.channelTitle && !video.loader.content"
-            style="margin-left: 0.75rem"
             target="_blank"
             class="channel-title"
             [href]="YT.VIDEO_PATH + video.channelId | safe: 'url'"
@@ -75,10 +74,10 @@
       </div>
 
       <div class="holder-content">
-        <mat-card-subtitle *ngIf="video.viewCount && !video.loader.content">
+        <div class="views" *ngIf="video.viewCount && !video.loader.content">
           {{ video.viewCount! | shortNumber }} <span>&bull;</span>
           {{ video.publishedAt! | dateAgo }}
-        </mat-card-subtitle>
+        </div>
         <div
           *ngIf="video.loader.content || !video.viewCount"
           class="title2"

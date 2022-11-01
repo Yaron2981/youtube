@@ -1,39 +1,43 @@
 <div class="categories-con">
-  <div class="categories" *ngIf="$categories | async as categories">
+  <div *ngIf="categories$ | async as categories">
     <app-categories-holder [loading]="loading$"></app-categories-holder>
-    <div [hidden]="!scrollLeftBtn" class="chip-bar-renderer left">
-      <button
-        (click)="scrollLeft()"
-        style="background-color: white"
-        mat-icon-button
+    <div style="position: relative">
+      <div [hidden]="!scrollLeftBtn" class="chip-bar-renderer left">
+        <button
+          (click)="scrollLeft()"
+          style="background-color: white"
+          mat-icon-button
+        >
+          <mat-icon>keyboard_arrow_left</mat-icon>
+        </button>
+      </div>
+      <mat-chip-list
+        class="example-chip"
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        #widgetsContent
       >
-        <mat-icon>keyboard_arrow_left</mat-icon>
-      </button>
+        <mat-chip
+          [ngStyle]="{ 'margin-left': i == 0 ? '0px' : '6px' }"
+          class="example-box"
+          (click)="
+            categoryClicked(category.cid); videoCategoryId = category.cid
+          "
+          [selected]="videoCategoryId == category.cid"
+          *ngFor="let category of categories; let i = index"
+        >
+          {{ category.title }}
+        </mat-chip>
+      </mat-chip-list>
+      <div [hidden]="!scrollRightBtn" class="chip-bar-renderer right">
+        <button
+          (click)="scrollRight()"
+          style="background-color: white"
+          mat-icon-button
+        >
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+      </div>
     </div>
-    <mat-chip-list
-      class="example-chip"
-      cdkDropList
-      cdkDropListOrientation="horizontal"
-      #widgetsContent
-    >
-      <mat-chip
-        class="example-box"
-        (click)="categoryClicked(category.cid); videoCategoryId = category.cid"
-        [selected]="videoCategoryId == category.cid"
-        *ngFor="let category of categories"
-      >
-        {{ category.title }}
-      </mat-chip>
-    </mat-chip-list>
-    <div [hidden]="!scrollRightBtn" class="chip-bar-renderer right">
-      <button
-        (click)="scrollRight()"
-        style="background-color: white"
-        mat-icon-button
-      >
-        <mat-icon>keyboard_arrow_right</mat-icon>
-      </button>
-    </div>
-    <mat-divider></mat-divider>
   </div>
 </div>

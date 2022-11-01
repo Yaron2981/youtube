@@ -52,9 +52,9 @@ export class WatchComponent implements OnInit {
             ...{ description: URLify(nl2br(video.description)) },
           };
         });
-        this.relatedVideosCategories$ =
-          this.videosService.getRelatedVideosToVideoId(id);
       }
+      this.relatedVideosCategories$ =
+        this.videosService.getRelatedVideosToVideoId(id);
     });
   }
 }
