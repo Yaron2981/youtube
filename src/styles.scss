@@ -44,9 +44,9 @@ a.fcu {
 }
 
 /*fix last flex item margin*/
-div[fxlayout="row wrap"] > :last-of-type {
-  margin-right: 16px;
-}
+// div[fxlayout="row wrap"] > :last-of-type {
+//   margin-right: 16px;
+// }
 .hbp {
   opacity: 0;
   position: absolute;
